@@ -1,46 +1,49 @@
-Création d'un site d'un ACM.
+# Création d’un site d’ACM
 
-TODO:
-- interface parent dédié.
-    - renseigner les infos des enfants.
-    - choisir les jours d'inscriptions.
-    - validé les inscriptions
+## TODO
 
-- tableau de bort admin
-    - affichage effectif par groupe.
-        - par période.
-    - accepté les listes d'attentes.
-    - modifier les infos des groupes.
-    - modifier les jours d'accueil.
+### Interface parent dédiée
+- Renseigner les informations des enfants  
+- Choisir les jours d’inscription  
+- Valider les inscriptions  
 
-- système d'inscription
-    - en fonction des groupes.
-    - système de liste d'attente.
+### Tableau de bord administrateur
+- Affichage des effectifs par groupe  
+  - Par période  
+- Accepter les listes d’attente  
+- Modifier les informations des groupes  
+- Modifier les jours d’accueil  
 
-- optionnel:
-    - calcul des repas.
-        - selon les régimes alimentaires
-    - systèmes de communications avec les parents.
-        - websocket ?
+### Système d’inscription
+- En fonction des groupes  
+- Système de liste d’attente  
 
+### Optionnel
+- Calcul des repas  
+  - Selon les régimes alimentaires  
+- Système de communication avec les parents  
+  - WebSocket ?  
 
+## Règles métier
+- Système de validation avec délais de réponse  
+- Essayer de conserver les fratries (score attribué)  
+- Visualisation des places disponibles  
+- Mobile first  
 
-systeme de validation, délais de réponse.
-essayé de conserver les fratries (score adtribué).
-visualisation des places.
-mobile first.
+## Technologies
 
+### Back-end
+- Node.js  
+  - NestJS  
 
-techno:
-- back:
-    - node.js
-        - nest.js
-- front:
-    - vue.js
-- BDD:
-    - Maria
-        - prisma.
+### Front-end
+- Vue.js  
 
-- typescript
+### Base de données
+- MariaDB  
+  - Prisma  
 
-c'est tout vue (lol ptdr on se tape des barres).
+### Langage
+- TypeScript  
+
+> C’est tout (en) Vue (lol ptdr, on se tape des barres)
