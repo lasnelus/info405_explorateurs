@@ -31,3 +31,13 @@ visualisation des places.
 mobile first.
 
 
+techno:
+- back:
+    - node.js
+        - nest.js
+- front:
+    - vue.js
+    - typescript
+
+
+c'est tout vue (lol ptdr on se tape des barres).
