@@ -37,7 +37,10 @@ techno:
         - nest.js
 - front:
     - vue.js
-    - typescript
+- BDD:
+    - Maria
+        - prisma.
 
+- typescript
 
 c'est tout vue (lol ptdr on se tape des barres).
