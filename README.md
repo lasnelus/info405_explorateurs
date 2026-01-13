@@ -47,3 +47,7 @@
 - TypeScript  
 
 > C’est tout (en) Vue (lol ptdr, on se tape des barres)
+
+
+
+[![wakatime](https://wakatime.com/badge/github/lasnelus/info405_explorateurs.svg)](https://wakatime.com/badge/github/lasnelus/info405_explorateurs)
