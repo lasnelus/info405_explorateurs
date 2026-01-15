@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+:root {
+    --color-primary: green; 
+}
+
+.dark {
+    --color-primary: blue; 
+}
+
+@theme {
+    --color-primary: var(--color-primary)
+}
