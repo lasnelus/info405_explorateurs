@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Guardian {
+  id             String       @default(cuid())     @id
+  email          String       @unique
+  password       String
+
+  firstName      String
+  lastName       String
+
+  families       Family[]
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Family {
+  id             String        @default(cuid())     @id
+  name           String
+
+  guardians      Guardian[]
+  childs          Child[]
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Child {
+  id             String        @default(cuid())     @id
+
+  firstName      String
+  lastName       String
+
+  families       Family[]
+  slots          Slot[]
+  queues         Queue[]
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+enum QueueState {
+  PENDING
+  ACCEPTED
+  TIMEOUT
+}
+
+model Queue {
+  id             String        @default(cuid())     @id
+
+  child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
+  childId        String
+
+  periode        Periode       @relation(fields: [periodeId], references: [id], onDelete: Cascade)
+  periodeId      String
+
+  state          QueueState
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Slot {
+  id             String        @default(cuid())     @id
+
+  child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
+  childId        String
+
+  periode        Periode       @relation(fields: [periodeId], references: [id], onDelete: Cascade)
+  periodeId      String
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Periode {
+  id             String        @default(cuid())     @id
+
+  ageMin         Int
+  ageMax         Int
+
+  firstDay       DateTime      @db.Date
+  lastDay        DateTime      @db.Date
+
+  slots          Slot[]
+  queues         Queue[]
+}
