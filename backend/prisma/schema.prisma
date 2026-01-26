@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output = "../src/generated/prisma"
 }
 
 datasource db {
@@ -8,7 +7,7 @@ datasource db {
 }
 
 model Guardian {
-  id             String       @default(cuid())     @id
+  id             String        @id                   @default(cuid())
   email          String       @unique
   password       String
 
@@ -22,7 +21,7 @@ model Guardian {
 }
 
 model Family {
-  id             String        @default(cuid())     @id
+  id             String        @id                   @default(cuid())
   name           String
 
   guardians      Guardian[]
@@ -33,7 +32,7 @@ model Family {
 }
 
 model Child {
-  id             String        @default(cuid())     @id
+  id             String        @id                   @default(cuid())
 
   firstName      String
   lastName       String
@@ -53,7 +52,7 @@ enum QueueState {
 }
 
 model Queue {
-  id             String        @default(cuid())     @id
+  id             String        @id                   @default(cuid())
 
   child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
   childId        String
@@ -68,7 +67,7 @@ model Queue {
 }
 
 model Slot {
-  id             String        @default(cuid())     @id
+  id             String        @id                   @default(cuid())
 
   child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
   childId        String
@@ -81,7 +80,7 @@ model Slot {
 }
 
 model Periode {
-  id             String        @default(cuid())     @id
+  id             String        @id                   @default(cuid())
 
   ageMin         Int
   ageMax         Int
