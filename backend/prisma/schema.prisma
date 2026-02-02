@@ -91,3 +91,21 @@ model Periode {
   slots          Slot[]
   queues         Queue[]
 }
+
+enum ManagerRole {
+  OWNER
+  INSTRUCTOR
+}
+model Manager {
+  id             String        @id                   @default(cuid())
+  email          String        @unique
+  password       String
+
+  firstName      String
+  lastName       String
+
+  role           ManagerRole   @default(INSTRUCTOR)
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
