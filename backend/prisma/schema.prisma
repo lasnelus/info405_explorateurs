@@ -14,6 +14,8 @@ model Guardian {
   firstName      String
   lastName       String
 
+  role           Role          @default(GUARDIAN)
+
   families       Family[]
 
   createdAt      DateTime      @default(now())
@@ -92,9 +94,10 @@ model Periode {
   queues         Queue[]
 }
 
-enum ManagerRole {
+enum Role {
   OWNER
   INSTRUCTOR
+  GUARDIAN
 }
 model Manager {
   id             String        @id                   @default(cuid())
@@ -104,7 +107,7 @@ model Manager {
   firstName      String
   lastName       String
 
-  role           ManagerRole   @default(INSTRUCTOR)
+  role           Role          @default(INSTRUCTOR)
 
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt

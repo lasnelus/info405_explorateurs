@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GuardianModule } from './guardian/guardian.module';
 import { FamilyModule } from './family/family.module';
 import { ChildModule } from './child/child.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ChildModule } from './child/child.module';
     GuardianModule,
     FamilyModule,
     ChildModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
