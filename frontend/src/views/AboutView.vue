@@ -6,9 +6,7 @@
 </template>
 
 <script setup lang="ts">
-// Votre logique TypeScript ici
 </script>
 
 <style scoped>
-/* Vos styles ici */
 </style>
