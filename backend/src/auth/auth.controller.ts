@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Request,
   Res,
@@ -11,9 +12,28 @@ import { CredentialsDto } from './dto/credentials.dto';
 import type { Response } from 'express';
 import type { RequestWithUser } from './dto/payload';
 import { refreshTokenAuthGuard } from './refreshToken.auth.guard';
+import { accessTokenAuthGuard } from './accessToken.auth.guard';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCookieAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { accessTokenDto, RoleResponseDto } from './dto/payload.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+  @ApiCreatedResponse({
+    description: 'login successful',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'invalid password',
+  })
+  @ApiBadRequestResponse({
+    description: 'invalid body: password and email are required',
+  })
   @Post('login')
   async login(
     @Body() authBody: CredentialsDto,
@@ -22,12 +42,33 @@ export class AuthController {
     await this.authService.login(authBody, response);
   }
 
+  @ApiCookieAuth()
+  @ApiCreatedResponse({
+    description: 'new access token',
+    type: accessTokenDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'invalid or missing refresh token',
+  })
   @UseGuards(refreshTokenAuthGuard)
   @Post('refresh')
-  refresh(@Request() request: RequestWithUser): { accessToken: string } {
+  refresh(@Request() request: RequestWithUser): accessTokenDto {
     const accessToken = this.authService.getAccessToken(request.user);
     return {
       accessToken,
     };
+  }
+
+  @ApiBearerAuth('accessToken')
+  @ApiOkResponse({
+    type: RoleResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'invalid or missing access token',
+  })
+  @UseGuards(accessTokenAuthGuard)
+  @Get('role')
+  get(@Request() request: RequestWithUser): RoleResponseDto {
+    return { role: request.user.role };
   }
 }
