@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center p-6" :style="{ backgroundColor: 'var(--color-background)' }">
+  <div class="bg-primary-backgroundmin-h-screen flex justify-center items-center p-6">
     <div class="flex flex-col gap-6 w-full max-w-sm">
       <!-- Formulaire de connexion -->
       <div class="bg-white rounded-2xl shadow-lg p-10">
