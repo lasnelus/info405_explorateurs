@@ -3,8 +3,7 @@ import { CredentialsDto } from './dto/credentials.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { compare, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from '@prisma/client';
-import { UserPayload } from './dto/payload';
+import { Role, UserPayload } from './dto/payload';
 import { StringValue } from 'ms';
 import { Response } from 'express';
 
