@@ -7,7 +7,7 @@
       <div class="flex gap-4 items-center">
         <router-link
           to="/login"
-          class="bg-secondary px-7 py-2.5 rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+          class="bg-success px-7 py-2.5 rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
         >
           Connexion
         </router-link>
