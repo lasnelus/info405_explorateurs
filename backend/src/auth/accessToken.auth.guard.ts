@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class accessTokenAuthGuard extends AuthGuard('accessToken') {
   handleRequest(err: any, user: any, info: any) {
-    return user || null;
+    if (err || !user) {
+      throw new UnauthorizedException(
+        'Access denied: invalid or expired token',
+      );
+    }
+    return user;
   }
 }
