@@ -10,6 +10,14 @@ body {
 }
 
 :root {
+
+  /* Info, error, success colours & alpha values */
+  --info: #3A7CA5;
+
+  --error: #E07A5F;
+
+  --success: #7FB3A2;
+
   /* default */
   --background: #000000;
   --color-primary: #aaaaaa;
@@ -104,9 +112,13 @@ body {
     --color-gris-dark: var(--gris-dark);
     --color-gris-beige: var(--gris-beige);
 
-    --color-color-primary: var(--color-color-primary);
-    --color-color-primary-light: var(--color-primary-light);
-    --color-color-primary-100: var(--color-primary-100);
-    --color-color-primary-300: var(--color-primary-300);
-    --color-color-primary-background: var(--background);
+    --color-primary: var(--color-primary);
+    --color-primary-light: var(--color-primary-light);
+    --color-primary-100: var(--color-primary-100);
+    --color-primary-300: var(--color-primary-300);
+    --color-primary-background: var(--background);
+
+    --color-success: var(--success);
+    --color-info: var(--info);
+    --color-error: var(--error);
 }
