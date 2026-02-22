@@ -1,13 +1,112 @@
 @import "tailwindcss";
 
-:root {
-    --color-primary: green; 
+@font-face {
+  font-family: "Lexend";
+  src: url(../public/fonts/Lexend-VariableFont_wght.ttf)
 }
 
+body {
+  font-family: "Lexend", sans-serif;
+}
+
+:root {
+  /* default */
+  --background: #000000;
+  --primary: #aaaaaa;
+  --primary-light: #ffffff;
+  --primary-100: #cccccc;
+  --primary-300: #eeeeee;
+
+  /* Gris */
+  --gris-dark: #7A7A7A;
+  --gris-light: #CFCFCF;
+  --gris-beige: #E5E2DC;
+}
+
+/* ========================= */
+/* CLAIR */
+/* ========================= */
+
+.light {
+  &.bleu {
+    --background: #0F1E26;
+    --primary: #3A7CA5;
+    --primary-light: #E6EEF3;
+    --primary-100: #8FB9D6;
+    --primary-300: #2F6F9E;
+  }
+
+  &.vert {
+    --background: #081C15;
+    --primary: #74C69D;
+    --primary-light: #E6F4EC;
+    --primary-100: #95D5B2;
+    --primary-300: #2A9D8F;
+  }
+
+  &.jaune {
+    --background: #1F1A05;
+    --primary: #F4C430;
+    --primary-light: #FFF6D6;
+    --primary-100: #FFD866;
+    --primary-300: #D4A017;
+  }
+
+  &.rouge {
+    --background: #1C0A0A;
+    --primary: #E76F51;
+    --primary-light: #FDECEA;
+    --primary-100: #F4A261;
+    --primary-300: #C44536;
+  }
+}
+
+/* ========================= */
+/* SOMBRE */
+/* ========================= */
+
 .dark {
-    --color-primary: blue; 
+  &.bleu {
+    --background: #0A141A;
+    --primary: #2F6F9E;
+    --primary-light: #3A7CA5;
+    --primary-100: #4F93C2;
+    --primary-300: #1F4E73;
+  }
+
+  &.vert {
+      --background: #061410;
+    --primary: #2A9D8F;
+    --primary-light: #40916C;
+    --primary-100: #52B788;
+    --primary-300: #1B6B5C;
+  }
+
+  &.jaune {
+    --background: #151102;
+    --primary: #D4A017;
+    --primary-light: #F4C430;
+    --primary-100: #E9B949;
+    --primary-300: #A07800;
+  }
+
+  &.rouge {
+    --background: #140707;
+    --primary: #C44536;
+    --primary-light: #E76F51;
+    --primary-100: #F08080;
+    --primary-300: #922B21;
+  }
 }
 
 @theme {
-    --color-primary: var(--color-primary)
+    --color-gris-light: var(--gris-light);
+    --color-gris-dark: var(--gris-dark);
+    --color-gris-beige: var(--gris-beige);
+
+    --color-primary: var(--primary);
+    --color-primary-light: var(--primary-light);
+    --color-primary-100: var(--primary-100);
+    --color-primary-300: var(--primary-300);
+    --color-primary-background: var(--background);
 }
