@@ -1,7 +1,8 @@
-import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios"
+import axios from "axios"
+import type { AxiosError, InternalAxiosRequestConfig } from "axios"
 import { useAuthStore } from "@/stores/auth"
 
-const api: AxiosInstance = axios.create({
+const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 })

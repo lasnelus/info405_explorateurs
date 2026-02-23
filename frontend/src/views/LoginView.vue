@@ -20,6 +20,10 @@
         shadow-lg p-10
       ">
         <form @submit.prevent="handleLogin">
+          <div v-if="error" class="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+            {{ error }}
+          </div>
+
           <div class="mb-6">
             <input type="text" v-model="username" placeholder="IDENTIFIANT"
               class="
@@ -89,9 +93,10 @@
           </div>
 
           <button type="submit"
-            class="w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+            :disabled="isLoading"
+            class="w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0"
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
-            Connexion
+            {{ isLoading ? 'Connexion...' : 'Connexion' }}
           </button>
         </form>
       </div>
@@ -115,14 +120,34 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { login } from '@/services/authServices'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const auth = useAuthStore()
 const username = ref('')
 const password = ref('')
 const showPassword = ref(false)
+const isLoading = ref(false)
+const error = ref('')
 
-const handleLogin = () => {
-  console.log('Connexion:', { username: username.value, password: password.value })
+const handleLogin = async () => {
+  isLoading.value = true
+  error.value = ''
+
+  try {
+    const response = await login(username.value, password.value)
+    const accessToken = response.data.accessToken
+
+    auth.setAccessToken(accessToken)
+
+    router.push('/')
+  } catch (err) {
+    error.value = 'Identifiants invalides. Veuillez réessayer.'
+    console.error('Erreur de connexion:', err)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const handleForgotPassword = () => {
