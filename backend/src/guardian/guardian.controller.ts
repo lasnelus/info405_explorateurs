@@ -1,3 +1,4 @@
+import type { RequestWithUser } from './../auth/dto/payload';
 import {
   ApiNotFoundResponse,
   ApiOperation,
@@ -5,7 +6,8 @@ import {
 } from '@nestjs/swagger';
 import { guardianInfoDto } from './dto/guardianDto';
 import { GuardianService } from './guardian.service';
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
+import { accessTokenAuthGuard } from 'src/auth/accessToken.auth.guard';
 
 @Controller('guardian')
 export class GuardianController {
@@ -39,9 +41,12 @@ export class GuardianController {
   @ApiNotFoundResponse({
     description: 'guardian not found',
   })
+  @UseGuards(accessTokenAuthGuard)
   @Get('me')
-  async getMyGuardianInfo(): Promise<guardianInfoDto> {
-    const guardianId: string = 'cmkv7yhjs0000hwjmuo9c1c2h'; // to change with JWT token implementation
+  async getMyGuardianInfo(
+    @Request() request: RequestWithUser,
+  ): Promise<guardianInfoDto> {
+    const guardianId: string = request.user.userId;
     return await this.guardianService.getGuardian(guardianId);
   }
 
