@@ -19,6 +19,7 @@ import {
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { accessTokenDto, RoleResponseDto } from './dto/payload.dto';
@@ -70,5 +71,18 @@ export class AuthController {
   @Get('role')
   get(@Request() request: RequestWithUser): RoleResponseDto {
     return { role: request.user.role };
+  }
+
+  @ApiOperation({
+    summary: 'clear refresh token cookie',
+  })
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(process.env.REFRESHTOKEN_COOKIE_NAME || 'refresh_token', {
+      httpOnly: true,
+      secure: process.env.PRODUCTION === 'true',
+      sameSite: 'strict',
+      path: '/',
+    });
   }
 }
