@@ -5,6 +5,7 @@ CREATE TABLE `Guardian` (
     `password` VARCHAR(191) NOT NULL,
     `firstName` VARCHAR(191) NOT NULL,
     `lastName` VARCHAR(191) NOT NULL,
+    `role` ENUM('OWNER', 'INSTRUCTOR', 'GUARDIAN') NOT NULL DEFAULT 'GUARDIAN',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -27,8 +28,29 @@ CREATE TABLE `Child` (
     `id` VARCHAR(191) NOT NULL,
     `firstName` VARCHAR(191) NOT NULL,
     `lastName` VARCHAR(191) NOT NULL,
+    `birthDate` DATETIME(3) NOT NULL,
+    `foodConstraint` ENUM('NONE', 'NO_PORK', 'NO_MEAT', 'ALLERGY_OR_INTOLERANCE') NOT NULL DEFAULT 'NONE',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `EmergencyContact` (
+    `id` VARCHAR(191) NOT NULL,
+    `firstName` VARCHAR(191) NOT NULL,
+    `lastName` VARCHAR(191) NOT NULL,
+    `phoneNumber` VARCHAR(191) NOT NULL,
+    `childId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Allergy` (
+    `id` VARCHAR(191) NOT NULL,
+    `childId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -61,9 +83,25 @@ CREATE TABLE `Periode` (
     `id` VARCHAR(191) NOT NULL,
     `ageMin` INTEGER NOT NULL,
     `ageMax` INTEGER NOT NULL,
+    `capacity` INTEGER NOT NULL,
     `firstDay` DATE NOT NULL,
     `lastDay` DATE NOT NULL,
 
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Manager` (
+    `id` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `firstName` VARCHAR(191) NOT NULL,
+    `lastName` VARCHAR(191) NOT NULL,
+    `role` ENUM('OWNER', 'INSTRUCTOR', 'GUARDIAN') NOT NULL DEFAULT 'INSTRUCTOR',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Manager_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -84,6 +122,12 @@ CREATE TABLE `_ChildToFamily` (
     UNIQUE INDEX `_ChildToFamily_AB_unique`(`A`, `B`),
     INDEX `_ChildToFamily_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `EmergencyContact` ADD CONSTRAINT `EmergencyContact_childId_fkey` FOREIGN KEY (`childId`) REFERENCES `Child`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Allergy` ADD CONSTRAINT `Allergy_childId_fkey` FOREIGN KEY (`childId`) REFERENCES `Child`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Queue` ADD CONSTRAINT `Queue_childId_fkey` FOREIGN KEY (`childId`) REFERENCES `Child`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
