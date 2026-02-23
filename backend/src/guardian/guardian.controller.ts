@@ -1,12 +1,20 @@
-import type { RequestWithUser } from './../auth/dto/payload';
+import { Role, type RequestWithUser } from './../auth/dto/payload';
 import {
+  ApiBadRequestResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
 import { guardianInfoDto } from './dto/guardianDto';
 import { GuardianService } from './guardian.service';
-import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Param,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { accessTokenAuthGuard } from 'src/auth/accessToken.auth.guard';
 
 @Controller('guardian')
@@ -42,10 +50,15 @@ export class GuardianController {
     description: 'guardian not found',
   })
   @UseGuards(accessTokenAuthGuard)
+  @ApiBadRequestResponse({
+    description:
+      "if you're not a guardian you can't fetch your guardian information",
+  })
   @Get('me')
   async getMyGuardianInfo(
     @Request() request: RequestWithUser,
   ): Promise<guardianInfoDto> {
+    if (request.user.role != Role.GUARDIAN) throw new BadRequestException();
     const guardianId: string = request.user.userId;
     return await this.guardianService.getGuardian(guardianId);
   }
