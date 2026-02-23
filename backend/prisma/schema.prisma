@@ -33,11 +33,23 @@ model Family {
   updatedAt      DateTime      @updatedAt
 }
 
+enum FoodConstraint {
+  NONE
+  NO_PORK
+  NO_MEAT
+  ALLERGY_OR_INTOLERANCE
+}
+
 model Child {
   id             String        @id                   @default(cuid())
 
   firstName      String
   lastName       String
+  birthDate      DateTime
+
+  allergies         Allergy[]
+  foodConstraint    FoodConstraint @default(NONE)
+  EmergencyContact  EmergencyContact[]
 
   families       Family[]
   slots          Slot[]
@@ -45,6 +57,25 @@ model Child {
 
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+}
+
+model EmergencyContact {
+  id             String        @id                   @default(cuid())
+
+  firstName      String
+  lastName       String
+
+  phoneNumber    String
+
+  child          Child        @relation(fields: [childId], references: [id], onDelete: Cascade)
+  childId        String
+}
+
+model Allergy {
+  id             String        @id                   @default(cuid())
+
+  child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
+  childId        String
 }
 
 enum QueueState {
@@ -86,6 +117,8 @@ model Periode {
 
   ageMin         Int
   ageMax         Int
+
+  capacity       Int
 
   firstDay       DateTime      @db.Date
   lastDay        DateTime      @db.Date
