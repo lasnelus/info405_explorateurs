@@ -33,8 +33,6 @@
                 hover:bg-primary/15
               "
               :style="{
-
-
                 '--tw-ring-color': 'var(--color-primary)'
               }" required />
           </div>
@@ -89,7 +87,7 @@
           </div>
 
           <button type="submit"
-            class="w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+            class="cursor-pointer w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
             Connexion
           </button>
@@ -102,7 +100,7 @@
           <p class="text-sm font-semibold tracking-wide" :style="{ 'color': 'var(--color-primary)' }">PAS DE COMPTE ?
           </p>
           <button @click="goToSignup"
-            class="w-full py-2.5 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+            class="cursor-pointer w-full py-2.5 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
             S'inscrire
           </button>
