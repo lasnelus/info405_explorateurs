@@ -17,9 +17,17 @@
       <div class="
         bg-primary-background
         rounded-2xl
-        shadow-lg p-10
+        drop-shadow-lg
+        drop-shadow-primary
+        p-10
+        transition duration-300
+        delay-500
+        hover:delay-0
+        hover:drop-shadow-secondary
+        hover:drop-shadow-xl
+        hover:scale-101
       " id="signUpBox" style="
-        box-shadow: 4px 4px 15px -8px var(--color-primary);
+        /* box-shadow: 4px 4px 15px -8px var(--color-primary); */
       ">
         <form @submit.prevent="handleSignup">
           <div class="mb-6 relative">
@@ -145,8 +153,13 @@
       <div class="
         bg-primary-background
         rounded-2xl
-        shadow-lg
         p-6
+        drop-shadow-md
+        drop-shadow-primary
+        transition duration-300
+        hover:drop-shadow-secondary
+        hover:drop-shadow-lg
+        hover:scale-101
       ">
         <div class="
           flex
