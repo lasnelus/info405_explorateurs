@@ -78,6 +78,7 @@
         </div>
       </section>
     </div>
+    
     <div class="max-w-4xl mx-auto px-6 py-12 bg-error rounded-lg shadow-lg mt-12">
       <!-- Contact Section -->
       <div class="bg-white rounded-lg shadow-lg p-8">
