@@ -1,21 +1,31 @@
 import { Role, type RequestWithUser } from './../auth/dto/payload';
 import {
   ApiBadRequestResponse,
+  ApiBody,
+  ApiConflictResponse,
+  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
-import { guardianInfoDto } from './dto/guardianDto';
+import {
+  guardianInfoDto,
+  registerGuardianCredentials,
+} from './dto/guardianDto';
 import { GuardianService } from './guardian.service';
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   Param,
+  Post,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { accessTokenAuthGuard } from 'src/auth/accessToken.auth.guard';
+import type { Response } from 'express';
 
 @Controller('guardian')
 export class GuardianController {
@@ -34,6 +44,27 @@ export class GuardianController {
   @Get('')
   async getAllGuardianInfo(): Promise<guardianInfoDto[]> {
     return await this.guardianService.getAllGuardians();
+  }
+
+  @ApiOperation({
+    summary: 'register new account',
+    description: 'Register a new guardian accounté',
+  })
+  @ApiBody({
+    type: registerGuardianCredentials,
+  })
+  @ApiCreatedResponse({
+    description: 'new account',
+  })
+  @ApiConflictResponse({
+    description: 'email already used',
+  })
+  @Post('')
+  async register(
+    @Body() registerBody: registerGuardianCredentials,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.guardianService.register(registerBody, response);
   }
 
   @ApiOperation({
