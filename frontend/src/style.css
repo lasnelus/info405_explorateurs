@@ -118,7 +118,7 @@ body {
 
 .dark {
   &.bleu {
-    --color-primary-background: #070E13;
+    --color-primary-background: #132835;
     --color-primary: #3A7CA5;
     --color-primary-light: #ECF4F8;
     --color-primary-100: #8BBBDA;
@@ -131,7 +131,7 @@ body {
   }
 
   &.vert {
-    --color-primary-background: #0A100E;
+    --color-primary-background: #1B2D27;
     --color-primary: #7FB3A2;
     --color-primary-light: #EFF5F3;
     --color-primary-100: #A8DADC;
@@ -144,7 +144,7 @@ body {
   }
 
   &.jaune {
-    --color-primary-background: #181202;
+    --color-primary-background: #423105;
     --color-primary: #F1C453;
     --color-primary-light: #FDF7E7;
     --color-primary-100: #FFD866;
@@ -157,7 +157,7 @@ body {
   }
 
   &.rouge {
-    --color-primary-background: #160804;
+    --color-primary-background: #3C160B;
     --color-primary: #E07A5F;
     --color-primary-light: #FBEDE9;
     --color-primary-100: #F4A261;
