@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CredentialsDto } from './dto/credentials.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { compare, hash } from 'bcrypt';
+import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Role, UserPayload } from './dto/payload';
 import { StringValue } from 'ms';
@@ -75,10 +75,6 @@ export class AuthService {
     ]);
 
     return manager ?? guardian;
-  }
-
-  private async hashPassword(password: string): Promise<string> {
-    return await hash(password, 10);
   }
 
   private async isPasswordValid(
