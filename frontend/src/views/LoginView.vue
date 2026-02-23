@@ -1,43 +1,73 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center p-6">
-    <div class="flex flex-col gap-6 w-full max-w-sm">
+  <div class="
+    h-screen
+    flex
+    justify-center
+    items-center
+    p-6
+  ">
+    <div class="
+      flex
+      flex-col
+      gap-6
+      w-full
+      max-w-sm
+    ">
       <!-- Formulaire de connexion -->
       <div class="
-      bg-primary-background
-      rounded-2xl
-      shadow-lg p-10
+        bg-primary-background
+        rounded-2xl
+        shadow-lg p-10
       ">
         <form @submit.prevent="handleLogin">
           <div class="mb-6">
-            <input type="text" v-model="username" placeholder="USR NAME"
+            <input type="text" v-model="username" placeholder="IDENTIFIANT"
               class="
                 w-full
                 px-4 py-3.5
-                rounded-lg
-                font-semibold text-sm text-gray-800 uppercase placeholder:text-gray-500
-                focus:outline-none transition-all
-                bg-secondary-light
+                rounded-lg outline-2 outline-primary
+                font-semibold text-sm text-text uppercase placeholder:text-gray-500
+                focus:outline-secondary transition-all
+                focus:bg-primary/5
+                hover:outline-secondary
+                hover:bg-primary/15
               "
               :style="{
+
+
                 '--tw-ring-color': 'var(--color-primary)'
               }" required />
           </div>
 
           <div class="mb-6 relative">
-            <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="PSW"
+            <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="MDP"
               class="
-              w-full
-              px-4 py-3.5
-              rounded-lg
-              font-semibold text-sm text-gray-800 uppercase placeholder:text-gray-500
-              focus:outline-none transition-all
-              bg-secondary-light
+                w-full
+                px-4 py-3.5
+                rounded-lg outline-2 outline-primary
+                font-semibold text-sm text-text uppercase placeholder:text-gray-500
+                focus:outline-secondary transition-all
+                focus:bg-primary/5
+                hover:outline-secondary
+                hover:bg-primary/15
               "
               :style="{
                 '--tw-ring-color': 'var(--color-primary)'
               }" required />
-            <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 p-2 rounded"
-              :style="{ 'color': 'var(--color-primary)' }" @click="showPassword = !showPassword">
+            <button type="button" class="
+              absolute
+              right-4
+              top-1/2
+              -translate-y-1/2
+              text-gray-500
+              p-2
+              rounded
+              color-primary
+              hover:color-secondary
+              focus:color-secondary
+              cursor-pointer
+            "
+              @click="showPassword = !showPassword">
               <svg v-if="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />

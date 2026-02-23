@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen">
-    <div class="relative h-96 text-black overflow-hidden">
+    <div class="relative h-96 overflow-hidden">
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="text-center px-6">
           <p class="text-lg md:text-xl max-w-2xl mx-auto">
@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div class="max-w-4xl mx-auto px-6 py-12 bg-grey-100 rounded-lg shadow-lg">
+    <div class="max-w-4xl mx-auto px-6 py-12 bg-grey-100 rounded-lg shadow-lg shadow-primary/15">
       <!-- Agenda Section -->
       <section class="mb-12">
         <h2 class="color-primary text-3xl font-bold mb-8">Agenda des activités</h2>
@@ -38,8 +38,13 @@
         <!-- Schedule Cards -->
         <div class="space-y-4">
           <!-- Lundi -->
-          <div class="bg-white rounded-lg p-6 shadow-md">
-            <h3 class="font-bold mb-3 text-lg color-primary">Lundi</h3>
+          <div class="
+            bg-primary-background
+            rounded-lg
+            p-6
+            shadow-md shadow-primary/15
+          ">
+            <h3 class="font-bold mb-3 text-lg color-primary shadow-2xl">Lundi</h3>
             <div class="space-y-2">
               <div class="h-3 rounded bg-primary" style="width: 40%"></div>
               <div class="h-3 rounded bg-secondary" style="width: 60%"></div>
@@ -48,7 +53,12 @@
           </div>
 
           <!-- Mardi -->
-          <div class="bg-white rounded-lg p-6 shadow-md">
+          <div class="
+            bg-primary-background
+            rounded-lg
+            p-6
+            shadow-md shadow-primary/15
+          ">
             <h3 class="font-bold mb-3 text-lg color-primary">Mardi</h3>
             <div class="space-y-2">
               <div class="h-3 rounded bg-primary" style="width: 50%"></div>
@@ -59,7 +69,12 @@
           </div>
 
           <!-- Mercredi -->
-          <div class="bg-white rounded-lg p-6 shadow-md">
+          <div class="
+            bg-primary-background
+            rounded-lg
+            p-6
+            shadow-md shadow-primary/15
+          ">
             <h3 class="font-bold mb-3 text-lg color-primary">Mercredi</h3>
             <div class="space-y-2">
               <div class="h-3 rounded bg-primary" style="width: 65%"></div>
@@ -69,7 +84,12 @@
           </div>
 
           <!-- Jeudi -->
-          <div class="bg-white rounded-lg p-6 shadow-md">
+          <div class="
+            bg-primary-background
+            rounded-lg
+            p-6
+            shadow-md shadow-primary/15
+          ">
             <h3 class="font-bold mb-3 text-lg color-primary">Jeudi</h3>
             <div class="space-y-2">
               <div class="h-3 rounded bg-primary" style="width: 35%"></div>
@@ -78,10 +98,10 @@
         </div>
       </section>
     </div>
-    
-    <div class="max-w-4xl mx-auto px-6 py-12 bg-error rounded-lg shadow-lg mt-12">
+
+    <div class="max-w-4xl mx-auto px-6 py-12 bg-secondary rounded-lg shadow-lg mt-12">
       <!-- Contact Section -->
-      <div class="bg-white rounded-lg shadow-lg p-8">
+      <div class="bg-primary rounded-lg shadow-lg p-8">
         <h2 class="text-2xl font-bold mb-6 color-primary">Nous contacter</h2>
 
         <div class="space-y-6">
