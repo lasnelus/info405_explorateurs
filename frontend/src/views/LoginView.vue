@@ -24,18 +24,19 @@
             {{ error }}
           </div>
 
+
           <div class="mb-6">
+            <input type="email" v-model="email" placeholder="EMAIL"
             <input type="email" v-model="email" placeholder="EMAIL"
               :disabled="isLoading"
               class="
                 w-full
                 px-4 py-3.5
-                rounded-lg outline-2 outline-primary
-                font-semibold text-sm text-text uppercase placeholder:text-gray-500
-                focus:outline-secondary transition-all
-                focus:bg-primary/5
-                hover:outline-secondary
-                hover:bg-primary/15
+                rounded-lg
+                font-semibold text-sm text-gray-800 placeholder:text-gray-500
+                focus:outline-none transition-all
+                bg-secondary-light
+                disabled:opacity-50 disabled:cursor-not-allowed
               "
               :style="{
                 '--tw-ring-color': 'var(--color-primary)'
@@ -125,6 +126,7 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const auth = useAuthStore()
 const email = ref('')
+const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const isLoading = ref(false)
@@ -134,11 +136,15 @@ const handleLogin = async () => {
   isLoading.value = true
   error.value = ''
 
+
   try {
+    const response = await login(email.value, password.value)
     const response = await login(email.value, password.value)
     const accessToken = response.data.accessToken
 
+
     auth.setAccessToken(accessToken)
+
 
     router.push('/')
   } catch (err) {
