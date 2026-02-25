@@ -1,10 +1,13 @@
-import axios from "axios"
-import type { AxiosError, InternalAxiosRequestConfig } from "axios"
+import axios, {
+    type AxiosError,
+    type AxiosRequestConfig,
+    type InternalAxiosRequestConfig,
+} from 'axios'
 import { useAuthStore } from "@/stores/auth"
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
+    baseURL: import.meta.env.VITE_API_URL,
+    withCredentials: true,
 })
 
 /* ===== Intercepteur REQUEST ===== */
@@ -13,7 +16,7 @@ api.interceptors.request.use(
     const auth = useAuthStore()
 
     if (auth.accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${auth.accessToken}`
+        config.headers.Authorization = `Bearer ${auth.accessToken}`
     }
 
     return config
@@ -23,34 +26,53 @@ api.interceptors.request.use(
 
 /* ===== Intercepteur RESPONSE ===== */
 api.interceptors.response.use(
-  response => response,
-  async (error: AxiosError) => {
-    const auth = useAuthStore()
-    const originalRequest: any = error.config
+    response => response,
+    async (error: AxiosError) => {
+        const auth = useAuthStore()
+        const originalRequest = error.config as
+            | (AxiosRequestConfig & { _retry?: boolean })
+            | undefined
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
+        // don't try to refresh or redirect when the failed request is
+        // itself a login/refresh call – the login component wants to
+        // handle its own errors.
+        if (
+            originalRequest?.url?.includes('/auth/login') ||
+            originalRequest?.url?.includes('/auth/refresh')
+        ) {
+            return Promise.reject(error)
+        }
 
-      try {
-        const refreshResponse = await axios.post(
-          `${import.meta.env.VITE_API_URL}/auth/refresh`,
-          {},
-          { withCredentials: true }
-        )
+        if (
+            originalRequest &&
+            error.response?.status === 401 &&
+            !originalRequest._retry
+        ) {
+            originalRequest._retry = true
 
-        const newAccessToken = refreshResponse.data.accessToken
-        auth.setAccessToken(newAccessToken)
+            try {
+                const refreshResponse = await axios.post(
+                    `${import.meta.env.VITE_API_URL}/auth/refresh`,
+                    {},
+                    { withCredentials: true }
+                )
 
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
-        return api(originalRequest)
-      } catch {
-        auth.clearAccessToken()
-        window.location.href = "/"
-      }
+                const newAccessToken = refreshResponse.data.accessToken
+                auth.setAccessToken(newAccessToken)
+
+                if (!originalRequest.headers) {
+                    originalRequest.headers = {}
+                }
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+                return api(originalRequest)
+            } catch {
+                auth.clearAccessToken()
+                window.location.href = "/"
+            }
+        }
+
+        return Promise.reject(error)
     }
-
-    return Promise.reject(error)
-  }
 )
 
 export default api
