@@ -25,7 +25,8 @@
           </div>
 
           <div class="mb-6">
-            <input type="text" v-model="username" placeholder="IDENTIFIANT"
+            <input type="email" v-model="email" placeholder="EMAIL"
+              :disabled="isLoading"
               class="
                 w-full
                 px-4 py-3.5
@@ -125,7 +126,7 @@ import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const auth = useAuthStore()
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const isLoading = ref(false)
@@ -136,7 +137,7 @@ const handleLogin = async () => {
   error.value = ''
 
   try {
-    const response = await login(username.value, password.value)
+    const response = await login(email.value, password.value)
     const accessToken = response.data.accessToken
 
     auth.setAccessToken(accessToken)
