@@ -24,7 +24,13 @@
             {{ error }}
           </div>
 
+          <div v-if="error" class="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+            {{ error }}
+          </div>
+
           <div class="mb-6">
+            <input type="email" v-model="email" placeholder="EMAIL"
+              :disabled="isLoading"
             <input type="email" v-model="email" placeholder="EMAIL"
               :disabled="isLoading"
               class="
@@ -96,7 +102,10 @@
           <button type="submit"
             :disabled="isLoading"
             class="w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0"
+            :disabled="isLoading"
+            class="w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0"
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
+            {{ isLoading ? 'Connexion...' : 'Connexion' }}
             {{ isLoading ? 'Connexion...' : 'Connexion' }}
           </button>
         </form>
@@ -123,12 +132,36 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '@/services/authServices'
 import { useAuthStore } from '@/stores/auth'
+import { login } from '@/services/authServices'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const auth = useAuthStore()
 const email = ref('')
+const auth = useAuthStore()
+const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
+const isLoading = ref(false)
+const error = ref('')
+
+const handleLogin = async () => {
+  isLoading.value = true
+  error.value = ''
+
+  try {
+    const response = await login(email.value, password.value)
+    const accessToken = response.data.accessToken
+
+    auth.setAccessToken(accessToken)
+
+    router.push('/')
+  } catch (err) {
+    error.value = 'Identifiants invalides. Veuillez réessayer.'
+    console.error('Erreur de connexion:', err)
+  } finally {
+    isLoading.value = false
+  }
 const isLoading = ref(false)
 const error = ref('')
 
