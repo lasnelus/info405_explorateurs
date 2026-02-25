@@ -59,7 +59,7 @@
 
           <button type="submit"
             :disabled="isLoading"
-            class="w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0"
+            class="cursor-pointer w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0"
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
             {{ isLoading ? 'Connexion...' : 'Connexion' }}
           </button>
@@ -72,7 +72,7 @@
           <p class="text-sm font-semibold tracking-wide" :style="{ 'color': 'var(--color-primary)' }">PAS DE COMPTE ?
           </p>
           <button @click="goToSignup"
-            class="w-full py-2.5 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+            class="cursor-pointer w-full py-2.5 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
             S'inscrire
           </button>
