@@ -11,15 +11,15 @@
           <div v-if="error" class="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
             {{ error }}
           </div>
-          
+
           <div class="mb-6">
-            <input type="text" v-model="username" placeholder="USR NAME"
+            <input type="email" v-model="email" placeholder="EMAIL"
               :disabled="isLoading"
               class="
                 w-full
                 px-4 py-3.5
                 rounded-lg
-                font-semibold text-sm text-gray-800 uppercase placeholder:text-gray-500
+                font-semibold text-sm text-gray-800 placeholder:text-gray-500
                 focus:outline-none transition-all
                 bg-secondary-light
                 disabled:opacity-50 disabled:cursor-not-allowed
@@ -99,7 +99,7 @@ import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const auth = useAuthStore()
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const isLoading = ref(false)
@@ -108,13 +108,13 @@ const error = ref('')
 const handleLogin = async () => {
   isLoading.value = true
   error.value = ''
-  
+
   try {
-    const response = await login(username.value, password.value)
+    const response = await login(email.value, password.value)
     const accessToken = response.data.accessToken
-    
+
     auth.setAccessToken(accessToken)
-    
+
     router.push('/')
   } catch (err) {
     error.value = 'Identifiants invalides. Veuillez réessayer.'
