@@ -21,7 +21,7 @@
       ">
         <form @submit.prevent="handleLogin">
           <div class="mb-6">
-            <input type="text" v-model="username" placeholder="IDENTIFIANT"
+            <input type="email" v-model="email" placeholder="EMAIL"
               class="
                 w-full
                 px-4 py-3.5
@@ -91,6 +91,9 @@
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
             Connexion
           </button>
+          <div v-if="error" class="text-red-500 mb-4 text-center">
+            {{ error }}
+          </div>
         </form>
       </div>
 
@@ -113,14 +116,34 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { login } from '@/services/authServices'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
+const error = ref('')
+const auth = useAuthStore()
 
-const handleLogin = () => {
-  console.log('Connexion:', { username: username.value, password: password.value })
+const handleLogin = async () => {
+  error.value = ''
+  if (!email.value || !password.value) {
+    error.value = 'Email et mot de passe requis'
+    return
+  }
+  try {
+    const response = await login(email.value, password.value)
+    const token = response.data.accessToken
+    auth.setAccessToken(token)
+    router.push('/family-dashboard')
+  } catch (e: any) {
+    // log server response if available
+    console.error('Login error', e.response?.data || e)
+    error.value =
+      e.response?.data?.message ||
+      'Identifiants invalides'
+  }
 }
 
 const handleForgotPassword = () => {
