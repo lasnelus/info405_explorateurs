@@ -31,22 +31,28 @@
       ">
         <form @submit.prevent="handleSignup">
           <div class="mb-6 relative">
-            <input type="text" id="UserName" name="UserName" placeholder="IDENTIFIANT"
-              v-model="username"
-              class="
-                w-full
-                px-4 py-3.5
-                rounded-lg outline-2 outline-primary
-                font-semibold text-sm text-text uppercase
-                focus:outline-secondary transition-all
-                focus:bg-primary/5
-                hover:outline-secondary
-                hover:bg-primary/15 "/>
+            <input
+              type="text"
+              placeholder="PRÉNOM"
+              v-model="firstName"
+              class="w-full px-4 py-3.5 rounded-lg outline-2 outline-primary font-semibold text-sm text-text uppercase focus:outline-secondary transition-all focus:bg-primary/5 hover:outline-secondary hover:bg-primary/15"
+              required
+            />
           </div>
 
           <div class="mb-6 relative">
-            <input type="text" id="EMail" name="EMail" placeholder="EMAIL"
-              v-model="mail"
+            <input
+              type="text"
+              placeholder="NOM"
+              v-model="lastName"
+              class="w-full px-4 py-3.5 rounded-lg outline-2 outline-primary font-semibold text-sm text-text uppercase focus:outline-secondary transition-all focus:bg-primary/5 hover:outline-secondary hover:bg-primary/15"
+              required
+            />
+          </div>
+
+          <div class="mb-6 relative">
+            <input type="email" id="EMail" name="EMail" placeholder="EMAIL"
+              v-model="email"
               class="
                 w-full
                 px-4 py-3.5
@@ -146,6 +152,9 @@
               :style="{ 'backgroundColor': 'var(--color-primary)' }">
             S'inscrire
           </button>
+          <div v-if="error" class="text-red-500 mt-4 text-center">
+            {{ error }}
+          </div>
         </form>
       </div>
 
@@ -187,21 +196,55 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { signup } from '@/services/authServices'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const auth = useAuthStore()
 
-const username = ref('')
-
-const mail = ref('')
-
+const firstName = ref('')
+const lastName = ref('')
+const email = ref('')
 const password = ref('')
-const showPassword = ref(false)
-
 const passwordConfirm = ref('')
+
+const showPassword = ref(false)
 const showPasswordConfirm = ref(false)
 
-const handleSignup = () => {
-  console.log('Creation compte:', {username: username.value, mail: mail.value, password: password.value, passwordConfirm: passwordConfirm.value })
+const error = ref('')
+
+const handleSignup = async () => {
+  error.value = ''
+
+  if (!firstName.value || !lastName.value || !email.value || !password.value || !passwordConfirm.value) {
+    error.value = 'Tous les champs sont requis'
+    return
+  }
+
+  if (password.value !== passwordConfirm.value) {
+    error.value = 'Les mots de passe ne correspondent pas'
+    return
+  }
+
+  try {
+    const response = await signup(
+      email.value,
+      password.value,
+      firstName.value,
+      lastName.value
+    )
+
+    const token = response.data.accessToken
+    auth.setAccessToken(token)
+
+    router.push('/family-dashboard')
+
+  } catch (e: any) {
+    console.error('Signup error', e.response?.data || e)
+    error.value =
+      e.response?.data?.message ||
+      'Erreur lors de la création du compte'
+  }
 }
 
 const goTologin = () => {
