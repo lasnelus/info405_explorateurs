@@ -108,7 +108,7 @@ api.interceptors.response.use(
                 onRefreshFailed()
                 isRefreshing = false
                 auth.clearAccessToken()
-                window.location.href = "/"
+                window.location.href = "/login"
                 return Promise.reject(refreshError)
             }
         }
