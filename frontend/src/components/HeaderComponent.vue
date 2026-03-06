@@ -1,7 +1,7 @@
 <template>
   <header class="bg-primary text-black shadow-lg sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      
+
       <!-- LOGO -->
       <router-link to="/" class="flex items-center cursor-pointer">
         <img src="../assets/logoexplorateurV2.1.png" class="h-16 w-auto object-contain" alt="Logo" />
@@ -12,9 +12,9 @@
         @click="toggleMenu"
         class="flex flex-col gap-1 w-8"
       >
-        <span class="h-1 bg-black rounded"></span>
-        <span class="h-1 bg-black rounded"></span>
-        <span class="h-1 bg-black rounded"></span>
+        <span class="h-1 bg-secondary rounded"></span>
+        <span class="h-1 bg-secondary rounded"></span>
+        <span class="h-1 bg-secondary rounded"></span>
       </button>
     </div>
   </header>
@@ -22,13 +22,23 @@
   <!-- OVERLAY -->
   <div
     v-if="menuOpen"
-    class="fixed inset-0 bg-black/30 z-40"
+    class="fixed inset-0 bg-black/30 z-40 transition-all duration-300 "
     @click="closeMenu"
   ></div>
 
   <!-- MENU LATÉRAL -->
   <aside
-    class="fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300"
+    class="
+    fixed top-0
+    right-0
+    h-full
+    w-64
+    bg-primary-background
+    shadow-xl
+    z-50
+    transform
+    transition-transform
+    duration-300"
     :class="menuOpen ? 'translate-x-0' : 'translate-x-full'"
   >
     <div class="p-6 flex flex-col gap-6 h-full">
