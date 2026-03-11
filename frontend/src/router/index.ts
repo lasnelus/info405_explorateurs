@@ -27,6 +27,11 @@ const router = createRouter({
       path: '/family-dashboard',
       name: 'family-dashboard',
       component: () => import('../views/FamilyDashBoardView.vue')
+    },
+    {
+      path: '/inscription',
+      name: 'inscription',
+      component: () => import('../views/ChildRegistration.vue')
     }
   ],
 })

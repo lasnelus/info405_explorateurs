@@ -52,7 +52,6 @@
     :class="menuOpen ? 'translate-x-0' : 'translate-x-full'"
   >
     <div class="p-6 flex flex-col gap-6 h-full">
-
       <nav class="flex flex-col gap-4 font-semibold text-lg">
         <router-link to="/family-dashboard" @click="closeMenu">Ma famille</router-link>
         <router-link to="/" @click="closeMenu">lorem ipsum</router-link>
