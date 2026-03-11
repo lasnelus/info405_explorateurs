@@ -7,8 +7,9 @@
         <img src="../assets/logoexplorateurV2.1.png" class="h-16 w-auto object-contain" alt="Logo" />
       </router-link>
 
-      <!-- BOUTON BURGER -->
+      <!-- BOUTON BURGER SI CONNECTÉ -->
       <button
+        v-if="isLoggedIn"
         @click="toggleMenu"
         class="flex flex-col gap-1 w-8"
       >
@@ -16,6 +17,15 @@
         <span class="h-1 bg-secondary rounded"></span>
         <span class="h-1 bg-secondary rounded"></span>
       </button>
+
+      <!-- BOUTON LOGIN SI PAS CONNECTÉ -->
+      <router-link
+        v-else
+        to="/login"
+        class="bg-green-secondary px-5 py-2 rounded-full font-semibold"
+      >
+        Connexion
+      </router-link>
     </div>
   </header>
 
@@ -48,26 +58,34 @@
         <router-link to="/" @click="closeMenu">lorem ipsum</router-link>
         <router-link to="/" @click="closeMenu">lorem ipsum</router-link>
         <router-link to="/" @click="closeMenu">Inscrire un enfant</router-link>
-      </nav>
 
-      <div class="mt-auto">
-        <router-link
-          to="/login"
-          class="block text-center bg-green-secondary py-3 rounded-full font-semibold"
-          @click="closeMenu"
-        >
-          Connexion
-        </router-link>
-      </div>
+        <div class="mt-auto">
+          <button
+            @click="logout"
+            class="block w-full text-center bg-red-500 text-white py-3 rounded-full font-semibold"
+          >
+            Déconnexion
+          </button>
+        </div>
+      </nav>
 
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed } from "vue"
+import { useRouter } from "vue-router"
+import { useAuthStore } from "@/stores/auth"
+
+const router = useRouter()
+const auth = useAuthStore()
 
 const menuOpen = ref(false)
+
+const isLoggedIn = computed(() => {
+  return !!auth.accessToken
+})
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
@@ -75,5 +93,11 @@ function toggleMenu() {
 
 function closeMenu() {
   menuOpen.value = false
+}
+
+function logout() {
+  auth.clearAccessToken()
+  closeMenu()
+  router.push("/login")
 }
 </script>
