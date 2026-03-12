@@ -78,6 +78,9 @@
 import { ref, onMounted, computed } from "vue"
 import { getProfile, type Guardian, type Family } from "@/services/guardianService"
 import { useRouter } from "vue-router"
+import { useAuthStore } from "@/stores/auth"
+
+const auth = useAuthStore()
 
 const router = useRouter()
 
@@ -93,11 +96,18 @@ const fetchGuardian = async () => {
   } catch (e) {
     error.value = "Impossible de charger les données"
     console.error(e)
-  } finally {
   }
 }
 
-onMounted(fetchGuardian)
+const profile = JSON.parse(auth.profile)
+
+onMounted(async () =>{
+  if(profile){
+    await fetchGuardian()
+  } else {
+    router.push('/login')
+  }
+})
 
 const allUpcomingActivities = computed(() => {
   return families.value.flatMap(family =>
