@@ -34,8 +34,8 @@ const router = createRouter({
       component: () => import('../views/ChildRegistration.vue')
     },
     {
-      path: '/family-jsp',
-      name: 'la famille',
+      path: '/family',
+      name: 'famille',
       component: () => import('../views/familySpecific.vue')
     }
   ],

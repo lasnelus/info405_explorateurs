@@ -16,6 +16,11 @@
 import { ref, onMounted } from "vue"
 import { getFamily} from "@/services/familyServices"
 import { useAuthStore } from "@/stores/auth"
+import { useRoute } from "vue-router"
+
+const route = useRoute()
+
+const familyId = route.query.familyId
 
 const auth = useAuthStore()
 
@@ -24,7 +29,7 @@ const profile = JSON.parse(auth.profile)
 const family = ref(null)
 
 onMounted(async () => {
-  const res = await getFamily("cmmnia7ep000098m2fa7xzd16")
+  const res = await getFamily(familyId)
   family.value = res.data
 })
 </script>
