@@ -1,5 +1,15 @@
 <template>
-  <div class="max-w-4xl mx-auto px-6 py-12 bg-grey-100 rounded-lg shadow-lg shadow-primary/15">
+  <div class="
+    max-w-4xl
+    mx-auto
+    px-6
+    py-12
+
+    bg-primary/10
+    rounded-lg
+    shadow-lg
+    shadow-primary/15
+    ">
     <h2 class="color-primary text-3xl font-bold mb-8">
       Agenda des activités
     </h2>
@@ -11,7 +21,7 @@
           type="week"
           v-model="selectedWeek"
           class="border-secondary w-full px-4 py-2 border rounded-lg"
-        />
+        /> <!-- TODO : Fix la hauteur pour correspondre au select en dessous  -->
       </div>
       <div>
         <label class="color-primary block text-sm font-semibold mb-2">Groupe</label>
@@ -25,6 +35,7 @@
         </select>
       </div>
     </div>
+
     <!-- Days -->
     <div class="space-y-4">
       <div
@@ -40,16 +51,37 @@
             <div
               v-for="(activity,i) in getActivities(day)"
               :key="i"
-              class="p-4 rounded-lg bg-white border border-gray-200"
+              class="
+                p-4
+                rounded-lg
+                bg-primary-100/25
+
+                shadow-md
+                shadow-primary/15
+              "
             >
-              <h4 class="font-semibold text-gray-800">
+              <h4 class="font-semibold text-text">
                 {{ activity.title }}
               </h4>
-              <p class="text-sm text-gray-600 mt-1">
+              <p class="text-sm text-text/50 my-1 mt-0.5">
                 {{ activity.description }}
               </p>
               <button
-                class="btn-register"
+                class="
+                  btn-register
+                  cursor-pointer
+
+                  bg-primary
+                  text-primary-light
+
+                  px-2
+                  my-0.5
+                  rounded-2xl
+
+                  hover:scale-105
+                  hover:shadow-md
+                  hover:shadow-primary-100/15
+                  duration-300"
                 @click="goToRegistration(activity)"
               >
                 Inscrire un enfant

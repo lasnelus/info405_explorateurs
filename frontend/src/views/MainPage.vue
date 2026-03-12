@@ -10,115 +10,50 @@
       </div>
     </div>
 
-<<<<<<< HEAD
     <WeeklySchedule />
-=======
-    <div class="max-w-4xl mx-auto px-6 py-12 bg-grey-100 rounded-lg shadow-lg shadow-primary/15">
-      <!-- Agenda Section -->
-      <section class="mb-12">
-        <h2 class="color-primary text-3xl font-bold mb-8">Agenda des activités</h2>
 
-        <!-- Filters -->
-        <div class="grid grid-cols-2 gap-4 mb-8">
-          <div>
-            <label class="color-primary block text-sm font-semibold mb-2">Âge</label>
-            <select class="border-secondary w-full px-4 py-2 border rounded-lg">
-              <option>8-12</option>
-              <option>13-17</option>
-              <option>18+</option>
-            </select>
-          </div>
-          <div>
-            <label class="color-primary block text-sm font-semibold mb-2">Semaine</label>
-            <select class="border-secondaryw-full px-4 py-2 border rounded-lg">
-              <option>01/02/25</option>
-              <option>08/02/25</option>
-              <option>15/02/25</option>
-            </select>
-          </div>
-        </div>
+    <div class="
+      max-w-4xl
 
-        <!-- Schedule Cards -->
-        <div class="space-y-4">
-          <!-- Lundi -->
-          <div class="
-            bg-primary-background
-            rounded-lg
-            p-6
-            shadow-md shadow-primary/15
-          ">
-            <h3 class="font-bold mb-3 text-lg color-primary shadow-2xl">Lundi</h3>
-            <div class="space-y-2">
-              <div class="h-3 rounded bg-primary" style="width: 40%"></div>
-              <div class="h-3 rounded bg-secondary" style="width: 60%"></div>
-              <div class="h-3 rounded bg-primary" style="width: 30%"></div>
-            </div>
-          </div>
+      mx-auto
+      mt-12
+      px-6
+      py-12
 
-          <!-- Mardi -->
-          <div class="
-            bg-primary-background
-            rounded-lg
-            p-6
-            shadow-md shadow-primary/15
-          ">
-            <h3 class="font-bold mb-3 text-lg color-primary">Mardi</h3>
-            <div class="space-y-2">
-              <div class="h-3 rounded bg-primary" style="width: 50%"></div>
-              <div class="h-3 rounded bg-secondary" style="width: 75%"></div>
-              <div class="h-3 rounded bg-primary" style="width: 55%"></div>
-              <div class="h-3 rounded bg-secondary" style="width: 80%"></div>
-            </div>
-          </div>
+      bg-primary/10
+      shadow-lg
+      shadow-primary/15
 
-          <!-- Mercredi -->
-          <div class="
-            bg-primary-background
-            rounded-lg
-            p-6
-            shadow-md shadow-primary/15
-          ">
-            <h3 class="font-bold mb-3 text-lg color-primary">Mercredi</h3>
-            <div class="space-y-2">
-              <div class="h-3 rounded bg-primary" style="width: 65%"></div>
-              <div class="h-3 rounded bg-secondary" style="width: 45%"></div>
-              <div class="h-3 rounded bg-primary" style="width: 70%"></div>
-            </div>
-          </div>
-
-          <!-- Jeudi -->
-          <div class="
-            bg-primary-background
-            rounded-lg
-            p-6
-            shadow-md shadow-primary/15
-          ">
-            <h3 class="font-bold mb-3 text-lg color-primary">Jeudi</h3>
-            <div class="space-y-2">
-              <div class="h-3 rounded bg-primary" style="width: 35%"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
->>>>>>> 5b0395287185bf16c6b852c5509cda54742406fc
-
-    <div class="max-w-4xl mx-auto px-6 py-12 bg-secondary rounded-lg shadow-lg mt-12">
+      rounded-lg
+      ">
       <!-- Contact Section -->
-      <div class="bg-primary rounded-lg shadow-lg p-8">
-        <h2 class="text-2xl font-bold mb-6 color-primary">Nous contacter</h2>
+      <div class="
+        bg-primary-background
+        rounded-lg
+        shadow-lg
+        shadow-primary/15
+        p-8
+        ">
+        <h2 class="
+          text-2xl
+          font-bold
+          mb-6
+          color-primary
+        ">
+          Nous contacter
+        </h2>
 
         <div class="space-y-6">
           <!-- Address -->
           <div>
             <h3 class="font-semibold mb-2 color-primary">Adresse physique</h3>
-            <p class="text-gray-700">CPostal Commune</p>
+            <p class="text-text/50">CPostal Commune</p>
           </div>
 
           <!-- Hours -->
           <div>
             <h3 class="font-semibold mb-2 color-primary">Horaires</h3>
-            <ul class="text-gray-700 space-y-1">
+            <ul class="text-text/50 space-y-1">
               <li>lundi - 8h/18h</li>
               <li>mardi - 8h/18h</li>
               <li>mercredi - 8h/18h</li>
@@ -130,8 +65,25 @@
           <!-- Phone -->
           <div>
             <h3 class="font-semibold mb-2 color-primary">Contact</h3>
-            <p class="text-gray-700">random@explorateurs-explorateurs.fr</p>
-            <p class="text-gray-700">01 - 72 - 45 - 92 - 50</p>
+            <p class="
+              text-text/50
+            ">
+              <a
+              class="
+                underline
+                underline-offset-1
+                decoration-2
+                decoration-primary/50
+
+                hover:text-primary
+                hover:decoration-primary
+                duration-300
+              "
+              href="mailto:random@explorateurs-explorateurs.fr">
+                random@explorateurs-explorateurs.fr
+              </a>
+            </p>
+            <p class="text-text/50">01 - 72 - 45 - 92 - 50</p> <!-- TODO "click to copy" -->
           </div>
         </div>
       </div>
@@ -140,10 +92,7 @@
 </template>
 
 <script setup lang="ts">
-<<<<<<< HEAD
 import WeeklySchedule from "@/components/WeeklySchedule.vue"
-=======
->>>>>>> 5b0395287185bf16c6b852c5509cda54742406fc
 </script>
 
 <style scoped>
