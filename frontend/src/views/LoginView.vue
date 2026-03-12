@@ -21,7 +21,11 @@
       ">
         <form @submit.prevent="handleLogin">
           <div class="mb-6">
+<<<<<<< HEAD
             <input type="email" v-model="email" placeholder="EMAIL"
+=======
+            <input type="text" v-model="username" placeholder="IDENTIFIANT"
+>>>>>>> 5b0395287185bf16c6b852c5509cda54742406fc
               class="
                 w-full
                 px-4 py-3.5
@@ -33,6 +37,11 @@
                 hover:bg-primary/15
               "
               :style="{
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 5b0395287185bf16c6b852c5509cda54742406fc
                 '--tw-ring-color': 'var(--color-primary)'
               }" required />
           </div>
@@ -87,6 +96,7 @@
           </div>
 
           <button type="submit"
+<<<<<<< HEAD
             class="cursor-pointer w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
             Connexion
@@ -94,6 +104,12 @@
           <div v-if="error" class="text-red-500 mb-4 text-center">
             {{ error }}
           </div>
+=======
+            class="w-full py-3 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+            :style="{ 'backgroundColor': 'var(--color-primary)' }">
+            Connexion
+          </button>
+>>>>>>> 5b0395287185bf16c6b852c5509cda54742406fc
         </form>
       </div>
 
@@ -103,7 +119,11 @@
           <p class="text-sm font-semibold tracking-wide" :style="{ 'color': 'var(--color-primary)' }">PAS DE COMPTE ?
           </p>
           <button @click="goToSignup"
+<<<<<<< HEAD
             class="cursor-pointer w-full py-2.5 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+=======
+            class="w-full py-2.5 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+>>>>>>> 5b0395287185bf16c6b852c5509cda54742406fc
             :style="{ 'backgroundColor': 'var(--color-primary)' }">
             S'inscrire
           </button>
@@ -142,7 +162,7 @@ const handleLogin = async () => {
     const profile = profileResponse.data
 
     auth.setProfile(profile)
-    
+
     router.push('/family-dashboard')
   } catch (e: any) {
     // log server response if available
