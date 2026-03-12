@@ -4,12 +4,15 @@
       {{ family?.name }}
     </p>
   </div>
-  <div v-for="child in family?.children" :key="child.id">
+  <div v-for="guardian in family?.guardians" :key="guardian.id">
+    {{ guardian.firstName }} {{ guardian.lastName }}
+  </div>
+  <div v-for="child in family?.childs" :key="child.id">
     {{ child.firstName }} {{ child.lastName }}
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
 // cmmnia7ep000098m2fa7xzd16
 
