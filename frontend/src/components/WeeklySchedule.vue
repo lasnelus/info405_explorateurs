@@ -20,15 +20,26 @@
         <input
           type="week"
           v-model="selectedWeek"
-          class="border-secondary w-full px-4 py-2 border rounded-lg"
-        /> <!-- TODO : Fix la hauteur pour correspondre au select en dessous  -->
+          class="border-secondary w-full h-10 px-4 py-2 border rounded-lg"
+        />
       </div>
       <div>
         <label class="color-primary block text-sm font-semibold mb-2">Groupe</label>
         <select
           v-model="selectedGroup"
-          class="border-secondary w-full px-4 py-2 border rounded-lg"
-        >
+          class="
+            w-full
+
+            px-4
+            py-2
+
+            h-10
+
+            border
+            border-secondary
+
+            rounded-lg
+          ">
           <option v-for="group in groups" :key="group">
             {{ group }}
           </option>
