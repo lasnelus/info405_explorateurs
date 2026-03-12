@@ -39,16 +39,33 @@ export class guardianInfoDto {
     example: '2026-01-28T13:44:34.479Z',
   })
   updatedAt: Date;
+
+  @ApiProperty({ type: () => [FamilyGuardianDto] })
+  families: FamilyGuardianDto[];
+}
+
+class FamilyGuardianDto {
   @ApiProperty({
-    description: "guardian's families",
-    example: [],
+    description: 'primary key',
+    example: 'cmkv7yhjs0000hwjmuo9c1c2h',
   })
-  families: {
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    name: string;
-  }[];
+  id: string;
+
+  @ApiProperty({
+    description: "family's name",
+    example: 'MALABRE',
+  })
+  name: string;
+  @ApiProperty({
+    description: "family's creation date",
+    example: '2026-01-26T13:44:34.479Z',
+  })
+  createdAt: Date;
+  @ApiProperty({
+    description: "family's last update",
+    example: '2026-01-28T13:44:34.479Z',
+  })
+  updatedAt: Date;
 }
 
 export class registerGuardianCredentials {
