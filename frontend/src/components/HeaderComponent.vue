@@ -22,7 +22,7 @@
       <router-link
         v-else
         to="/login"
-        class="bg-green-secondary px-5 py-2 rounded-full font-semibold"
+        class="bg-secondary px-5 py-2 rounded-full font-semibold"
       >
         Connexion
       </router-link>
