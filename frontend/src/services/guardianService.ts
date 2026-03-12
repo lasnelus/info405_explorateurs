@@ -41,6 +41,6 @@ export interface Guardian {
    Guardian API
 ========================= */
 
-export const getMe = () => {
-  return api.get<Guardian>("/guardian/me")
+export const getProfile = () => {
+  return api.get("/guardian/me")
 }

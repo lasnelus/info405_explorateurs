@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue"
-import { getMe, type Guardian, type Family } from "@/services/guardianService"
+import { getMe, type Guardian, type Family, getProfile } from "@/services/guardianService"
 
 const guardian = ref<Guardian | null>(null)
 const families = ref<Family[]>([])
@@ -87,7 +87,7 @@ const error = ref<string | null>(null)
 const fetchGuardian = async () => {
   try {
     loading.value = true
-    const res = await getMe()
+    const res = await getProfile()
 
     guardian.value = res.data
     families.value = res.data.families || []

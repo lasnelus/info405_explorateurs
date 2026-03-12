@@ -32,6 +32,11 @@ const router = createRouter({
       path: '/inscription',
       name: 'inscription',
       component: () => import('../views/ChildRegistration.vue')
+    },
+    {
+      path: '/family-jsp',
+      name: 'la famille',
+      component: () => import('../views/family.vue')
     }
   ],
 })

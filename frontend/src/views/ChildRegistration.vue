@@ -4,12 +4,12 @@
     <h1>Inscription</h1>
 
     <p>{{ activity }} • {{ date }}</p>
+    <p>
 
     <p>
       Parent : {{ profile.firstName }} {{ profile.lastName }}
     </p>
 
-    <p>
       Email : {{ profile.email }}
     </p>
 
