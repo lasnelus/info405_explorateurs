@@ -26,7 +26,7 @@
                 w-full
                 px-4 py-3.5
                 rounded-lg outline-2 outline-primary
-                font-semibold text-sm text-text uppercase placeholder:text-gray-500
+                font-semibold text-sm text-text placeholder:uppercase placeholder:text-gray-500
                 focus:outline-secondary transition-all
                 focus:bg-primary/5
                 hover:outline-secondary
@@ -43,7 +43,7 @@
                 w-full
                 px-4 py-3.5
                 rounded-lg outline-2 outline-primary
-                font-semibold text-sm text-text uppercase placeholder:text-gray-500
+                font-semibold text-sm text-text placeholder:uppercase placeholder:text-gray-500
                 focus:outline-secondary transition-all
                 focus:bg-primary/5
                 hover:outline-secondary
