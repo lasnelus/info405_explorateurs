@@ -117,6 +117,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '@/services/authServices'
+import { getProfile } from '@/services/guardianService'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
@@ -136,6 +137,12 @@ const handleLogin = async () => {
     const response = await login(email.value, password.value)
     const token = response.data.accessToken
     auth.setAccessToken(token)
+
+    const profileResponse = await getProfile()
+    const profile = profileResponse.data
+
+    auth.setProfile(profile)
+    
     router.push('/family-dashboard')
   } catch (e: any) {
     // log server response if available

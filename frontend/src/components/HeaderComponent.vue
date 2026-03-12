@@ -83,7 +83,7 @@ const auth = useAuthStore()
 const menuOpen = ref(false)
 
 const isLoggedIn = computed(() => {
-  return !!auth.accessToken
+  return !!auth.profile
 })
 
 function toggleMenu() {

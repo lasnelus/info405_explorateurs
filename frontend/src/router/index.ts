@@ -36,7 +36,7 @@ const router = createRouter({
     {
       path: '/family-jsp',
       name: 'la famille',
-      component: () => import('../views/family.vue')
+      component: () => import('../views/familySpecific.vue')
     }
   ],
 })

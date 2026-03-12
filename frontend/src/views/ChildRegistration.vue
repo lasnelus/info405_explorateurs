@@ -31,29 +31,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref } from "vue"
 import { useRoute } from "vue-router"
-import { getProfile } from "@/services/authUser"
-import { OperationCanceledException } from "typescript"
+import { useAuthStore } from "@/stores/auth"
 
 const route = useRoute()
+const auth = useAuthStore()
 
 const activity = route.query.activity
 const date = route.query.date
 
-const profile = ref<any>(null)
-
-onMounted(async () => {
-  profile.value = await getProfile()
-  profile.value = profile.value.data
-})
+const profile = JSON.parse(auth.profile)
 
 function submitRegistration() {
-  console.log({
-    activity,
-    date,
-    parentId: profile.id
-  })
 }
 
 
