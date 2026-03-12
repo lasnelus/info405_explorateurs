@@ -13,6 +13,16 @@
       Email : {{ profile.email }}
     </p>
 
+    <div>
+      <select v-model="selectedOption">
+        <option v-for="child in options" :key="child.id" :value="child.value">
+          {{ child.label }}
+        </option>
+      </select>
+
+      <p> Option choisie : {{ selectedOption}} </p>
+    </div>
+
     <button @click="submitRegistration">
       Confirmer
     </button>
@@ -24,13 +34,14 @@
 import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import { getProfile } from "@/services/authUser"
+import { OperationCanceledException } from "typescript"
 
 const route = useRoute()
 
 const activity = route.query.activity
 const date = route.query.date
 
-const profile = ref()
+const profile = ref<any>(null)
 
 onMounted(async () => {
   profile.value = await getProfile()
@@ -41,7 +52,21 @@ function submitRegistration() {
   console.log({
     activity,
     date,
-    parentId: profile.value.id
+    parentId: profile.id
   })
 }
+
+
+
+// child de con
+
+const selectedOption = ref("")
+
+
+const options = ref([
+  { id: 1, label: "Option 1", value: "opt1" },
+  { id: 2, label: "Option 2", value: "opt2" },
+  { id: 3, label: "Option 3", value: "opt3" }
+])
+
 </script>
