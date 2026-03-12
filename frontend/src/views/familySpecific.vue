@@ -19,9 +19,10 @@
 import { ref, onMounted } from "vue"
 import { getFamily} from "@/services/familyServices"
 import { useAuthStore } from "@/stores/auth"
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 
 const route = useRoute()
+const router = useRouter()
 
 const familyId = route.query.familyId
 
@@ -32,7 +33,12 @@ const profile = JSON.parse(auth.profile)
 const family = ref(null)
 
 onMounted(async () => {
-  const res = await getFamily(familyId)
-  family.value = res.data
+  if (profile) {
+    const res = await getFamily(familyId)
+    family.value = res.data
+  }else {
+    console.error("Error fetching family data:")
+    router.push('/login')
+  }
 })
 </script>
