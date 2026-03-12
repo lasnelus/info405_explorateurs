@@ -26,16 +26,26 @@
         hover:drop-shadow-secondary
         hover:drop-shadow-xl
         hover:scale-101
-      " id="signUpBox" style="
-        /* box-shadow: 4px 4px 15px -8px var(--color-primary); */
-      ">
+      " id="signUpBox">
         <form @submit.prevent="handleSignup">
           <div class="mb-6 relative">
             <input
               type="text"
               placeholder="PRÉNOM"
               v-model="firstName"
-              class="w-full px-4 py-3.5 rounded-lg outline-2 outline-primary font-semibold text-sm text-text uppercase focus:outline-secondary transition-all focus:bg-primary/5 hover:outline-secondary hover:bg-primary/15"
+              class="
+                w-full
+                px-4
+                py-3.5
+                rounded-lg
+                outline-2
+                outline-primary
+                font-semibold
+                text-sm
+                text-text
+                placeholder:uppercase
+                focus:outline-secondary
+                transition-all focus:bg-primary/5 hover:outline-secondary hover:bg-primary/15"
               required
             />
           </div>
@@ -45,7 +55,7 @@
               type="text"
               placeholder="NOM"
               v-model="lastName"
-              class="w-full px-4 py-3.5 rounded-lg outline-2 outline-primary font-semibold text-sm text-text uppercase focus:outline-secondary transition-all focus:bg-primary/5 hover:outline-secondary hover:bg-primary/15"
+              class="w-full px-4 py-3.5 rounded-lg outline-2 outline-primary font-semibold text-sm text-text placeholder:uppercase focus:outline-secondary transition-all focus:bg-primary/5 hover:outline-secondary hover:bg-primary/15"
               required
             />
           </div>
@@ -57,7 +67,7 @@
                 w-full
                 px-4 py-3.5
                 rounded-lg outline-2 outline-primary
-                font-semibold text-sm text-text uppercase
+                font-semibold text-sm text-text placeholder:uppercase
                 focus:outline-secondary transition-all
                 focus:bg-primary/5
                 hover:outline-secondary
@@ -71,7 +81,7 @@
                 w-full
                 px-4 py-3.5
                 rounded-lg outline-2 outline-primary
-                font-semibold text-sm text-text uppercase
+                font-semibold text-sm text-text placeholder:uppercase
                 focus:outline-secondary transition-all
                 focus:bg-primary/5
                 hover:outline-secondary
@@ -113,7 +123,7 @@
                 w-full
                 px-4 py-3.5
                 rounded-lg outline-2 outline-primary
-                font-semibold text-sm text-text uppercase
+                font-semibold text-sm text-text placeholder:uppercase
                 focus:outline-secondary transition-all
                 focus:bg-primary/5
                 hover:outline-secondary
