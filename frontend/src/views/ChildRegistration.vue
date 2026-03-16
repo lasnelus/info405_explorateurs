@@ -32,6 +32,7 @@ import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 import { getFamily} from "@/services/familyServices"
+import router from "@/router"
 
 
 const route = useRoute()
@@ -73,7 +74,11 @@ function submitRegistration() {
   console.log("Enfant choisi :", selectedOption.value)
 }
 
-onMounted(() => {
-  fetchChildren()
+onMounted(async () => {
+  if (profile) {
+    await fetchChildren()
+  } else {
+    router.push('/login')
+  }
 })
 </script>
