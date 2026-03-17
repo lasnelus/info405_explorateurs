@@ -7,30 +7,107 @@ datasource db {
 }
 
 model Guardian {
-  id             String        @id                   @default(cuid())
-  email          String       @unique
-  password       String
-
-  firstName      String
-  lastName       String
-
-  role           Role          @default(GUARDIAN)
-
-  families       Family[]
-
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      Role     @default(GUARDIAN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  families  Family[] @relation("FamilyToGuardian")
 }
 
 model Family {
-  id             String        @id                   @default(cuid())
-  name           String
+  id        String     @id @default(cuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  childs    Child[]    @relation("ChildToFamily")
+  guardians Guardian[] @relation("FamilyToGuardian")
+}
 
-  guardians      Guardian[]
-  childs          Child[]
+model Child {
+  id               String             @id @default(cuid())
+  firstName        String
+  lastName         String
+  birthDate        DateTime
+  foodConstraint   FoodConstraint     @default(NONE)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  allergies        Allergy[]
+  EmergencyContact EmergencyContact[]
+  queues           Queue[]
+  slots            Slot[]
+  families         Family[]           @relation("ChildToFamily")
+}
 
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+model EmergencyContact {
+  id          String @id @default(cuid())
+  firstName   String
+  lastName    String
+  phoneNumber String
+  childId     String
+  child       Child  @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([childId], map: "EmergencyContact_childId_fkey")
+}
+
+model Allergy {
+  id      String @id @default(cuid())
+  childId String
+  child   Child  @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([childId], map: "Allergy_childId_fkey")
+}
+
+model Queue {
+  id        String     @id @default(cuid())
+  childId   String
+  periodeId String
+  state     QueueState
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  child     Child      @relation(fields: [childId], references: [id], onDelete: Cascade)
+  periode   Periode    @relation(fields: [periodeId], references: [id], onDelete: Cascade)
+
+  @@index([childId], map: "Queue_childId_fkey")
+  @@index([periodeId], map: "Queue_periodeId_fkey")
+}
+
+model Slot {
+  id        String   @id @default(cuid())
+  childId   String
+  periodeId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  child     Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+  periode   Periode  @relation(fields: [periodeId], references: [id], onDelete: Cascade)
+
+  @@index([childId], map: "Slot_childId_fkey")
+  @@index([periodeId], map: "Slot_periodeId_fkey")
+}
+
+model Periode {
+  id       String   @id @default(cuid())
+  ageMin   Int
+  ageMax   Int
+  capacity Int
+  firstDay DateTime @db.Date
+  lastDay  DateTime @db.Date
+  queues   Queue[]
+  slots    Slot[]
+}
+
+model Manager {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      Role     @default(INSTRUCTOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum FoodConstraint {
@@ -40,108 +117,14 @@ enum FoodConstraint {
   ALLERGY_OR_INTOLERANCE
 }
 
-model Child {
-  id             String        @id                   @default(cuid())
-
-  firstName      String
-  lastName       String
-  birthDate      DateTime
-
-  allergies         Allergy[]
-  foodConstraint    FoodConstraint @default(NONE)
-  EmergencyContact  EmergencyContact[]
-
-  families       Family[]
-  slots          Slot[]
-  queues         Queue[]
-
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-}
-
-model EmergencyContact {
-  id             String        @id                   @default(cuid())
-
-  firstName      String
-  lastName       String
-
-  phoneNumber    String
-
-  child          Child        @relation(fields: [childId], references: [id], onDelete: Cascade)
-  childId        String
-}
-
-model Allergy {
-  id             String        @id                   @default(cuid())
-
-  child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
-  childId        String
-}
-
 enum QueueState {
   PENDING
   ACCEPTED
   TIMEOUT
 }
 
-model Queue {
-  id             String        @id                   @default(cuid())
-
-  child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
-  childId        String
-
-  periode        Periode       @relation(fields: [periodeId], references: [id], onDelete: Cascade)
-  periodeId      String
-
-  state          QueueState
-
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-}
-
-model Slot {
-  id             String        @id                   @default(cuid())
-
-  child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
-  childId        String
-
-  periode        Periode       @relation(fields: [periodeId], references: [id], onDelete: Cascade)
-  periodeId      String
-
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-}
-
-model Periode {
-  id             String        @id                   @default(cuid())
-
-  ageMin         Int
-  ageMax         Int
-
-  capacity       Int
-
-  firstDay       DateTime      @db.Date
-  lastDay        DateTime      @db.Date
-
-  slots          Slot[]
-  queues         Queue[]
-}
-
 enum Role {
   OWNER
   INSTRUCTOR
   GUARDIAN
-}
-model Manager {
-  id             String        @id                   @default(cuid())
-  email          String        @unique
-  password       String
-
-  firstName      String
-  lastName       String
-
-  role           Role          @default(INSTRUCTOR)
-
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
 }

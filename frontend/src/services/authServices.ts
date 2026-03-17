@@ -16,3 +16,7 @@ export const signup = (email: string, password: string, firstName: string, lastN
     lastName
   })
 }
+
+export const role = () => {
+  return api.get('/auth/role')
+}

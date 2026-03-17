@@ -116,7 +116,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { login } from '@/services/authServices'
+import { login, role } from '@/services/authServices'
 import { getProfile } from '@/services/guardianService'
 import { useAuthStore } from '@/stores/auth'
 
@@ -138,12 +138,18 @@ const handleLogin = async () => {
     const token = response.data.accessToken
     auth.setAccessToken(token)
 
-    const profileResponse = await getProfile()
-    const profile = profileResponse.data
+    const roleUser = await role()
 
-    auth.setProfile(profile)
+    if (roleUser.data.role = "GUARDIAN") {
+      const profileResponse = await getProfile()
+      const profile = profileResponse.data
 
-    router.push('/family-dashboard')
+      auth.setProfile(profile)
+      router.push('/family-dashboard')
+    } else {
+      router.push('/admin')
+    }
+
   } catch (e: any) {
     // log server response if available
     console.error('Login error', e.response?.data || e)
