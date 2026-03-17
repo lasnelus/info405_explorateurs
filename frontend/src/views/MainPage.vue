@@ -4,7 +4,8 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="text-center px-6">
           <p class="text-lg md:text-xl max-w-2xl mx-auto">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+            Les petits explorateurs, structure multi accueil de 8 a 18 ans.
+            Activitées pour les petits et grands !
           </p>
         </div>
       </div>
@@ -47,7 +48,7 @@
           <!-- Address -->
           <div>
             <h3 class="font-semibold mb-2 color-primary">Adresse physique</h3>
-            <p class="text-text/50">CPostal Commune</p>
+            <p class="text-text/50">15 chemin du lac 73370 le Bourget du lac</p>
           </div>
 
           <!-- Hours -->

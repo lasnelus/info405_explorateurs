@@ -7,25 +7,15 @@
         <img src="../assets/logoexplorateurV2.1.png" class="h-16 w-auto object-contain" alt="Logo" />
       </router-link>
 
-      <!-- BOUTON BURGER SI CONNECTÉ -->
+      <!-- BOUTON BURGER -->
       <button
-        v-if="isLoggedIn"
         @click="toggleMenu"
-        class="flex flex-col gap-1 w-8"
+        class="flex flex-col gap-1 w-8 hover:cursor-pointer"
       >
         <span class="h-1 bg-secondary rounded"></span>
         <span class="h-1 bg-secondary rounded"></span>
         <span class="h-1 bg-secondary rounded"></span>
       </button>
-
-      <!-- BOUTON LOGIN SI PAS CONNECTÉ -->
-      <router-link
-        v-else
-        to="/login"
-        class="bg-secondary px-5 py-2 rounded-full font-semibold"
-      >
-        Connexion
-      </router-link>
     </div>
   </header>
 
@@ -51,28 +41,84 @@
     duration-300"
     :class="menuOpen ? 'translate-x-0' : 'translate-x-full'"
   >
-    <div class="p-6 flex flex-col gap-6 h-full">
-      <nav class="flex flex-col gap-4 font-semibold text-lg">
-        <router-link to="/family-dashboard" @click="closeMenu">Ma famille</router-link>
-        <router-link to="/" @click="closeMenu">lorem ipsum</router-link>
-        <router-link to="/" @click="closeMenu">lorem ipsum</router-link>
-        <router-link to="/" @click="closeMenu">Inscrire un enfant</router-link>
+    <div class="p-6 flex flex-col justify-between gap-6 h-full">
+      <nav
+      v-if="isLoggedIn"
+      class="flex flex-col gap-4 font-semibold text-lg">
+        <router-link to="/family-dashboard" @click="closeMenu" class="
+          -my-1
+          py-1
+          text-center
+          rounded-3xl
+          duration-300
+          text-text
+          bg-primary/25
+          hover:bg-primary/50
+        ">Ma famille</router-link>
+        <router-link to="/" @click="closeMenu" class="
+          -my-1
+          py-1
+          text-center
+          rounded-3xl
+          duration-300
+          text-text
+          bg-primary/25
+          hover:bg-primary/50
+        ">lorem ipsum</router-link>
+        <router-link to="/" @click="closeMenu" class="
+          -my-1
+          py-1
+          text-center
+          rounded-3xl
+          duration-300
+          text-text
+          bg-primary/25
+          hover:bg-primary/50
+        ">lorem ipsum</router-link>
+        <router-link to="/" @click="closeMenu" class="
+          -my-1
+          py-1
+          text-center
+          rounded-3xl
+          duration-300
+          text-text
+          bg-primary/25
+          hover:bg-primary/50
+        ">Inscrire un enfant</router-link>
 
         <div class="mt-auto">
           <button
             @click="logout"
-            class="block w-full text-center bg-red-500 text-white py-3 rounded-full font-semibold"
+            class="block w-full text-center bg-red-500 text-white py-3 rounded-full font-semibold cursor-pointer
+             duration-300 shadow-md shadow-primary-background transition-all
+            hover:scale-105 hover:shadow-lg hover:shadow-red-500/50
+            "
           >
             Déconnexion
           </button>
         </div>
       </nav>
 
+      <nav
+        v-else
+        class="flex flex-col gap-4 font-semibold text-lg"
+      >
+        <router-link
+        to="/login"
+        class="bg-secondary px-5 py-2 text-center rounded-full font-semibold"
+        >
+          Connexion
+        </router-link>
+      </nav>
+
+      <!-- THEME & ACCENT -->
+      <ThemeChooser />
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
+import ThemeChooser from "@/components/ThemeChooser.vue"
 import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
@@ -99,4 +145,5 @@ function logout() {
   closeMenu()
   router.push("/login")
 }
+
 </script>
