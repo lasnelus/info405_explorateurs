@@ -89,6 +89,8 @@
                   my-0.5
                   rounded-2xl
 
+                  select-none
+
                   hover:scale-105
                   hover:shadow-md
                   hover:shadow-primary-100/15
@@ -124,22 +126,35 @@ interface Activity {
 
 const activities = ref<Activity[]>([
   {
-    date: "2026-03-09",
+    date: "2026-03-16",
     group: "8-12",
     title: "Atelier peinture",
     description: "Découverte de la peinture et création libre"
   },
   {
-    date: "2026-03-10",
+    date: "2026-03-17",
     group: "8-12",
     title: "Jeux extérieurs",
     description: "Jeux de groupe dans la cour"
   },
   {
-    date: "2026-03-11",
+    date: "2026-03-17",
+    group: "8-12",
+    title: "Atelier peinture",
+    description: "Découverte de la peinture et création libre"
+  },
+  {
+    date: "2026-03-18",
     group: "13-17",
     title: "Initiation guitare",
     description: "Apprendre les premiers accords"
+  },
+  {
+
+    date: "2026-03-16",
+    group: "18+",
+    title: "Ski Alpin",
+    description: "Sortie ski alpin a la journée"
   }
 ])
 

@@ -6,8 +6,10 @@ import FooterComponent from './components/FooterComponent.vue'
 <template>
   <div class="flex flex-col min-h-screen">
     <HeaderComponent />
-    <main class="flex-grow">
-      <router-view />
+    <main class="grow">
+      <suspense>
+        <router-view />
+      </suspense>
     </main>
     <FooterComponent />
   </div>

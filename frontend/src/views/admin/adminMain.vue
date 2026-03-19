@@ -14,11 +14,8 @@ import { onMounted } from 'vue'
 const roleUser = await role()
 
 onMounted(async () =>{
-  if(roleUser.data.role == "OWNER"){
-    console.log("bonsoir")
-  } else {
-    console.log("CAHSOHTOA")
-    router.push('/about')
+  if(roleUser.data.role != "OWNER"){
+    router.push('/login')
   }
 })
 
