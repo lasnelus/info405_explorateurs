@@ -140,7 +140,11 @@ const handleLogin = async () => {
 
     const roleUser = await role()
 
-    if (roleUser.data.role = "GUARDIAN") {
+    console.log(roleUser)
+    console.log(roleUser.data)
+    console.log(roleUser.data.role)
+
+    if (roleUser.data.role === "GUARDIAN") {
       const profileResponse = await getProfile()
       const profile = profileResponse.data
 
