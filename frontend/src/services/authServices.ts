@@ -1,4 +1,5 @@
 import api from "@/services/api"
+import { getProfile } from "./guardianService"
 
 interface LoginResponse {
   accessToken: string
@@ -19,4 +20,13 @@ export const signup = (email: string, password: string, firstName: string, lastN
 
 export const role = () => {
   return api.get('/auth/role')
+}
+
+export async function loadProfileIfNeeded(auth: any) {
+  if (!auth.profile && auth.user?.role === "GUARDIAN") {
+    const res = await getProfile()
+    auth.setProfile(res.data)
+    return res.data
+  }
+  return auth.profile
 }

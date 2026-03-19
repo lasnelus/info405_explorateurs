@@ -75,7 +75,7 @@
           </div>
 
           <div class="mb-6 relative">
-            <input :type="showPassword ? 'text' : 'password'" placeholder="MDP" id="Password" name="Password"
+            <input :type="showPassword ? 'text' : 'password'" placeholder="MDP" autocomplete="new-password" id="Password" name="Password"
               v-model="password"
               class="
                 w-full
@@ -117,7 +117,7 @@
           </div>
 
           <div class="mb-6 relative">
-            <input :type="showPasswordConfirm ? 'text' : 'password'" placeholder="CONFIRMATION MDP" id="PasswordConfirm" name="PasswordConfirm"
+            <input :type="showPasswordConfirm ? 'text' : 'password'" placeholder="CONFIRMATION MDP" autocomplete="new-password" id="PasswordConfirm" name="PasswordConfirm"
               v-model="passwordConfirm"
               class="
                 w-full

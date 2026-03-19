@@ -38,7 +38,7 @@
           </div>
 
           <div class="mb-6 relative">
-            <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="MDP"
+            <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="MDP" autocomplete="current-password"
               class="
                 w-full
                 px-4 py-3.5
@@ -139,10 +139,6 @@ const handleLogin = async () => {
     auth.setAccessToken(token)
 
     const roleUser = await role()
-
-    console.log(roleUser)
-    console.log(roleUser.data)
-    console.log(roleUser.data.role)
 
     if (roleUser.data.role === "GUARDIAN") {
       const profileResponse = await getProfile()

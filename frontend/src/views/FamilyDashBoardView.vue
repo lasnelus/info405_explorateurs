@@ -79,6 +79,7 @@ import { ref, onMounted, computed } from "vue"
 import { getProfile, type Guardian, type Family } from "@/services/guardianService"
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
+import { loadProfileIfNeeded } from "@/services/authServices"
 
 const auth = useAuthStore()
 
@@ -99,10 +100,9 @@ const fetchGuardian = async () => {
   }
 }
 
-const profile = JSON.parse(auth.profile)
-
 onMounted(async () =>{
-  if(profile){
+  if(auth.isLoggedIn){
+    await loadProfileIfNeeded(auth)
     await fetchGuardian()
   } else {
     router.push('/login')

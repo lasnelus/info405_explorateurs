@@ -1,5 +1,5 @@
 <template>
-  <div v-if="profile">
+  <div>
     <p>
       {{ family?.name }}
     </p>
@@ -12,33 +12,35 @@
   </div>
 </template>
 
-<script setup lang="ts">
 
 // cmmnia7ep000098m2fa7xzd16
 
+<script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { getFamily} from "@/services/familyServices"
 import { useAuthStore } from "@/stores/auth"
 import { useRoute, useRouter } from "vue-router"
+import { loadProfileIfNeeded } from "@/services/authServices"
 
 const route = useRoute()
+
 const router = useRouter()
 
 const familyId = route.query.familyId
 
 const auth = useAuthStore()
 
-const profile = JSON.parse(auth.profile)
-
 const family = ref(null)
 
 onMounted(async () => {
-  if (profile) {
-    const res = await getFamily(familyId)
-    family.value = res.data
-  }else {
-    console.error("Error fetching family data:")
+  if (!auth.isLoggedIn) {
     router.push('/login')
+    return
   }
+
+  await loadProfileIfNeeded(auth)
+
+  const res = await getFamily(familyId)
+  family.value = res.data
 })
 </script>

@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { useColorStore } from '@/stores/colorStore'
+import { useAuthStore} from '@/stores/auth'
 
 import App from './App.vue'
 import router from './router'
@@ -22,5 +23,8 @@ document.body.classList.add(theme)
 
 console.log("Theme: " + theme)
 console.log("Couleur d'accent : " + accent)
+
+const auth = useAuthStore()
+await auth.init() // POST /auth/refresh avant le premier rendu
 
 app.mount('#app')

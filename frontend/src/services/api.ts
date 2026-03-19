@@ -3,47 +3,58 @@ import axios, {
     type AxiosRequestConfig,
     type InternalAxiosRequestConfig,
 } from 'axios'
-import { useAuthStore } from "@/stores/auth"
+import { useAuthStore } from '@/stores/auth'
+import router from '@/router'
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true,
 })
 
-// Gestion du rafraîchissement du token d'accès
-let isRefreshing = false
-let refreshSubscribers: Array<(token: string) => void> = []
+// ─── Gestion du rafraîchissement du token ────────────────────────────────────
 
-function subscribeTokenRefresh(cb: (token: string) => void) {
-  refreshSubscribers.push(cb)
+let isRefreshing = false
+let refreshSubscribers: Array<{
+    resolve: (token: string) => void
+    reject: (err: unknown) => void
+}> = []
+
+function subscribeTokenRefresh(
+    resolve: (token: string) => void,
+    reject: (err: unknown) => void,
+) {
+    refreshSubscribers.push({ resolve, reject })
 }
 
 function onRefreshed(token: string) {
-  refreshSubscribers.forEach(cb => cb(token))
-  refreshSubscribers = []
+    refreshSubscribers.forEach(({ resolve }) => resolve(token))
+    refreshSubscribers = []
 }
 
-function onRefreshFailed() {
-  refreshSubscribers.forEach(cb => cb(''))
-  refreshSubscribers = []
+function onRefreshFailed(err: unknown) {
+    refreshSubscribers.forEach(({ reject }) => reject(err))
+    refreshSubscribers = []
 }
 
+// ─── Intercepteur REQUEST ─────────────────────────────────────────────────────
 
-/* ===== Intercepteur REQUEST ===== */
 api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const auth = useAuthStore()
+    (config: InternalAxiosRequestConfig) => {
+        const { accessToken } = useAuthStore()
 
-    if (auth.accessToken && config.headers) {
-        config.headers.Authorization = `Bearer ${auth.accessToken}`
-    }
+        if (accessToken && config.headers) {
+            config.headers.Authorization = `Bearer ${accessToken}`
+        }
 
-    return config
-  },
-  (error: AxiosError) => Promise.reject(error)
+        return config
+    },
+    (error: AxiosError) => Promise.reject(error),
 )
 
-/* ===== Intercepteur RESPONSE ===== */
+// ─── Intercepteur RESPONSE ────────────────────────────────────────────────────
+
+const AUTH_URLS = ['/auth/login', '/auth/refresh']
+
 api.interceptors.response.use(
     response => response,
     async (error: AxiosError) => {
@@ -52,69 +63,53 @@ api.interceptors.response.use(
             | (AxiosRequestConfig & { _retry?: boolean })
             | undefined
 
-        // si l'erreur vient d'une requête de login ou de refresh, on ne tente pas de rafraîchir le token
-        if (
-            originalRequest?.url?.includes('/auth/login') ||
-            originalRequest?.url?.includes('/auth/refresh')
-        ) {
+        const isAuthUrl = AUTH_URLS.some(url => originalRequest?.url?.includes(url))
+
+        if (isAuthUrl || !originalRequest || error.response?.status !== 401 || originalRequest._retry) {
             return Promise.reject(error)
         }
 
-        if (
-            originalRequest &&
-            error.response?.status === 401 &&
-            !originalRequest._retry
-        ) {
-            originalRequest._retry = true
+        originalRequest._retry = true
 
-            // si déjà en train de rafraîchir, on s'abonne pour être notifié quand le token est prêt et on
-            // refait la requête originale avec le nouveau token
-            if (isRefreshing) {
-                return new Promise((resolve, reject) => {
-                    subscribeTokenRefresh((token: string) => {
-                        if (!token) {
-                            reject(error)
-                            return
-                        }
-                        if (!originalRequest.headers) {
-                            originalRequest.headers = {}
-                        }
-                        originalRequest.headers.Authorization = `Bearer ${token}`
-                        resolve(api(originalRequest))
-                    })
-                })
-            }
-
-            // sinon, on lance le rafraîchissement du token
-            isRefreshing = true
-            try {
-                const refreshResponse = await axios.post(
-                    `${import.meta.env.VITE_API_URL}/auth/refresh`,
-                    {},
-                    { withCredentials: true }
-                )
-
-                const newAccessToken = refreshResponse.data.accessToken
-                auth.setAccessToken(newAccessToken)
-                onRefreshed(newAccessToken)
-                isRefreshing = false
-
-                if (!originalRequest.headers) {
-                    originalRequest.headers = {}
+        // Un refresh est déjà en cours : on s'abonne et on attend le résultat
+        if (isRefreshing) {
+            return new Promise<string>((resolve, reject) => {
+                subscribeTokenRefresh(resolve, reject)
+            }).then(token => {
+                originalRequest.headers = {
+                    ...originalRequest.headers,
+                    Authorization: `Bearer ${token}`,
                 }
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
                 return api(originalRequest)
-            } catch (refreshError) {
-                onRefreshFailed()
-                isRefreshing = false
-                auth.clearAccessToken()
-                window.location.href = "/login"
-                return Promise.reject(refreshError)
-            }
+            })
         }
 
-        return Promise.reject(error)
-    }
+        // On lance le refresh
+        isRefreshing = true
+        try {
+            const { data } = await axios.post<{ accessToken: string }>(
+                `${import.meta.env.VITE_API_URL}/auth/refresh`,
+                {},
+                { withCredentials: true },
+            )
+
+            auth.setAccessToken(data.accessToken)
+            onRefreshed(data.accessToken)
+
+            originalRequest.headers = {
+                ...originalRequest.headers,
+                Authorization: `Bearer ${data.accessToken}`,
+            }
+            return api(originalRequest)
+        } catch (refreshError) {
+            onRefreshFailed(refreshError)
+            auth.clearAccessToken()
+            router.push('/login')
+            return Promise.reject(refreshError)
+        } finally {
+            isRefreshing = false
+        }
+    },
 )
 
 export default api

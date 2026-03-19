@@ -1,15 +1,14 @@
 <template>
-  <div v-if="profile">
-
+  <div>
     <h1>Inscription</h1>
 
     <p>{{ activity }} • {{ date }}</p>
 
     <p>
-      Parent : {{ profile.firstName }} {{ profile.lastName }}
+      Parent : {{ profile?.firstName }} {{ profile?.lastName }}
     </p>
     <p>
-      Email : {{ profile.email }}
+      Email : {{ profile?.email }}
     </p>
 
     <div>
@@ -17,8 +16,8 @@
         <option v-for="child in options" :key="child.id" :value="child.value">
           {{ child.label }}
         </option>
-      </select>
 
+      </select>
     </div>
     <button @click="submitRegistration">
       Confirmer
@@ -28,30 +27,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
-import { useRoute } from "vue-router"
+import { ref, computed, onMounted } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
-import { getFamily} from "@/services/familyServices"
-import router from "@/router"
-
+import { getFamily } from "@/services/familyServices"
+import { loadProfileIfNeeded } from "@/services/authServices"
 
 const route = useRoute()
+const router = useRouter()
 const auth = useAuthStore()
 
-const activity = route.query.activity
-const date = route.query.date
+// ✅ sécuriser les query params
+const activity = computed(() => route.query.activity as string || "")
+const date = computed(() => route.query.date as string || "")
 
-const profile = JSON.parse(auth.profile)
+// ✅ profile réactif
+const profile = computed(() => auth.profile)
 
 const selectedOption = ref("")
 
 const options = ref<Array<{ id: string; label: string; value: string }>>([])
+
 async function fetchChildren() {
+  if (!profile.value) return
+
   const childrenList: Array<{ id: string; label: string; value: string }> = []
-  for (const family of profile.families) {
+
+  for (const family of profile.value.families || []) {
     try {
       const familyData = await getFamily(family.id)
-
 
       if (familyData.data.childs) {
         familyData.data.childs.forEach((child: any) => {
@@ -62,8 +66,9 @@ async function fetchChildren() {
           })
         })
       }
+
     } catch (error) {
-      console.error(`Erreur lors du chargement des enfants pour la famille ${family.id}`, error)
+      console.error(`Erreur famille ${family.id}`, error)
     }
   }
 
@@ -75,10 +80,13 @@ function submitRegistration() {
 }
 
 onMounted(async () => {
-  if (profile) {
-    await fetchChildren()
-  } else {
+  if (!auth.isLoggedIn) {
     router.push('/login')
+    return
   }
+
+  await loadProfileIfNeeded(auth)
+
+  await fetchChildren()
 })
 </script>
