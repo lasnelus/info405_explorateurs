@@ -23,7 +23,11 @@ export const role = () => {
 }
 
 export async function loadProfileIfNeeded(auth: any) {
-  if (!auth.profile && auth.user?.role === "GUARDIAN") {
+  if (!auth.profile) {
+    const roleUser = await role()
+    if (roleUser.data.role !== 'GUARDIAN') {
+      return null
+    }
     const res = await getProfile()
     auth.setProfile(res.data)
     return res.data

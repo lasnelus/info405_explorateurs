@@ -119,7 +119,7 @@
 
 <script setup lang="ts">
 import ThemeChooser from "@/components/ThemeChooser.vue"
-import { ref, computed } from "vue"
+import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 
@@ -128,9 +128,7 @@ const auth = useAuthStore()
 
 const menuOpen = ref(false)
 
-const isLoggedIn = computed(() => {
-  return !!auth.profile
-})
+const isLoggedIn = auth.isLoggedIn
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
