@@ -1,19 +1,59 @@
 <template>
-  <div>
-    <p>
-      {{ family?.name }}
-    </p>
-  </div>
-  <div v-for="guardian in family?.guardians" :key="guardian.id">
-    {{ guardian.firstName }} {{ guardian.lastName }}
-  </div>
-  <div v-for="child in family?.childs" :key="child.id">
-    {{ child.firstName }} {{ child.lastName }}
+  <div class="max-w-3xl mx-auto px-6 py-12 bg-primary/10 rounded-lg shadow-lg shadow-primary/15">
+    <!-- Family Name -->
+    <div class="bg-primary-background p-6 rounded-lg shadow-md shadow-primary/15 mb-6">
+      <h1 class="text-2xl font-bold color-primary">
+        {{ family?.name || "Famille" }}
+      </h1>
+    </div>
+
+    <!-- Guardians -->
+    <div class="mb-6">
+      <h2 class="text-lg font-semibold color-primary mb-3">
+        Responsables
+      </h2>
+
+      <div v-if="family?.guardians?.length" class="space-y-3">
+        <div
+          v-for="guardian in family.guardians"
+          :key="guardian.id"
+          class="bg-primary-100/25 p-4 rounded-lg shadow-sm"
+        >
+          <p class="font-medium text-text">
+            {{ guardian.firstName }} {{ guardian.lastName }}
+          </p>
+        </div>
+      </div>
+
+      <p v-else class="text-gray-500 italic">
+        Aucun responsable
+      </p>
+    </div>
+
+    <!-- Children -->
+    <div>
+      <h2 class="text-lg font-semibold color-primary mb-3">
+        Enfants
+      </h2>
+
+      <div v-if="family?.childs?.length" class="space-y-3">
+        <div
+          v-for="child in family.childs"
+          :key="child.id"
+          class="bg-white p-4 rounded-lg shadow-md shadow-primary/10 hover:scale-[1.02] transition duration-300"
+        >
+          <p class="font-medium text-text">
+            {{ child.firstName }} {{ child.lastName }}
+          </p>
+        </div>
+      </div>
+
+      <p v-else class="text-gray-500 italic">
+        Aucun enfant
+      </p>
+    </div>
   </div>
 </template>
-
-
-// cmmnia7ep000098m2fa7xzd16
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
@@ -23,14 +63,13 @@ import { useRoute, useRouter } from "vue-router"
 import { loadProfileIfNeeded } from "@/services/authServices"
 
 const route = useRoute()
-
 const router = useRouter()
 
 const familyId = route.query.familyId
 
 const auth = useAuthStore()
 
-const family = ref(null)
+const family = ref<any>(null)
 
 onMounted(async () => {
   if (!auth.isLoggedIn) {

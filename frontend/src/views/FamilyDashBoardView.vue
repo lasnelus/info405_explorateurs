@@ -111,34 +111,47 @@ onMounted(async () =>{
 
 const allUpcomingActivities = computed(() => {
   return families.value.flatMap(family =>
-    family.children?.flatMap(child =>
-      (child.upcomingActivities || []).map(activity => ({
-        id: activity.id,
-        title: activity.title,
+    family.childs?.flatMap(child => [
+      ...(child.slots || []).map(slot => ({
+        id: slot.id,
+        title: `Activité ${slot.periodeId}`,
         childName: `${child.firstName} ${child.lastName}`,
-        statusLabel: activity.status === "PENDING"
-          ? "Activité prévue en attente de confirmation"
-          : "Activité confirmée"
+        statusLabel: "Activité confirmée"
+      })),
+      ...(child.queues || []).map(queue => ({
+        id: queue.id,
+        title: `Activité ${queue.periodeId}`,
+        childName: `${child.firstName} ${child.lastName}`,
+        statusLabel: "Activité prévue en attente de confirmation"
       }))
-    ) || []
+    ]) || []
   )
 })
 
-// Toutes les inscriptions de tous les enfants de toutes les familles
+
 const allRegistrations = computed(() => {
   return families.value.flatMap(family =>
-    family.children?.flatMap(child =>
-      (child.registrations || []).map(reg => ({
-        id: reg.id,
-        activityTitle: reg.activityTitle,
+    family.childs?.flatMap(child => {
+      const confirmed = (child.slots || []).map(slot => ({
+        id: slot.id,
+        activityTitle: `Activité ${slot.periodeId}`, // à adapter si tu as plus d'infos
         childName: `${child.firstName} ${child.lastName}`,
-        status: reg.status,
-        statusLabel: reg.status === "CONFIRMED" ? "Inscrit" : "En attente"
+        status: "CONFIRMED",
+        statusLabel: "Inscrit"
       }))
-    ) || []
+
+      const pending = (child.queues || []).map(queue => ({
+        id: queue.id,
+        activityTitle: `Activité ${queue.periodeId}`,
+        childName: `${child.firstName} ${child.lastName}`,
+        status: "PENDING",
+        statusLabel: "En attente"
+      }))
+
+      return [...confirmed, ...pending]
+    }) || []
   )
 })
-
 function goToFamily(familyId:string){
   router.push({
     name: "famille",

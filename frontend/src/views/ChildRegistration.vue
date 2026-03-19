@@ -1,19 +1,53 @@
 <template>
-  <div>
-    <h1>Inscription</h1>
+  <div class="max-w-2xl mx-auto px-6 py-12 bg-primary/10 rounded-lg shadow-lg shadow-primary/15">
+    <h1 class="text-3xl font-bold color-primary mb-6">
+      Inscription à l'activité
+    </h1>
 
-    <p>{{ activity }} • {{ date }}</p>
+    <!-- Activity Info -->
+    <div class="bg-primary-background p-6 rounded-lg shadow-md shadow-primary/15 mb-6">
+      <p class="text-lg font-semibold text-text">
+        {{ activity }}
+      </p>
+      <p class="text-sm text-text/60">
+        {{ date }}
+      </p>
+    </div>
 
-    <p v-if="profile">
-      Parent : {{ profile.firstName }} {{ profile.lastName }}
-    </p>
-    <p v-if="profile">
-      Email : {{ profile.email }}
-    </p>
+    <!-- Parent Info -->
+    <div v-if="profile" class="bg-primary-100/25 p-5 rounded-lg mb-6 shadow-sm">
+      <p class="text-text font-medium">
+        {{ profile.firstName }} {{ profile.lastName }}
+      </p>
+      <p class="text-text/60 text-sm">
+        {{ profile.email }}
+      </p>
+    </div>
 
-    <div>
-      <select v-if="options.length" v-model="selectedOption">
-        <option disabled value="">Choisir un enfant</option>
+    <!-- Child Selection -->
+    <div class="mb-8">
+      <label class="block text-sm font-semibold color-primary mb-2">
+        Choisir un enfant
+      </label>
+
+      <select
+        v-if="options.length"
+        v-model="selectedOption"
+        class="
+          w-full
+          px-4
+          py-2
+          h-11
+          border border-secondary
+          rounded-lg
+          bg-white
+          shadow-sm
+          focus:outline-none
+          focus:ring-2
+          focus:ring-primary/40
+        "
+      >
+        <option disabled value="">Sélectionner...</option>
 
         <option
           v-for="child in options"
@@ -24,14 +58,35 @@
         </option>
       </select>
 
-      <p v-else>Chargement des enfants...</p>
+      <p v-else class="text-gray-500 italic">
+        Chargement des enfants...
+      </p>
     </div>
 
+    <!-- Action Button -->
     <button
       :disabled="!selectedOption"
       @click="submitRegistration"
+      class="
+        w-full
+        py-3
+        rounded-xl
+        font-semibold
+        transition-all
+        duration-300
+
+        bg-primary
+        text-primary-light
+
+        disabled:opacity-50
+        disabled:cursor-not-allowed
+
+        hover:scale-105
+        hover:shadow-lg
+        hover:shadow-primary/20
+      "
     >
-      Confirmer
+      Confirmer l'inscription
     </button>
   </div>
 </template>
@@ -47,17 +102,14 @@ const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 
-
 const activity = computed(() => (route.query.activity as string) || "")
 const date = computed(() => (route.query.date as string) || "")
-
 
 const profile = computed(() => auth.profile)
 
 const selectedOption = ref("")
 
 const options = ref<Array<{ id: string; label: string; value: string }>>([])
-
 
 async function fetchChildren() {
   if (!profile.value) return
@@ -90,7 +142,6 @@ async function fetchChildren() {
     console.error("Erreur récupération enfants", error)
   }
 }
-
 
 watch(profile, async (newProfile) => {
   if (newProfile) {
