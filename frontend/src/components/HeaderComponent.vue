@@ -43,7 +43,7 @@
   >
     <div class="p-6 flex flex-col justify-between gap-6 h-full">
       <nav
-      v-if="isLoggedIn"
+      v-if="auth.isLoggedIn && auth.profile"
       class="flex flex-col gap-4 font-semibold text-lg">
         <router-link to="/family-dashboard" @click="closeMenu" class="
           -my-1
@@ -100,6 +100,22 @@
       </nav>
 
       <nav
+      v-else-if="auth.isLoggedIn"
+      >
+        <div class="mt-auto">
+          <button
+            @click="logout"
+            class="block w-full text-center bg-red-500 text-white py-3 rounded-full font-semibold cursor-pointer
+             duration-300 shadow-md shadow-primary-background transition-all
+            hover:scale-105 hover:shadow-lg hover:shadow-red-500/50
+            "
+          >
+            Déconnexion
+          </button>
+        </div>
+      </nav>
+
+      <nav
         v-else
         class="flex flex-col gap-4 font-semibold text-lg"
       >
@@ -128,8 +144,6 @@ const auth = useAuthStore()
 
 const menuOpen = ref(false)
 
-const isLoggedIn = auth.isLoggedIn
-
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
 }
@@ -139,7 +153,7 @@ function closeMenu() {
 }
 
 function logout() {
-  auth.clearAccessToken()
+  auth.clear()
   closeMenu()
   router.push("/login")
 }

@@ -40,7 +40,7 @@
         <div
           v-for="child in family.childs"
           :key="child.id"
-          class="bg-white p-4 rounded-lg shadow-md shadow-primary/10 hover:scale-[1.02] transition duration-300"
+          class="bg-primary-100/25 cursor-pointer p-4 rounded-lg shadow-md shadow-primary/10 hover:scale-[1.02] transition duration-300"
         >
           <p class="font-medium text-text">
             {{ child.firstName }} {{ child.lastName }}

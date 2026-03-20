@@ -8,7 +8,16 @@ export const useAuthStore = defineStore('auth', () => {
     const profile = ref<any | null>(null)
     const isReady = ref(false)
 
-    const isLoggedIn = computed(() => accessToken.value)
+    const isLoggedIn = computed(() => {
+        if (accessToken.value != null) {
+          return true
+        }
+        else {
+          return false
+        }
+      }
+    )
+
 
     function setAccessToken(token: string) {
         accessToken.value = token

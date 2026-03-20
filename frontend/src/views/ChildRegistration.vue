@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-2xl mx-auto px-6 py-12 bg-primary/10 rounded-lg shadow-lg shadow-primary/15">
+  <div class="mt-5 max-w-2xl mx-auto px-6 py-12 bg-primary/10 rounded-lg shadow-lg shadow-primary/15">
     <h1 class="text-3xl font-bold color-primary mb-6">
       Inscription à l'activité
     </h1>
@@ -38,9 +38,10 @@
           px-4
           py-2
           h-11
-          border border-secondary
+          border border-primary
           rounded-lg
-          bg-white
+          bg-primary/10
+          text-text
           shadow-sm
           focus:outline-none
           focus:ring-2
