@@ -1,7 +1,8 @@
 <template>
-  <div class="admin">
-    <h1>Page d'administration</h1>
-    <p>Bienvenue</p>
+  <div class="min-h-screen bg-background">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <h2 class="text-2xl font-bold mb-6 color-primary">Page d'administration</h2>
+    </div>
   </div>
 </template>
 
