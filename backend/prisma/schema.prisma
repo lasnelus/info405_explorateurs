@@ -20,6 +20,19 @@ model Guardian {
 
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+  id             String        @id                   @default(cuid())
+  email          String       @unique
+  password       String
+
+  firstName      String
+  lastName       String
+
+  role           Role          @default(GUARDIAN)
+
+  families       Family[]
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 model Family {
@@ -28,7 +41,14 @@ model Family {
 
   guardians      Guardian[]
   childs          Child[]
+  id             String        @id                   @default(cuid())
+  name           String
 
+  guardians      Guardian[]
+  childs          Child[]
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 }
@@ -74,7 +94,6 @@ model EmergencyContact {
 model Allergy {
   id             String        @id                   @default(cuid())
 
-  allergy        String
   child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
   childId        String
 }
@@ -96,12 +115,9 @@ model Queue {
 
   day            DateTime
   state          QueueState
-  acceptedAt     DateTime?
 
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-
-  @@unique([childId, day])
 }
 
 model Slot {
@@ -117,8 +133,6 @@ model Slot {
 
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-
-  @@unique([childId, day])
 }
 
 model Periode {
@@ -140,6 +154,19 @@ enum Role {
   OWNER
   INSTRUCTOR
   GUARDIAN
+}
+model Manager {
+  id             String        @id                   @default(cuid())
+  email          String        @unique
+  password       String
+
+  firstName      String
+  lastName       String
+
+  role           Role          @default(INSTRUCTOR)
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 model Manager {
   id             String        @id                   @default(cuid())
