@@ -1,8 +1,5 @@
 import { accessTokenAuthGuard } from './../auth/accessToken.auth.guard';
-import {
-  Role,
-  type RequestWithUser,
-} from './../../dist/src/auth/dto/payload.d';
+import { Role, type RequestWithUser } from '../auth/dto/payload';
 import {
   BadRequestException,
   Body,
