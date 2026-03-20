@@ -26,17 +26,22 @@ const router = createRouter({
     {
       path: '/family-dashboard',
       name: 'family-dashboard',
-      component: () => import('../views/FamilyDashBoardView.vue')
+      component: () => import('../views/familly/FamilyDashBoardView.vue')
     },
     {
       path: '/inscription',
       name: 'inscription',
-      component: () => import('../views/ChildRegistration.vue')
+      component: () => import('../views/familly/ChildRegistration.vue')
     },
     {
       path: '/family',
       name: 'famille',
-      component: () => import('../views/familySpecific.vue')
+      component: () => import('../views/familly/familySpecific.vue')
+    },
+    {
+      path: '/children',
+      name: 'enfants',
+      component: () => import('../views/familly/ChildrenSpecific.vue')
     },
     {
       path: '/admin',

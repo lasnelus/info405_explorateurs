@@ -37,15 +37,16 @@
       </h2>
 
       <div v-if="family?.childs?.length" class="space-y-3">
-        <div
+        <button
           v-for="child in family.childs"
           :key="child.id"
-          class="bg-primary-100/25 cursor-pointer p-4 rounded-lg shadow-md shadow-primary/10 hover:scale-[1.02] transition duration-300"
+          class="w-full text-left bg-primary-100/25 cursor-pointer p-4 rounded-lg shadow-md shadow-primary/10 hover:scale-[1.02] transition duration-300"
+          @click = "gotoChild(child.id)"
         >
           <p class="font-medium text-text">
             {{ child.firstName }} {{ child.lastName }}
           </p>
-        </div>
+        </button>
       </div>
 
       <p v-else class="text-gray-500 italic">
@@ -71,15 +72,26 @@ const auth = useAuthStore()
 
 const family = ref<any>(null)
 
-onMounted(async () => {
-  if (!auth.isLoggedIn) {
+function gotoChild(childId : string) {
+  router.push({
+    name: "enfants",
+    query : {
+      childId: childId
+    }
+  })
+}
+
+onMounted(async () =>{
+  if(auth.isLoggedIn){
+    await loadProfileIfNeeded(auth)
+    if (auth.profile != null) {
+      const res = await getFamily(familyId)
+      family.value = res.data
+    } else {
+      router.push('/')
+    }
+  } else {
     router.push('/login')
-    return
   }
-
-  await loadProfileIfNeeded(auth)
-
-  const res = await getFamily(familyId)
-  family.value = res.data
 })
 </script>

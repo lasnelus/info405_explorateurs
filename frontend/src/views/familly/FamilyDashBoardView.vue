@@ -103,7 +103,11 @@ const fetchGuardian = async () => {
 onMounted(async () =>{
   if(auth.isLoggedIn){
     await loadProfileIfNeeded(auth)
-    await fetchGuardian()
+    if (auth.profile != null) {
+      await fetchGuardian()
+    } else {
+      router.push('/')
+    }
   } else {
     router.push('/login')
   }

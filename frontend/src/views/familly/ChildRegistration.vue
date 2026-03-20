@@ -150,13 +150,15 @@ watch(profile, async (newProfile) => {
   }
 }, { immediate: true })
 
-onMounted(async () => {
-  if (!auth.isLoggedIn) {
-    router.push("/login")
-    return
+onMounted(async () =>{
+  if(auth.isLoggedIn){
+    await loadProfileIfNeeded(auth)
+    if (auth.profile == null) {
+      router.push('/')
+    }
+  } else {
+    router.push('/login')
   }
-
-  await loadProfileIfNeeded(auth)
 })
 
 function submitRegistration() {
