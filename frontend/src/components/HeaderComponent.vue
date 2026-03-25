@@ -88,7 +88,7 @@
 
         <div class="mt-auto">
           <button
-            @click="logout"
+            @click="HandleLogout"
             class="block w-full text-center bg-red-500 text-white py-3 rounded-full font-semibold cursor-pointer
              duration-300 shadow-md shadow-primary-background transition-all
             hover:scale-105 hover:shadow-lg hover:shadow-red-500/50
@@ -104,7 +104,7 @@
       >
         <div class="mt-auto">
           <button
-            @click="logout"
+            @click="HandleLogout"
             class="block w-full text-center bg-red-500 text-white py-3 rounded-full font-semibold cursor-pointer
              duration-300 shadow-md shadow-primary-background transition-all
             hover:scale-105 hover:shadow-lg hover:shadow-red-500/50
@@ -136,6 +136,7 @@
 <script setup lang="ts">
 import ThemeChooser from "@/components/ThemeChooser.vue"
 import { ref } from "vue"
+import { logout } from "@/services/authServices"
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 
@@ -152,7 +153,8 @@ function closeMenu() {
   menuOpen.value = false
 }
 
-function logout() {
+async function HandleLogout() {
+  await logout()
   auth.clear()
   closeMenu()
   router.push("/login")

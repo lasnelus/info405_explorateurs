@@ -9,6 +9,10 @@ export const login = (email: string, password: string) => {
   return api.post<LoginResponse>("/auth/login", { email, password })
 }
 
+export const logout = () => {
+  return api.post("/auth/logout")
+}
+
 export const signup = (email: string, password: string, firstName: string, lastName: string) => {
   return api.post('/guardian', {
     email,
