@@ -15,10 +15,12 @@ import {
 import { PeriodeService } from './periode.service';
 import { CreatePeriodeDto } from './dto/periodeDto';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { RegisterDto, RegisterInfoDto } from './dto/registerPeriodeDto';
@@ -46,45 +48,72 @@ export class PeriodeController {
     await this.periodeService.createPeriodes(creationBody);
   }
 
-  @Get(':perdiodeId')
-  async getPeriodesById(@Param('perdiodeId') perdiodeId: string) {
-    return await this.periodeService.getPeriodesById(perdiodeId);
+  @Get(':periodeId')
+  async getPeriodesById(@Param('periodeId') periodeId: string) {
+    return await this.periodeService.getPeriodesById(periodeId);
   }
 
-  @Post(':perdiodeId/register')
+  @Post(':periodeId/register')
   @ApiCreatedResponse()
   @ApiUnauthorizedResponse()
   @ApiForbiddenResponse()
   @ApiBearerAuth('accessToken')
   @UseGuards(accessTokenAuthGuard)
   async registerInPeriode(
-    @Param('perdiodeId') perdiodeId: string,
+    @Param('periodeId') periodeId: string,
     @Request() request: RequestWithUser,
     @Body() boby: RegisterDto,
   ): Promise<RegisterInfoDto> {
     if (request.user.role != Role.GUARDIAN) throw new BadRequestException();
     return await this.periodeService.registerInPeriode(
-      perdiodeId,
+      periodeId,
       boby.childId,
       boby.date,
     );
   }
 
-  @Delete(':perdiodeId/register')
+  @Delete(':periodeId/register')
   @ApiCreatedResponse()
   @ApiUnauthorizedResponse()
   @ApiForbiddenResponse()
   @ApiBearerAuth('accessToken')
   @UseGuards(accessTokenAuthGuard)
   async deleteRegisterInPeriode(
-    @Param('perdiodeId') perdiodeId: string,
+    @Param('periodeId') periodeId: string,
     @Request() request: RequestWithUser,
     @Body() boby: RegisterDto,
   ) {
     await this.periodeService.deleteRegisterInPeriode(
-      perdiodeId,
+      periodeId,
       boby.childId,
       boby.date,
     );
+  }
+
+  @Post(':periodeId/queue/:queueId/accept')
+  @ApiCreatedResponse()
+  @ApiUnauthorizedResponse()
+  @ApiBearerAuth('accessToken')
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
+  async accepteSlot(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+    @Param('queueId') queueId: string,
+  ) {
+    await this.periodeService.accepteSlot(periodeId, queueId);
+  }
+
+  @Delete(':periodeId/queue/:queueId')
+  @ApiCreatedResponse()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  @ApiBearerAuth('accessToken')
+  async leaveQueue(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+    @Param('queueId') queueId: string,
+  ) {
+    await this.periodeService.leaveQueue(periodeId, queueId);
   }
 }

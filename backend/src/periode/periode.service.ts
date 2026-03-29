@@ -171,4 +171,42 @@ export class PeriodeService {
       });
     }
   }
+
+  async accepteSlot(periodeId: string, queueId: string) {
+    const queue = await this.prisma.queue.findUnique({
+      where: {
+        id: queueId,
+      },
+    });
+    if (!queue) throw new NotFoundException();
+    if (queue.periodeId != periodeId || queue.state != 'ACCEPTED')
+      throw new BadRequestException();
+    await this.prisma.slot.create({
+      data: {
+        day: queue.day,
+        childId: queue.childId,
+        periodeId: queue.periodeId,
+      },
+    });
+    await this.prisma.queue.delete({
+      where: {
+        id: queue.id,
+      },
+    });
+  }
+
+  async leaveQueue(periodeId: string, queueId: string) {
+    const queue = await this.prisma.queue.findUnique({
+      where: {
+        id: queueId,
+        periodeId: periodeId,
+      },
+    });
+    if (!queue) throw new NotFoundException();
+    await this.prisma.queue.delete({
+      where: {
+        id: queueId,
+      },
+    });
+  }
 }
