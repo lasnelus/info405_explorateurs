@@ -113,57 +113,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
+import { useRouter } from "vue-router"
+import { getActivities as fetchPeriods } from "@/services/activityServices"
 
-// TODO : remplacer par une requete API
+interface Period {
+  id: string
+  ageMin: number
+  ageMax: number
+  capacity: number
+  firstDay: string
+  lastDay: string
+}
 
 interface Activity {
+  id: string
   date: string
   group: string
   title: string
   description: string
 }
 
-const activities = ref<Activity[]>([
-  {
-    date: "2026-03-16",
-    group: "8-12",
-    title: "Atelier peinture",
-    description: "Découverte de la peinture et création libre"
-  },
-  {
-    date: "2026-03-17",
-    group: "8-12",
-    title: "Jeux extérieurs",
-    description: "Jeux de groupe dans la cour"
-  },
-  {
-    date: "2026-03-17",
-    group: "8-12",
-    title: "Atelier peinture",
-    description: "Découverte de la peinture et création libre"
-  },
-  {
-    date: "2026-03-18",
-    group: "13-17",
-    title: "Initiation guitare",
-    description: "Apprendre les premiers accords"
-  },
-  {
-
-    date: "2026-03-16",
-    group: "18+",
-    title: "Ski Alpin",
-    description: "Sortie ski alpin a la journée"
-  }
-])
-
-
+const periods = ref<Period[]>([])
 
 const selectedWeek = ref(getCurrentWeek())
-const selectedGroup = ref("8-12")
+const selectedGroup = ref("6-10")
 
-const groups = ["8-12", "13-17", "18+"]
+const groups = ["6-10", "8-12", "13-17", "18+"]
+
+onMounted(async () => {
+  try {
+    const response = await fetchPeriods()
+    if (response?.data && Array.isArray(response.data)) {
+      periods.value = response.data
+    }
+  } catch (error) {
+    console.error("Erreur chargement des périodes :", error)
+  }
+})
 
 
 
@@ -175,10 +162,13 @@ function getCurrentWeek() {
 }
 
 function getDaysOfWeek(weekStr:string) {
+  const parts = weekStr.split("-W")
+  const yearRaw = Number(parts[0])
+  const weekRaw = Number(parts[1])
+  const year = Number.isFinite(yearRaw) ? yearRaw : new Date().getFullYear()
+  const week = Number.isFinite(weekRaw) ? weekRaw : 1
 
-  const [year, week] = weekStr.split("-W").map(Number)
-
-  const simple = new Date(year,0,1+(week-1)*7)
+  const simple = new Date(year, 0, 1 + (week - 1) * 7)
   const dow = simple.getDay()
 
   const monday = new Date(simple)
@@ -202,14 +192,35 @@ const weekDays = computed(()=>{
 
 
 function getActivities(day:Date){
+  const [dateStr] = day.toISOString().split("T")
+  if (!dateStr) return []
 
-  const dateStr = day.toISOString().split("T")[0]
+  const selectedRange = selectedGroup.value.split("-").map(Number)
+  const selectedMin = selectedRange[0] || 0
+  const selectedMax = selectedRange[1] || 999
 
-  return activities.value.filter(
-    a =>
-      a.date === dateStr &&
-      a.group === selectedGroup.value
-  )
+  const matches = periods.value
+    .filter(p => {
+      const first = new Date(p.firstDay)
+      const last = new Date(p.lastDay)
+      const current = new Date(dateStr)
+      current.setHours(0,0,0,0)
+      first.setHours(0,0,0,0)
+      last.setHours(0,0,0,0)
+
+      const inRange = current >= first && current <= last
+      const groupMatch = p.ageMax >= selectedMin && p.ageMin <= selectedMax
+      return inRange && groupMatch
+    })
+    .map(p => ({
+      id: p.id,
+      date: dateStr,
+      group: `${p.ageMin}-${p.ageMax}`,
+      title: `Période ${p.ageMin}-${p.ageMax}`,
+      description: `Du ${formatDate(p.firstDay)} au ${formatDate(p.lastDay)} (capacité ${p.capacity})`
+    }))
+
+  return matches
 }
 
 
@@ -222,18 +233,23 @@ function formatDay(day:Date){
   })
 }
 
+function formatDate(dateStr:string){
+  return new Date(dateStr).toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  })
+}
 
 
 // inscription des enfants à une activité
-import { useRouter } from "vue-router"
-
 const router = useRouter()
 
-function goToRegistration(activity:any){
+function goToRegistration(activity: Activity){
   router.push({
     name: "inscription",
     query: {
-      activity: activity.title,
+      periodId: activity.id,
       date: activity.date
     }
   })

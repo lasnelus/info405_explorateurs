@@ -79,7 +79,7 @@
           <div v-if="child.slots.length > 0">
             <ul class="space-y-2">
               <li v-for="slot in child.slots" :key="slot.id" class="text-text/70">
-                {{ slot.activity.name }} - {{ formatDate(slot.date) }}
+                {{ slot.id }} - {{ slot.day }}
               </li>
             </ul>
           </div>
@@ -92,7 +92,7 @@
           <div v-if="child.queues.length > 0">
             <ul class="space-y-2">
               <li v-for="queue in child.queues" :key="queue.id" class="text-text/70">
-                {{ queue.activity.name }} - {{ formatDate(queue.date) }}
+                {{ queue.activity.name }} - {{ queue.date }}
               </li>
             </ul>
           </div>

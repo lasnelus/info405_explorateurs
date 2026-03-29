@@ -7,10 +7,10 @@
     <!-- Activity Info -->
     <div class="bg-primary-background p-6 rounded-lg shadow-md shadow-primary/15 mb-6">
       <p class="text-lg font-semibold text-text">
-        {{ activity }}
+        Période sélectionnée : {{ periodId }}
       </p>
       <p class="text-sm text-text/60">
-        {{ date }}
+        Date : {{ date }}
       </p>
     </div>
 
@@ -98,12 +98,13 @@ import { useRoute, useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 import { getFamily } from "@/services/familyServices"
 import { loadProfileIfNeeded } from "@/services/authServices"
+import { registerChildToActivity } from "@/services/activityServices"
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 
-const activity = computed(() => (route.query.activity as string) || "")
+const periodId = computed(() => (route.query.periodId as string) || "")
 const date = computed(() => (route.query.date as string) || "")
 
 const profile = computed(() => auth.profile)
@@ -162,6 +163,17 @@ onMounted(async () =>{
 })
 
 function submitRegistration() {
-  console.log("Enfant choisi :", selectedOption.value)
+  if (!selectedOption.value || !periodId.value || !date.value) {
+    console.error("Informations manquantes pour l'inscription")
+    return
+  }
+
+  const isoDate = date.value  // Already in yyyy-mm-dd format
+
+  console.log("Enfant sélectionné :", selectedOption.value)
+  console.log("Période ID :", periodId.value)
+  console.log("Date ISO :", isoDate)
+
+  registerChildToActivity(selectedOption.value, periodId.value, isoDate)
 }
 </script>
