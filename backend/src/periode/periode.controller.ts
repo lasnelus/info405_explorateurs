@@ -4,6 +4,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
@@ -14,6 +15,7 @@ import {
 import { PeriodeService } from './periode.service';
 import { CreatePeriodeDto } from './dto/periodeDto';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -34,6 +36,7 @@ export class PeriodeController {
   @ApiCreatedResponse()
   @ApiUnauthorizedResponse()
   @ApiForbiddenResponse()
+  @ApiBearerAuth('accessToken')
   @UseGuards(accessTokenAuthGuard)
   async createPeriodes(
     @Body() creationBody: CreatePeriodeDto,
@@ -52,6 +55,7 @@ export class PeriodeController {
   @ApiCreatedResponse()
   @ApiUnauthorizedResponse()
   @ApiForbiddenResponse()
+  @ApiBearerAuth('accessToken')
   @UseGuards(accessTokenAuthGuard)
   async registerInPeriode(
     @Param('perdiodeId') perdiodeId: string,
@@ -60,6 +64,24 @@ export class PeriodeController {
   ): Promise<RegisterInfoDto> {
     if (request.user.role != Role.GUARDIAN) throw new BadRequestException();
     return await this.periodeService.registerInPeriode(
+      perdiodeId,
+      boby.childId,
+      boby.date,
+    );
+  }
+
+  @Delete(':perdiodeId/register')
+  @ApiCreatedResponse()
+  @ApiUnauthorizedResponse()
+  @ApiForbiddenResponse()
+  @ApiBearerAuth('accessToken')
+  @UseGuards(accessTokenAuthGuard)
+  async deleteRegisterInPeriode(
+    @Param('perdiodeId') perdiodeId: string,
+    @Request() request: RequestWithUser,
+    @Body() boby: RegisterDto,
+  ) {
+    await this.periodeService.deleteRegisterInPeriode(
       perdiodeId,
       boby.childId,
       boby.date,

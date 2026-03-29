@@ -1,5 +1,9 @@
 import { PrismaService } from './../prisma/prisma.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePeriodeDto, PeriodeInfoDto } from './dto/periodeDto';
 import { SlotInfoDto } from './dto/slotDto';
 import {
@@ -57,7 +61,7 @@ export class PeriodeService {
   ): Promise<RegisterInfoDto> {
     const date = this.extractDateFromCompleteDate(new Date(dateIso));
     const periode = await this.getPeriodesById(perdiodeId);
-    if (!periode || (periode.firstDay <= date && periode.lastDay >= date))
+    if (!periode || date < periode.firstDay || date > periode.lastDay)
       throw new BadRequestException();
     const slots = await this.getSlotsByPeriodeAndDay(perdiodeId, date);
     let res: RegisterInfoDto;
@@ -82,5 +86,81 @@ export class PeriodeService {
       res = { state: stateRegisterPeriode.IN_QUEUE };
     }
     return res;
+  }
+
+  async isChildInQueue(childId: string, date: Date): Promise<boolean> {
+    const queue = await this.prisma.queue.findFirst({
+      where: {
+        childId,
+        day: date,
+      },
+    });
+    return !!queue;
+  }
+
+  async isChildInSlot(childId: string, date: Date): Promise<boolean> {
+    const slots = await this.prisma.slot.findFirst({
+      where: {
+        childId,
+        day: date,
+      },
+    });
+    return !!slots;
+  }
+
+  async deleteRegisterInPeriode(
+    periodeId: string,
+    childId: string,
+    dateIso: string,
+  ) {
+    const date = this.extractDateFromCompleteDate(new Date(dateIso));
+    const isChildInQueue = await this.isChildInQueue(childId, date);
+    const isChildInSlot = await this.isChildInSlot(childId, date);
+    if (!isChildInQueue && !isChildInSlot) throw new NotFoundException();
+    if (isChildInQueue) {
+      await this.prisma.queue.delete({
+        where: {
+          periodeId: periodeId,
+          childId_day: {
+            childId,
+            day: date,
+          },
+        },
+      });
+    } else {
+      await this.prisma.slot.delete({
+        where: {
+          periodeId: periodeId,
+          childId_day: {
+            childId,
+            day: date,
+          },
+        },
+      });
+    }
+    const userToAcceptInQueue = await this.prisma.queue.findFirst({
+      where: {
+        periodeId: periodeId,
+        day: date,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+    if (userToAcceptInQueue) {
+      await this.prisma.queue.update({
+        where: {
+          childId_day: {
+            childId: userToAcceptInQueue.childId,
+            day: date,
+          },
+          periodeId: periodeId,
+        },
+        data: {
+          state: 'ACCEPTED',
+          acceptedAt: new Date(),
+        },
+      });
+    }
   }
 }
