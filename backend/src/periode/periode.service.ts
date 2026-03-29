@@ -55,22 +55,29 @@ export class PeriodeService {
   }
 
   async registerInPeriode(
-    perdiodeId: string,
+    periodeId: string,
     childId: string,
     dateIso: string,
   ): Promise<RegisterInfoDto> {
     const date = this.extractDateFromCompleteDate(new Date(dateIso));
-    const periode = await this.getPeriodesById(perdiodeId);
+    const periode = await this.getPeriodesById(periodeId);
     if (!periode || date < periode.firstDay || date > periode.lastDay)
       throw new BadRequestException();
-    const slots = await this.getSlotsByPeriodeAndDay(perdiodeId, date);
+    const slots = await this.getSlotsByPeriodeAndDay(periodeId, date);
     let res: RegisterInfoDto;
-    if (slots.length < periode.capacity) {
+    const chilsInQueueAccepted = await this.prisma.queue.findFirst({
+      where: {
+        periodeId: periodeId,
+        day: date,
+        state: 'ACCEPTED',
+      },
+    });
+    if (slots.length < periode.capacity && !chilsInQueueAccepted) {
       await this.prisma.slot.create({
         data: {
           day: date,
           childId: childId,
-          periodeId: perdiodeId,
+          periodeId: periodeId,
         },
       });
       res = { state: stateRegisterPeriode.ACCEPTED };
@@ -79,7 +86,7 @@ export class PeriodeService {
         data: {
           day: date,
           childId: childId,
-          periodeId: perdiodeId,
+          periodeId: periodeId,
           state: 'PENDING',
         },
       });
