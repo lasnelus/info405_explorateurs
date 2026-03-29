@@ -142,6 +142,7 @@ export class PeriodeService {
       where: {
         periodeId: periodeId,
         day: date,
+        state: 'PENDING',
       },
       orderBy: {
         createdAt: 'asc',
