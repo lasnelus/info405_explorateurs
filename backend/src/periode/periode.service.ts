@@ -1,6 +1,7 @@
 import { PrismaService } from './../prisma/prisma.service';
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -64,6 +65,9 @@ export class PeriodeService {
     if (!periode || date < periode.firstDay || date > periode.lastDay)
       throw new BadRequestException();
     const slots = await this.getSlotsByPeriodeAndDay(periodeId, date);
+    const isChildInQueue = await this.isChildInQueue(childId, date);
+    const isChildInSlot = await this.isChildInSlot(childId, date);
+    if (isChildInQueue && isChildInSlot) throw new ConflictException();
     let res: RegisterInfoDto;
     const chilsInQueueAccepted = await this.prisma.queue.findFirst({
       where: {
