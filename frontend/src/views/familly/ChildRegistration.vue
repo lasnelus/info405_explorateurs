@@ -61,6 +61,8 @@
       </p>
     </div>
 
+    <p v-if="errorMessage" class="mb-4 text-center text-red-600">{{ errorMessage }}</p>
+
     <!-- Action Button -->
     <button
       :disabled="!selectedOption"
@@ -107,6 +109,7 @@ const date = computed(() => (route.query.date as string) || "")
 const profile = computed(() => auth.profile)
 
 const selectedOption = ref("")
+const errorMessage = ref("")
 
 const options = ref<Array<{ id: string; label: string; value: string }>>([])
 
@@ -159,15 +162,23 @@ onMounted(async () =>{
   }
 })
 
-function submitRegistration() {
+async function submitRegistration() {
+  errorMessage.value = ""
+
   if (!selectedOption.value || !periodId.value || !date.value) {
-    console.error("Informations manquantes pour l'inscription")
+    errorMessage.value = "Informations manquantes pour l'inscription"
     return
-  }else{
-    try{
-      registerChildToActivity(selectedOption.value, periodId.value, date.value)
-    }catch{
-      
+  }
+
+  try {
+    await registerChildToActivity(selectedOption.value, periodId.value, date.value)
+    router.push('/family')
+  } catch (error: unknown) {
+    const errorStatus = (error as any)?.response?.status
+    if (errorStatus === 409 || errorStatus === 500) {
+      errorMessage.value = "Cet enfant est déjà inscrit ce jour-ci."
+    } else {
+      errorMessage.value = "Une erreur est survenue lors de l'inscription."
     }
   }
 }
