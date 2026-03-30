@@ -7,9 +7,6 @@
     <!-- Activity Info -->
     <div class="bg-primary-background p-6 rounded-lg shadow-md shadow-primary/15 mb-6">
       <p class="text-lg font-semibold text-text">
-        Période sélectionnée : {{ periodId }}
-      </p>
-      <p class="text-sm text-text/60">
         Date : {{ date }}
       </p>
     </div>
@@ -166,14 +163,12 @@ function submitRegistration() {
   if (!selectedOption.value || !periodId.value || !date.value) {
     console.error("Informations manquantes pour l'inscription")
     return
+  }else{
+    try{
+      registerChildToActivity(selectedOption.value, periodId.value, date.value)
+    }catch{
+      
+    }
   }
-
-  const isoDate = date.value  // Already in yyyy-mm-dd format
-
-  console.log("Enfant sélectionné :", selectedOption.value)
-  console.log("Période ID :", periodId.value)
-  console.log("Date ISO :", isoDate)
-
-  registerChildToActivity(selectedOption.value, periodId.value, isoDate)
 }
 </script>

@@ -41,7 +41,7 @@ const router = createRouter({
     {
       path: '/children',
       name: 'enfants',
-      component: () => import('../views/familly/ChildrenSpecific.vue')
+      component: () => import('../views/familly/ChildSpecific.vue')
     },
     {
       path: '/admin',

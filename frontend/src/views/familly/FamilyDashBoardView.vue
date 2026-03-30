@@ -138,7 +138,7 @@ const allRegistrations = computed(() => {
     family.childs?.flatMap(child => {
       const confirmed = (child.slots || []).map(slot => ({
         id: slot.id,
-        activityTitle: `Activité ${slot.periodeId}`, // à adapter si tu as plus d'infos
+        activityTitle: `Activité ${slot.periodeId}`,
         childName: `${child.firstName} ${child.lastName}`,
         status: "CONFIRMED",
         statusLabel: "Inscrit"
@@ -156,6 +156,8 @@ const allRegistrations = computed(() => {
     }) || []
   )
 })
+
+
 function goToFamily(familyId:string){
   router.push({
     name: "famille",

@@ -191,8 +191,26 @@ const weekDays = computed(()=>{
 
 
 
-function getActivities(day:Date){
-  const [dateStr] = day.toISOString().split("T")
+function toLocalDate(dateInput: Date | string) {
+  if (typeof dateInput === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+    const [year, month, day] = dateInput.split("-").map(Number)
+    return new Date(year, month - 1, day)
+  }
+
+  const date = new Date(dateInput)
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+}
+
+function formatISODateLocal(date: Date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+function getActivities(day: Date) {
+  const current = toLocalDate(day)
+  const dateStr = formatISODateLocal(current)
   if (!dateStr) return []
 
   const selectedRange = selectedGroup.value.split("-").map(Number)
@@ -201,12 +219,8 @@ function getActivities(day:Date){
 
   const matches = periods.value
     .filter(p => {
-      const first = new Date(p.firstDay)
-      const last = new Date(p.lastDay)
-      const current = new Date(dateStr)
-      current.setHours(0,0,0,0)
-      first.setHours(0,0,0,0)
-      last.setHours(0,0,0,0)
+      const first = toLocalDate(p.firstDay)
+      const last = toLocalDate(p.lastDay)
 
       const inRange = current >= first && current <= last
       const groupMatch = p.ageMax >= selectedMin && p.ageMin <= selectedMax
