@@ -172,10 +172,15 @@ async function submitRegistration() {
 
   try {
     await registerChildToActivity(selectedOption.value, periodId.value, date.value)
-    router.push('/family')
+    router.push({
+    name: "enfants",
+    query : {
+      childId: selectedOption.value
+    }
+  })
   } catch (error: unknown) {
     const errorStatus = (error as any)?.response?.status
-    if (errorStatus === 409 || errorStatus === 500) {
+    if (errorStatus === 409) {
       errorMessage.value = "Cet enfant est déjà inscrit ce jour-ci."
     } else {
       errorMessage.value = "Une erreur est survenue lors de l'inscription."

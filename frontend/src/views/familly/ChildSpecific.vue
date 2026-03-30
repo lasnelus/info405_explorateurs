@@ -23,7 +23,7 @@
             </div>
             <div>
               <h3 class="font-semibold mb-2 text-primary">Date de Naissance</h3>
-              <p class="text-text/70">{{ child.birthDate }}</p>
+              <p class="text-text/70">{{ formatDate(child.birthDate) }}</p>
             </div>
             <div>
               <h3 class="font-semibold mb-2 text-primary">Contraintes Alimentaires</h3>

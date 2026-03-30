@@ -80,28 +80,111 @@ import { getProfile, type Guardian, type Family } from "@/services/guardianServi
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 import { loadProfileIfNeeded } from "@/services/authServices"
+import { getFamily, getChild } from "@/services/familyServices"
 
 const auth = useAuthStore()
-
 const router = useRouter()
 
 const guardian = ref<Guardian | null>(null)
 const families = ref<Family[]>([])
+const familiesWithChildren = ref<any[]>([])
+const allSlots = ref<any[]>([])
+const allQueues = ref<any[]>([])
 const error = ref<string | null>(null)
+
+const allUpcomingActivities = computed(() =>
+  allSlots.value.map((slot: any) => ({
+    id: `${slot.id}-${slot.childId ?? slot.child?.id ?? 'unknown'}`,
+    title:  formatDate(slot.day),
+    childName: slot.childName,
+    statusLabel: "CONFIRMED",
+  }))
+)
+
+const allRegistrations = computed(() =>
+  allQueues.value.map((queue: any) => ({
+    id: queue.id,
+    childName: queue.childName,
+    activityTitle: formatDate(queue.date),
+    status: "PENDING",
+    statusLabel: "EN ATTENTE",
+  }))
+)
 
 const fetchGuardian = async () => {
   try {
     const res = await getProfile()
     guardian.value = res.data
     families.value = res.data.families || []
+    await fetchFamilyAndChildren()
   } catch (e) {
     error.value = "Impossible de charger les données"
     console.error(e)
   }
 }
 
-onMounted(async () =>{
-  if(auth.isLoggedIn){
+const fetchFamilyAndChildren = async () => {
+  try {
+    const loaded = await Promise.all(
+      families.value.map(async (family) => {
+        const familyRes = await getFamily(family.id)
+        const familyData = familyRes.data
+        const childDetails = await Promise.all(
+          (familyData.childs || []).map(async (child: any) => {
+            const childRes = await getChild(child.id)
+            return childRes.data
+          }),
+        )
+
+        return {
+          ...familyData,
+          childs: childDetails,
+        }
+      }),
+    )
+
+    familiesWithChildren.value = loaded
+
+    allSlots.value = loaded.flatMap((family) =>
+      (family.childs || []).flatMap((child: any) =>
+        (child.slots || []).map((slot: any) => ({
+          ...slot,
+          childId: child.id,
+          childName: `${child.firstName} ${child.lastName}`,
+          familyName: family.name,
+        })),
+      ),
+    )
+
+    allQueues.value = loaded.flatMap((family) =>
+      (family.childs || []).flatMap((child: any) =>
+        (child.queues || []).map((queue: any) => ({
+          ...queue,
+          childId: child.id,
+          childName: `${child.firstName} ${child.lastName}`,
+          familyName: family.name,
+        })),
+      ),
+    )
+  } catch (e) {
+    error.value = "Impossible de charger les données des familles/enfants"
+    console.error(e)
+  }
+}
+
+function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) return dateString
+  return date.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+}
+
+onMounted(async () => {
+  if (auth.isLoggedIn) {
     await loadProfileIfNeeded(auth)
     if (auth.profile != null) {
       await fetchGuardian()
@@ -113,57 +196,12 @@ onMounted(async () =>{
   }
 })
 
-const allUpcomingActivities = computed(() => {
-  return families.value.flatMap(family =>
-    family.childs?.flatMap(child => [
-      ...(child.slots || []).map(slot => ({
-        id: slot.id,
-        title: `Activité ${slot.periodeId}`,
-        childName: `${child.firstName} ${child.lastName}`,
-        statusLabel: "Activité confirmée"
-      })),
-      ...(child.queues || []).map(queue => ({
-        id: queue.id,
-        title: `Activité ${queue.periodeId}`,
-        childName: `${child.firstName} ${child.lastName}`,
-        statusLabel: "Activité prévue en attente de confirmation"
-      }))
-    ]) || []
-  )
-})
-
-
-const allRegistrations = computed(() => {
-  return families.value.flatMap(family =>
-    family.childs?.flatMap(child => {
-      const confirmed = (child.slots || []).map(slot => ({
-        id: slot.id,
-        activityTitle: `Activité ${slot.periodeId}`,
-        childName: `${child.firstName} ${child.lastName}`,
-        status: "CONFIRMED",
-        statusLabel: "Inscrit"
-      }))
-
-      const pending = (child.queues || []).map(queue => ({
-        id: queue.id,
-        activityTitle: `Activité ${queue.periodeId}`,
-        childName: `${child.firstName} ${child.lastName}`,
-        status: "PENDING",
-        statusLabel: "En attente"
-      }))
-
-      return [...confirmed, ...pending]
-    }) || []
-  )
-})
-
-
-function goToFamily(familyId:string){
+function goToFamily(familyId: string) {
   router.push({
     name: "famille",
     query: {
-      familyId: familyId
-    }
+      familyId: familyId,
+    },
   })
 }
 </script>
