@@ -23,7 +23,7 @@
             </div>
             <div>
               <h3 class="font-semibold mb-2 text-primary">Date de Naissance</h3>
-              <p class="text-text/70">{{ child.birthDate }}</p>
+              <p class="text-text/70">{{ formatDate(child.birthDate) }}</p>
             </div>
             <div>
               <h3 class="font-semibold mb-2 text-primary">Contraintes Alimentaires</h3>
@@ -75,28 +75,28 @@
 
 
         <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
-          <h2 class="text-2xl font-bold mb-6 text-primary">Activités Inscrites</h2>
+          <h2 class="text-2xl font-bold mb-6 text-primary">Jours Inscrits</h2>
           <div v-if="child.slots.length > 0">
             <ul class="space-y-2">
               <li v-for="slot in child.slots" :key="slot.id" class="text-text/70">
-                {{ slot.activity.name }} - {{ formatDate(slot.date) }}
+                <time :datetime="slot.day">{{ formatDate(slot.day) }}</time>
               </li>
             </ul>
           </div>
-          <p v-else class="text-text/70">Aucune activité inscrite</p>
+          <p v-else class="text-text/70">Aucun jour inscrit</p>
         </div>
 
 
-        <div class="bg-white rounded-lg shadow-lg shadow-primary/15 p-8">
-          <h2 class="text-2xl font-bold mb-6 text-primary">Activités en Attente</h2>
+        <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
+          <h2 class="text-2xl font-bold mb-6 text-primary">Jours en Attente</h2>
           <div v-if="child.queues.length > 0">
             <ul class="space-y-2">
               <li v-for="queue in child.queues" :key="queue.id" class="text-text/70">
-                {{ queue.activity.name }} - {{ formatDate(queue.date) }}
+                <time :datetime="queue.date">{{ formatDate(queue.date) }}</time>
               </li>
             </ul>
           </div>
-          <p v-else class="text-text/70">Aucune activité en attente</p>
+          <p v-else class="text-text/70">Aucun jour en attente</p>
         </div>
       </div>
       <div v-else class="flex justify-center items-center py-12">
@@ -121,6 +121,17 @@ const auth = useAuthStore()
 const childId = route.query.childId
 
 const child = ref(null)
+
+function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) return dateString
+  return date.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+}
 
 onMounted(async () =>{
   if(auth.isLoggedIn){

@@ -7,10 +7,7 @@
     <!-- Activity Info -->
     <div class="bg-primary-background p-6 rounded-lg shadow-md shadow-primary/15 mb-6">
       <p class="text-lg font-semibold text-text">
-        {{ activity }}
-      </p>
-      <p class="text-sm text-text/60">
-        {{ date }}
+        Date : {{ date }}
       </p>
     </div>
 
@@ -64,6 +61,8 @@
       </p>
     </div>
 
+    <p v-if="errorMessage" class="mb-4 text-center text-red-600">{{ errorMessage }}</p>
+
     <!-- Action Button -->
     <button
       :disabled="!selectedOption"
@@ -98,17 +97,19 @@ import { useRoute, useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 import { getFamily } from "@/services/familyServices"
 import { loadProfileIfNeeded } from "@/services/authServices"
+import { registerChildToActivity } from "@/services/activityServices"
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 
-const activity = computed(() => (route.query.activity as string) || "")
+const periodId = computed(() => (route.query.periodId as string) || "")
 const date = computed(() => (route.query.date as string) || "")
 
 const profile = computed(() => auth.profile)
 
 const selectedOption = ref("")
+const errorMessage = ref("")
 
 const options = ref<Array<{ id: string; label: string; value: string }>>([])
 
@@ -161,7 +162,29 @@ onMounted(async () =>{
   }
 })
 
-function submitRegistration() {
-  console.log("Enfant choisi :", selectedOption.value)
+async function submitRegistration() {
+  errorMessage.value = ""
+
+  if (!selectedOption.value || !periodId.value || !date.value) {
+    errorMessage.value = "Informations manquantes pour l'inscription"
+    return
+  }
+
+  try {
+    await registerChildToActivity(selectedOption.value, periodId.value, date.value)
+    router.push({
+    name: "enfants",
+    query : {
+      childId: selectedOption.value
+    }
+  })
+  } catch (error: unknown) {
+    const errorStatus = (error as any)?.response?.status
+    if (errorStatus === 409) {
+      errorMessage.value = "Cet enfant est déjà inscrit ce jour-ci."
+    } else {
+      errorMessage.value = "Une erreur est survenue lors de l'inscription."
+    }
+  }
 }
 </script>

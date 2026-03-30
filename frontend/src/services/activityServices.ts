@@ -1,12 +1,16 @@
 import api from "@/services/api"
 
-export interface Activity {
-  id: number
-  title: string
-  date: string   // type: "2025-02-01T10:00:00"
-  group: number
+export const getActivities = () => {
+  return api.get("/periode")
 }
 
-export const getActivities = () => {
-  return api.get<Activity[]>("/activities")
+export const getActivity = (id: number) => {
+  return api.get(`/periode/${id}`)
+}
+
+export const registerChildToActivity = (childId: string, activityId: string, date: string) => {
+  return api.post(`/periode/${activityId}/register`, {
+    childId,
+    date
+  })
 }

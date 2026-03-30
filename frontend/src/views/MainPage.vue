@@ -93,7 +93,19 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { loadProfileIfNeeded } from '@/services/authServices';
+
+const auth = useAuthStore()
+
 import WeeklySchedule from "@/components/WeeklySchedule.vue"
+
+
+onMounted(async () =>{
+  if(auth.isLoggedIn){
+    await loadProfileIfNeeded(auth)
+}})
 </script>
 
 <style scoped>

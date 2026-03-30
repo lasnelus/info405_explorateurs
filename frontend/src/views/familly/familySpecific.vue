@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
-import { getFamily} from "@/services/familyServices"
+import { getFamily } from "@/services/familyServices"
 import { useAuthStore } from "@/stores/auth"
 import { useRoute, useRouter } from "vue-router"
 import { loadProfileIfNeeded } from "@/services/authServices"
