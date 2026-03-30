@@ -99,9 +99,21 @@
         </div>
       </nav>
 
+      <!-- Admin -->
       <nav
       v-else-if="auth.isLoggedIn"
+      class="flex flex-col gap-4 font-semibold text-lg"
       >
+        <router-link to="/admin" @click="closeMenu" class="
+          -my-1
+          py-1
+          text-center
+          rounded-3xl
+          duration-300
+          text-text
+          bg-primary/25
+          hover:bg-primary/50
+        ">Panel Admin</router-link>
         <div class="mt-auto">
           <button
             @click="HandleLogout"
@@ -115,6 +127,7 @@
         </div>
       </nav>
 
+      <!-- Déconnecté -->
       <nav
         v-else
         class="flex flex-col gap-4 font-semibold text-lg"
