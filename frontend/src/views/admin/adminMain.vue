@@ -21,6 +21,7 @@
         <div class="mt-auto">
           <button
           @click="switch_to(0)"
+          id="Aujourdhui"
           class="
           activeButton
 
@@ -35,6 +36,7 @@
           <!-- Demain/Semaine (owner) -->
           <button
           @click="switch_to(1)"
+          id="Demain"
           class="
 
           btn-side-panel
@@ -46,6 +48,7 @@
           <!-- Activitées -->
           <button
           @click="switch_to(2)"
+          id="Activitees"
           class="
 
           btn-side-panel
@@ -57,6 +60,7 @@
           <!-- Groupes -->
           <button
           @click="switch_to(3)"
+          id="Groupes"
           class="
 
           btn-side-panel
@@ -68,6 +72,7 @@
           <!-- Enfants -->
           <button
           @click="switch_to(4)"
+          id="Enfants"
           class="
 
           btn-side-panel
@@ -79,6 +84,7 @@
           <!-- Familles -->
           <button
           @click="switch_to(5)"
+          id="Familles"
           class="
 
           btn-side-panel
@@ -90,6 +96,7 @@
           <!-- Animateurs -->
           <button
           @click="switch_to(6)"
+          id="Animateurs"
           class="
 
           btn-side-panel
@@ -102,13 +109,16 @@
         </div>
       </div>
 
-      <div class="
+      <div
+      id="componentContainer"
+      class="
       w-full h-auto pl-3
       rounded-r-xl
       rounded-tl-xl
       bg-primary/25
       ">
 
+      <component :is="currentComponent"/>
 
       </div>
 
@@ -120,17 +130,14 @@
 
 </template>
 
-<style>
-    .activeButton {
-      background-color: color-mix(in oklab, var(--color-primary-100) /* var(--color-primary) */ 50%, transparent);
-    }
-</style>
-
 <script setup lang="ts">
+import TodayInfo from '@/components/admin/TodayInfo.vue'
+import TomorowInfo from '@/components/admin/TomorowInfo.vue'
 
 import router from '@/router'
 import { role } from '@/services/authServices'
 import { onMounted } from 'vue'
+import { ref } from 'vue'
 
 const roleUser = await role()
 
@@ -142,13 +149,69 @@ onMounted(async () =>{
 })
 
 
+// Component stuff
+
+const currentComponent = ref(TodayInfo);
+
+
+// TODO - Add components to switch
 function switch_to(pannel: number) {
-  
+
+  const button = document.querySelector(".activeButton");
+  button?.classList.remove("activeButton");
+
+  if (conteneur_component != null) {
+    switch (pannel) {
+      // Aujourdhui
+      case 0:
+        document.querySelector("#Aujourdhui")?.classList.add("activeButton");
+        conteneur_component.component = "<TodayInfo />";
+        break;
+
+        // Demain
+      case 1:
+        document.querySelector("#Demain")?.classList.add("activeButton");
+        conteneur_component.innerHTML = "<TomorowInfo />";
+        break;
+
+      // Activitees
+      case 2:
+        document.querySelector("#Activitees")?.classList.add("activeButton");
+        break;
+
+      // Groupes
+      case 3:
+        document.querySelector("#Groupes")?.classList.add("activeButton");
+        break;
+
+      // Enfants
+      case 4:
+        document.querySelector("#Enfants")?.classList.add("activeButton");
+        break;
+
+        // Familles
+      case 5:
+          document.querySelector("#Familles")?.classList.add("activeButton");
+        break;
+
+      // Animateurs
+      case 6:
+        document.querySelector("#Animateurs")?.classList.add("activeButton");
+        break;
+
+      default:
+        break;
+    }
+  }
 }
 
 </script>
 
 <style scoped>
+
+.activeButton {
+  background-color: var(--color-primary);
+}
 
 @layer components {
   .btn-side-panel {
