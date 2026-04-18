@@ -80,7 +80,6 @@ onMounted(async () => {
 
 const currentComponent = ref(TodayInfo)
 
-// TODO - Add components to switch
 function switch_to(pannel: number) {
   const button = document.querySelector('.activeButton')
   button?.classList.remove('activeButton')
@@ -141,7 +140,7 @@ function switch_to(pannel: number) {
   .btn-side-panel {
     display: block;
     width: 100%;
-    padding-block: calc(var(--spacing) * 2);
+    padding-block: calc(var(--spacing) * 3);
 
     background-color: color-mix(
       in oklab,
