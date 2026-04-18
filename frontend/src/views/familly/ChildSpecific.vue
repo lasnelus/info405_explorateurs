@@ -3,14 +3,14 @@
     <div class="max-w-4xl mx-auto px-6 py-12">
       <div v-if="child" class="space-y-8">
 
-        <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
+        <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h1 class="text-3xl font-bold mb-4 text-primary">
             {{ child.firstName }} {{ child.lastName }}
           </h1>
         </div>
 
 
-        <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
+        <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Informations Personnelles</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -33,7 +33,7 @@
         </div>
 
 
-        <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
+        <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Allergies</h2>
           <div v-if="child.allergies.length > 0">
             <ul class="space-y-2">
@@ -46,7 +46,7 @@
         </div>
 
 
-        <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
+        <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Contacts d'Urgence</h2>
           <div v-if="child.EmergencyContact.length > 0">
             <div class="space-y-4">
@@ -61,7 +61,7 @@
         </div>
 
 
-        <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
+        <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Familles</h2>
           <div v-if="child.families.length > 0">
             <ul class="space-y-2">
@@ -74,7 +74,7 @@
         </div>
 
 
-        <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
+        <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Jours Inscrits</h2>
           <div v-if="child.slots.length > 0">
             <ul class="space-y-2">
@@ -87,7 +87,7 @@
         </div>
 
 
-        <div class="bg-primary-background rounded-lg shadow-lg shadow-primary/15 p-8">
+        <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Jours en Attente</h2>
           <div v-if="child.queues.length > 0">
             <ul class="space-y-2">

@@ -12,11 +12,10 @@ body {
 :root {
 
   /* Info, error, success colours & alpha values */
-  --info: #3A7CA5;
-
-  --error: #E07A5F;
-
-  --success: #7FB3A2;
+  --color-success: #4CAF50;
+  --color-info: #2196F3;
+  --color-warn: #FF9800;
+  --color-error: #F44336;
 
   /* default */
   --color-primary-background: #ECF4F8;
@@ -43,6 +42,7 @@ body {
 /*           CLAIR           */
 /* ========================= */
 .light {
+
   &.bleu {
     --color-primary-background: var(--color-primary-light);
     --color-primary: #3A7CA5;
@@ -58,6 +58,9 @@ body {
     --color-secondary-100: #A8DADC;
     --color-secondary-200: #6CADB2;
     --color-secondary-300: #27828A;
+
+    --color-success: #30c935;
+    --color-info: var(--color-primary-200);
   }
 
   &.vert {
@@ -82,7 +85,7 @@ body {
     --color-primary: #F1C453;
     --color-primary-light: #FDF7E7;
     --color-primary-100: #FFD866;
-    --color-primay-200: #EABC42;
+    --color-primary-200: #EABC42;
     --color-primary-300: #D4A017;
 
     --color-text: #181202;
@@ -117,6 +120,7 @@ body {
 /* ========================= */
 
 .dark {
+
   &.bleu {
     --color-primary-background: #132835;
     --color-primary: #3A7CA5;
@@ -148,7 +152,7 @@ body {
     --color-primary: #F1C453;
     --color-primary-light: #FDF7E7;
     --color-primary-100: #FFD866;
-    --color-primay-200: #EABC42;
+    --color-primary-200: #EABC42;
     --color-primary-300: #D4A017;
 
     --color-text: var(--color-primary-light);
@@ -189,7 +193,8 @@ body {
 
     --color-text : var(--color-text);
 
-    --color-success: var(--success);
-    --color-info: var(--info);
-    --color-error: var(--error);
+    --color-success: var(--color-success);
+    --color-info:    var(--color-info);
+    --color-warn:    var(--color-warn);
+    --color-error:   var(--color-error);
 }

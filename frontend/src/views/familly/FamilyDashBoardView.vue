@@ -9,16 +9,16 @@
           <div
             v-for="family in families"
             :key="family.id"
-            class="bg-white rounded-lg p-6 border-2 min-h-36 flex items-center justify-center cursor-pointer hover:shadow-lg transition-all border-primary"
+            class="bg-primary/75 rounded-lg p-6 border-2 min-h-36 flex items-center justify-center cursor-pointer hover:shadow-lg transition-all border-primary"
             @click="goToFamily(family.id)"
           >
-            <span class="text-gray-700 text-center">
+            <span class="text-center">
               {{ family.name || `Famille ${family.id}` }}
             </span>
           </div>
         </div>
 
-        <p v-else class="text-gray-500">Aucune famille associée.</p>
+        <p v-else>Aucune famille associée.</p>
       </section>
 
       <!-- Activités à venir Section -->
@@ -29,15 +29,18 @@
           <div
             v-for="activity in allUpcomingActivities"
             :key="activity.id"
-            class="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all cursor-pointer border-l-4"
+            class="bg-primary/75 rounded-lg p-6 shadow-md hover:shadow-lg transition-all cursor-pointer border-l-4"
             :style="{ borderColor: 'var(--color-primary)' }"
           >
             <h3 class="font-semibold color-primary">
               {{ activity.title }} — {{ activity.childName }}
             </h3>
-            <p class="text-sm text-gray-600 mt-2">
+            <span
+              class="px-4 py-1 rounded-full text-sm font-semibold  inline-block mt-1"
+              :class="activity.statusLabel === 'CONFIRMED' ? 'bg-success' : 'bg-warn'"
+            >
               {{ activity.statusLabel }}
-            </p>
+            </span>
           </div>
         </div>
 
@@ -52,14 +55,14 @@
           <div
             v-for="reg in allRegistrations"
             :key="reg.id"
-            class="bg-white rounded-lg p-6 shadow-md border-l-4 border-secondary"
+            class="bg-primary/75 rounded-lg p-6 shadow-md border-l-4 border-secondary"
           >
             <div class="flex justify-between items-center">
-              <span class="font-semibold text-gray-800">
+              <span class="font-semibold text-text/75">
                 {{ reg.childName }} — {{ reg.activityTitle }}
               </span>
               <span
-                class="px-4 py-1 rounded-full text-sm font-semibold text-white"
+                class="px-4 py-1 rounded-full text-sm font-semibold text-text"
                 :class="reg.status === 'CONFIRMED' ? 'bg-secondary' : 'bg-gray-400'"
               >
                 {{ reg.statusLabel }}
@@ -68,7 +71,7 @@
           </div>
         </div>
 
-        <p v-else class="text-gray-500">Aucune inscription.</p>
+        <p v-else class="text-text/75">Aucune inscription.</p>
       </section>
     </div>
   </div>
