@@ -1,5 +1,7 @@
 <template>
   <h1>
-  TOMORROW
+
+    ACTIVITY
+
   </h1>
 </template>

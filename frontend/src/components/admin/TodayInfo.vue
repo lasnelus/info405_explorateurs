@@ -1,7 +1,5 @@
 <template>
-  <h1
-  class="bg-white"
-  >
+  <h1>
 
     TODAY
 
