@@ -1,5 +1,7 @@
 <template>
   <h1>
-  TOMORROW
+
+    GROUP MANAGEMENT
+
   </h1>
 </template>
