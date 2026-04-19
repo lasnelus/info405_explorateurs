@@ -8,7 +8,7 @@
     <!--  -->
     <div class="w-full mx-auto px-6 flex flex-row">
       <!-- Panneau latéral -->
-      <div class="w-3xs mt-6 pl-3 py-3 rounded-l-xl bg-primary/25">
+      <div class="w-3xs mt-6 pl-3 py-3 rounded-l-xl bg-primary/25 inline-block h-fit">
         <!-- Aujourd'hui (default) -->
         <div class="mt-auto">
           <button
@@ -43,7 +43,7 @@
 
       <div
         id="componentContainer"
-        class="w-full h-auto pl-3 rounded-r-xl rounded-tl-xl bg-primary/25"
+        class="w-full h-fit pl-3 rounded-xl bg-primary/25 inline-block"
       >
         <component :is="currentComponent" />
       </div>
