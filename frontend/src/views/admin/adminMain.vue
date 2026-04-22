@@ -131,7 +131,8 @@ function switch_to(pannel: number) {
 }
 </script>
 
-<style scoped>
+<!-- Surtout ne pas scope ("<style scoped>"), casse les tables des sous components -->
+<style>
 .activeButton {
   background-color: var(--color-primary);
 }
@@ -172,4 +173,61 @@ function switch_to(pannel: number) {
     }
   }
 }
+
+/* Tables */
+
+table {
+  --header-color: color-mix(in oklab, var(--color-primary) 50%, var(--color-text)) ;
+}
+
+table a {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  transition: .3s;
+}
+
+table a:hover {
+  font-weight: bolder;
+  transition: .3s;
+}
+
+thead tr{
+  background-color: var(--header-color) !important;
+}
+
+th {
+  padding-inline: calc(var(--spacing) * 6) /* 1.5rem = 24px */;
+  padding-block: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
+  --tw-font-weight: var(--font-weight-medium) /* 500 */;
+  font-weight: var(--font-weight-medium) /* 500 */;
+  white-space: nowrap;
+}
+
+th[scope="col"] {
+  color: var(--color-primary-background);
+}
+
+th[scope="row"] {
+  color: color-mix(in oklab, var(--color-text) /* var(--color-text) */ 75%, transparent);
+  width: 0;
+}
+
+td {
+  padding-inline: calc(var(--spacing) * 6) /* 1.5rem = 24px */;
+  padding-block: calc(var(--spacing) * 4) /* 1rem = 16px */;
+}
+
+tr {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+}
+
+tr:nth-of-type(even) {
+  background-color: color-mix(in oklab, var(--color-primary) /* var(--color-text) */ 75%, transparent);
+}
+
+tr:nth-of-type(odd) {
+  background-color: color-mix(in oklab, var(--color-primary-background) /* var(--color-text) */ 50%, transparent);
+}
+
 </style>

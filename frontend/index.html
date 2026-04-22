@@ -10,7 +10,7 @@
     bg-primary-background
   ">
     <div class="
-      text-text selection:bg-primary selection:text-primary-light
+      text-text selection:text-primary-background
     ">
       <div id="app"></div>
     </div>
@@ -18,3 +18,13 @@
   </body>
 </html>
   
+<style>
+
+& *::selection {
+  background-color: color-mix(in oklab, var(--color-primary) /* var(--color-text) */ 75%, var(--color-text) 50% );
+  }
+&::selection {
+  background-color: color-mix(in oklab, var(--color-primary) /* var(--color-text) */ 75%, var(--color-text) 50% );
+}
+
+</style>

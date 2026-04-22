@@ -13,7 +13,7 @@
 
       <div class="relative overflow-x-auto bg-primary border-2 border-text/75 rounded-lg">
           <table class="w-full text-sm text-left rtl:text-right text-body">
-              <thead class="bg-primary-background border-b border-default">
+              <thead class="border-b border-default">
                   <tr>
                       <th scope="col">
                           ID_ENFANT
@@ -53,11 +53,11 @@
                         Oui
                       </td>
                       <td>
-                          <a href="#" class="font-medium text-fg-brand underline hover:decoration-2">Edit</a>
+                          <a href="#">Edit</a>
                       </td>
                   </tr>
-                  <tr class="odd:bg-neutral-primary even:bg-neutral-secondary-soft border-b border-default">
-                      <th scope="row" class="">
+                  <tr>
+                      <th scope="row">
                           cmmnyxpbl0000u8uiq58b0xkb
                       </th>
                       <td>
@@ -73,11 +73,11 @@
                         Oui
                       </td>
                       <td>
-                          <a href="#" class="font-medium text-fg-brand hover:underline">Edit</a>
+                          <a href="#">Edit</a>
                       </td>
                   </tr>
-                  <tr class="odd:bg-neutral-primary even:bg-neutral-secondary-soft border-b border-default">
-                      <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                  <tr>
+                      <th scope="row">
                           cmmnyxpbl0000u8uiq58b0xkb
                       </th>
                       <td>
@@ -89,37 +89,34 @@
                       <td>
                           Non
                       </td>
-                      <td class="p-0">
+                      <td style="padding: 0;">
+                        <label class="flex justify-center items-center cursor-pointer w-1/2 ">
 
-                        <label class="flex items-center cursor-pointer">
-
-                          <!-- Hidden native checkbox -->
                           <input
                             type="checkbox"
                             v-model="checked"
                             class="sr-only peer"
                           />
 
-                          <!-- Custom box -->
-                          <div class="w-full h-5 border-2 border-text rounded
-                                      flex items-center justify-center
-                                      bg-warn
-                                      peer-checked:bg-success peer-checked:border-text
-                                      ">
+                          <div class="w-10 h-10
+                                flex items-center justify-center
+                                bg-(--header-color)
+                                rounded border border-text
+                                peer-checked:bg-success">
 
-                            <!-- Check icon -->
+                            <!-- FIXED SVG -->
                             <svg
-                              class="w-3 h-3 text-white hidden peer-checked:block"
+                              class="w-7 h-7 text-white opacity-0 peer-checked:opacity-100 transition"
                               fill="none"
-                              stroke="currentColor"
+                              stroke="red"
                               stroke-width="3"
                               viewBox="0 0 24 24">
-                              <path d="M5 13l4 4L19 7"/>
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                             </svg>
+
                           </div>
 
                         </label>
-
                       </td>
                       <td>
                           <a href="#" class="font-medium text-fg-brand hover:underline">Edit</a>
@@ -148,56 +145,3 @@
   </div>
 </template>
 
-<style scoped>
-
-table a {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  transition: .3s;
-}
-
-table a:hover {
-  font-weight: bolder;
-  transition: .3s;
-}
-
-thead tr {
-  background-color: color-mix(in oklab, var(--color-primary-background) / 75%, transparent) !important;
-}
-
-th {
-  padding-inline: calc(var(--spacing) * 6) /* 1.5rem = 24px */;
-  padding-block: calc(var(--spacing) * 3) /* 0.75rem = 12px */;
-  --tw-font-weight: var(--font-weight-medium) /* 500 */;
-  font-weight: var(--font-weight-medium) /* 500 */;
-  white-space: nowrap;
-}
-
-th[scope="col"] {
-  color: var(--color-text);
-}
-
-th[scope="row"] {
-  color: color-mix(in oklab, var(--color-text) /* var(--color-text) */ 75%, transparent);
-  width: 0;
-}
-
-td {
-  padding-inline: calc(var(--spacing) * 6) /* 1.5rem = 24px */;
-  padding-block: calc(var(--spacing) * 4) /* 1rem = 16px */;
-}
-
-tr {
-  border-bottom-style: var(--tw-border-style);
-  border-bottom-width: 1px;
-}
-
-tr:nth-of-type(even) {
-  background-color: color-mix(in oklab, var(--color-primary) /* var(--color-text) */ 75%, transparent);
-}
-
-tr:nth-of-type(odd) {
-  background-color: color-mix(in oklab, var(--color-primary-background) /* var(--color-text) */ 50%, transparent);
-}
-
-</style>
