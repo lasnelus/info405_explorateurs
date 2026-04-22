@@ -17,9 +17,9 @@
     <!-- Controls -->
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2">
-        <button @click="prevMonth" class="px-3 py-1 rounded bg-primary text-primary-light">◀</button>
+        <button @click="prevMonth" class="px-3 py-1 rounded bg-primary text-primary-light cursor-pointer">◀</button>
         <div class="font-semibold text-lg color-primary">{{ displayMonthLabel }}</div>
-        <button @click="nextMonth" class="px-3 py-1 rounded bg-primary text-primary-light">▶</button>
+        <button @click="nextMonth" class="px-3 py-1 rounded bg-primary text-primary-light cursor-pointer">▶</button>
       </div>
 
       <div class="w-1/3">
