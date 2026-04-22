@@ -30,8 +30,8 @@
                       <th scope="col">
                           PRESENT ?
                       </th>
-                      <th scope="col">
-                          ACTION
+                      <th scope="col" class="text-right">
+                          ACTIONs
                       </th>
                   </tr>
               </thead>
@@ -42,6 +42,7 @@
                   <td>{{ enfant.prenom }}</td>
                   <td>{{ enfant.regime_special }}</td>
 
+                  <!-- TODO: UPDATE SERVEUR QUAND CHECKBOX -->
                   <td class="p-0!">
                         <label class="flex justify-center items-center cursor-pointer w-1/2">
                           <input
@@ -67,50 +68,57 @@
                           </div>
                         </label>
                       </td>
-                  <td> <a href="/admin/editChild?{{ enfant.id_enfant }}">Edit</a></td>
-
+                  <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
+                    <span>
+                      <button
+                      @click="gotoChildEdit(enfant.id_enfant)"
+                      >
+                        <p>Editer un enfant</p>
+                      </button>
+                    </span>
+                  </td>
+                  <td class="text-right" v-else>N/A</td>
                 </tr>
               </tbody>
           </table>
       </div>
     </div>
 
+    <!-- Separateur -->
     <span class="h-20 block"></span>
 
     <!-- REPAS DU JOUR -->
     <div>
-
       <h2 class="text-xl font-bold mb-1 text-text/85 uppercase">
         repas du jour
       </h2>
-
-            <div class="relative overflow-x-auto bg-primary border-2 border-text/75 rounded-lg">
+        <div class="relative overflow-x-auto bg-primary border-2 border-text/75 rounded-lg">
           <table class="w-full text-sm text-left rtl:text-right text-body">
-              <thead class="border-b border-default">
-                  <tr>
-                      <th scope="col">
-                          ID_repas
-                      </th>
-                      <th scope="col">
-                          type
-                      </th>
-                      <th scope="col">
-                          nb unit
-                      </th>
-                      <th scope="col">
-                          REGIME SPECIAL ?
-                      </th>
-                  </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(repas, index) in repasAujourdhui" :key="index">
-                  <th scope="row">{{ repas.id_repas }}</th>
-                  <td>{{ repas.type }}</td>
-                  <td>{{ repas.nb_unit }}</td>
-                  <td>{{ repas.regime_special }}</td>
+            <thead class="border-b border-default">
+                <tr>
+                  <th scope="col">
+                    ID_repas
+                  </th>
+                  <th scope="col">
+                    type
+                  </th>
+                  <th scope="col">
+                    nb unit
+                  </th>
+                  <th scope="col">
+                    REGIME SPECIAL ?
+                  </th>
                 </tr>
-              </tbody>
-          </table>
+            </thead>
+            <tbody>
+              <tr v-for="(repas, index) in repasAujourdhui" :key="index">
+                <th scope="row">{{ repas.id_repas }}</th>
+                <td>{{ repas.type }}</td>
+                <td>{{ repas.nb_unit }}</td>
+                <td>{{ repas.regime_special }}</td>
+              </tr>
+            </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -138,6 +146,14 @@ const repasAujourdhui = ref([
 
 // ---------
 
-import { ref } from 'vue';
+import { role } from '@/services/authServices'
+import { ref } from 'vue'
+
+const roleUser = await role()
+
+// TODO
+function gotoChildEdit(childID: string) {
+  console.log(childID);
+};
 
 </script>

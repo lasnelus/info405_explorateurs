@@ -23,7 +23,7 @@
           <button @click="switch_to(1)" id="Demain" class="btn-side-panel">Demain</button>
 
           <!-- Activitées -->
-          <button @click="switch_to(2)" id="Activitees" class="btn-side-panel">Activitées</button>
+          <button @click="switch_to(2)" id="Activitees" class="btn-side-panel">Activités</button>
 
           <!-- Groupes -->
           <button @click="switch_to(3)" id="Groupes" class="btn-side-panel">Groupes</button>
@@ -180,13 +180,14 @@ table {
   --header-color: color-mix(in oklab, var(--color-primary) 50%, var(--color-text)) ;
 }
 
-table a {
+table button p {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   transition: .3s;
+  cursor: pointer;
 }
 
-table a:hover {
+table button p:hover {
   font-weight: bolder;
   transition: .3s;
 }
