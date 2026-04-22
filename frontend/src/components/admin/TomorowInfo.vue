@@ -7,7 +7,7 @@
   <p>
 
     Enfants attendus <br>
-    Tableau : ID_ENFANT | nom | prenom | regime_special | [si regime_special]->[type_regime] | [si owner]->[accès fiche enfant]
+    Tableau : ID_ENFANT | nom | prenom | regime_special->[sinon "non"] | [si owner]->[accès fiche enfant]
 
   </p>
   <p>

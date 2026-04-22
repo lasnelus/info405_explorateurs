@@ -205,6 +205,7 @@ th {
 
 th[scope="col"] {
   color: var(--color-primary-background);
+  text-transform: uppercase;
 }
 
 th[scope="row"] {
