@@ -55,7 +55,7 @@
           bg-primary/25
           hover:bg-primary/50
         ">Ma famille</router-link>
-        <router-link to="/" @click="closeMenu" class="
+        <router-link to="/schedule" @click="closeMenu" class="
           -my-1
           py-1
           text-center
@@ -64,7 +64,7 @@
           text-text
           bg-primary/25
           hover:bg-primary/50
-        ">lorem ipsum</router-link>
+        ">emploie du temps</router-link>
         <router-link to="/" @click="closeMenu" class="
           -my-1
           py-1
