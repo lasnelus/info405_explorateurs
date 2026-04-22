@@ -28,6 +28,9 @@
                           REGIME SPECIAL ?
                       </th>
                       <th scope="col">
+                          PRESENT ?
+                      </th>
+                      <th scope="col">
                           ACTION
                       </th>
                   </tr>
@@ -46,6 +49,9 @@
                       <td>
                           Non
                       </td>
+                      <td id="present">
+                        Oui
+                      </td>
                       <td>
                           <a href="#" class="font-medium text-fg-brand underline hover:decoration-2">Edit</a>
                       </td>
@@ -63,6 +69,9 @@
                       <td>
                           Non
                       </td>
+                      <td id="present">
+                        Oui
+                      </td>
                       <td>
                           <a href="#" class="font-medium text-fg-brand hover:underline">Edit</a>
                       </td>
@@ -79,6 +88,38 @@
                       </td>
                       <td>
                           Non
+                      </td>
+                      <td class="p-0">
+
+                        <label class="flex items-center cursor-pointer">
+
+                          <!-- Hidden native checkbox -->
+                          <input
+                            type="checkbox"
+                            v-model="checked"
+                            class="sr-only peer"
+                          />
+
+                          <!-- Custom box -->
+                          <div class="w-full h-5 border-2 border-text rounded
+                                      flex items-center justify-center
+                                      bg-warn
+                                      peer-checked:bg-success peer-checked:border-text
+                                      ">
+
+                            <!-- Check icon -->
+                            <svg
+                              class="w-3 h-3 text-white hidden peer-checked:block"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="3"
+                              viewBox="0 0 24 24">
+                              <path d="M5 13l4 4L19 7"/>
+                            </svg>
+                          </div>
+
+                        </label>
+
                       </td>
                       <td>
                           <a href="#" class="font-medium text-fg-brand hover:underline">Edit</a>
@@ -138,6 +179,7 @@ th[scope="col"] {
 
 th[scope="row"] {
   color: color-mix(in oklab, var(--color-text) /* var(--color-text) */ 75%, transparent);
+  width: 0;
 }
 
 td {
