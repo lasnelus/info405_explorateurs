@@ -118,7 +118,7 @@
                 <td>{{ repas.regime_special }}</td>
               </tr>
             </tbody>
-        </table>
+          </table>
       </div>
     </div>
   </div>
@@ -148,12 +148,20 @@ const repasAujourdhui = ref([
 
 import { role } from '@/services/authServices'
 import { ref } from 'vue'
+import { useRouter } from "vue-router"
+
+const router = useRouter()
 
 const roleUser = await role()
 
 // TODO
 function gotoChildEdit(childID: string) {
-  console.log(childID);
+  router.push({
+    name: "childEdit",
+    query:{
+      childId: childID
+    }
+  })
 };
 
 </script>
