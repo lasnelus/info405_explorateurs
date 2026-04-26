@@ -11,6 +11,7 @@ import {
   RegisterInfoDto,
   stateRegisterPeriode,
 } from './dto/registerPeriodeDto';
+import { QueueInfoDto } from './dto/queueDto';
 
 @Injectable()
 export class PeriodeService {
@@ -41,6 +42,18 @@ export class PeriodeService {
       where: {
         periodeId,
         day: date,
+      },
+      select: {
+        id: true,
+        child: {
+          select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+          },
+        },
+        day: true,
+        periodeId: true,
       },
     });
   }
@@ -212,5 +225,50 @@ export class PeriodeService {
         id: queueId,
       },
     });
+  }
+
+  async getSlotsFromPeriode(periodeId: string): Promise<SlotInfoDto[]> {
+    return await this.prisma.slot.findMany({
+      where: {
+        periodeId,
+      },
+      select: {
+        id: true,
+        child: {
+          select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+          },
+        },
+        day: true,
+        periodeId: true,
+      },
+    });
+  }
+
+  async getQueueFromPeriode(periodeId: string): Promise<QueueInfoDto[]> {
+    const periode = await this.getPeriodesById(periodeId);
+    if (!periode) throw new NotFoundException();
+    const queues = await this.prisma.queue.findMany({
+      where: {
+        periodeId,
+      },
+      select: {
+        id: true,
+        child: {
+          select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+          },
+        },
+        day: true,
+        state: true,
+        acceptedAt: true,
+        periodeId: true,
+      },
+    });
+    return queues;
   }
 }

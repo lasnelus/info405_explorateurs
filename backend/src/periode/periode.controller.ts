@@ -21,9 +21,12 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { RegisterDto, RegisterInfoDto } from './dto/registerPeriodeDto';
+import { SlotInfoDto } from './dto/slotDto';
+import { QueueInfoDto } from './dto/queueDto';
 
 @Controller('periode')
 export class PeriodeController {
@@ -51,6 +54,28 @@ export class PeriodeController {
   @Get(':periodeId')
   async getPeriodesById(@Param('periodeId') periodeId: string) {
     return await this.periodeService.getPeriodesById(periodeId);
+  }
+
+  @Get(':periodeId/slots')
+  @ApiOkResponse({ type: SlotInfoDto })
+  @UseGuards(accessTokenAuthGuard)
+  @ApiBearerAuth('accessToken')
+  async getSlotsFromPeriode(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+  ) {
+    return await this.periodeService.getSlotsFromPeriode(periodeId);
+  }
+
+  @Get(':periodeId/queues')
+  @ApiOkResponse({ type: QueueInfoDto })
+  @UseGuards(accessTokenAuthGuard)
+  @ApiBearerAuth('accessToken')
+  async getQueueFromPeriode(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+  ) {
+    return await this.periodeService.getQueueFromPeriode(periodeId);
   }
 
   @Post(':periodeId/register')
