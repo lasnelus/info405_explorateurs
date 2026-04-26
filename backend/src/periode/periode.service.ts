@@ -1,3 +1,4 @@
+import { MailService } from './../mail/mail.service';
 import { PrismaService } from './../prisma/prisma.service';
 import {
   BadRequestException,
@@ -15,7 +16,10 @@ import { QueueInfoDto } from './dto/queueDto';
 
 @Injectable()
 export class PeriodeService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailService: MailService,
+  ) {}
   async getPeriodes() {
     return await this.prisma.periode.findMany();
   }
@@ -189,6 +193,7 @@ export class PeriodeService {
           acceptedAt: new Date(),
         },
       });
+      await this.mailService.sendAcceptedEmail(userToAcceptInQueue.childId);
     }
   }
 

@@ -6,6 +6,7 @@ import { FamilyModule } from './family/family.module';
 import { ChildModule } from './child/child.module';
 import { AuthModule } from './auth/auth.module';
 import { PeriodeModule } from './periode/periode.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PeriodeModule } from './periode/periode.module';
     ChildModule,
     AuthModule,
     PeriodeModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],
