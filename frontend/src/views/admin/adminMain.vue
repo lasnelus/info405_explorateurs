@@ -45,7 +45,7 @@
         id="componentContainer"
         class="w-full h-fit pl-3 rounded-xl bg-primary/25 inline-block"
       >
-        <component :is="currentComponent" />
+        <component :is="currentComponent" @switch="switch_to"/>
       </div>
 
       <!--  -->
