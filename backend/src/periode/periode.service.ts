@@ -80,13 +80,16 @@ export class PeriodeService {
     const slots = await this.getSlotsByPeriodeAndDay(periodeId, date);
     const isChildInQueue = await this.isChildInQueue(childId, date);
     const isChildInSlot = await this.isChildInSlot(childId, date);
-    if (isChildInQueue && isChildInSlot) throw new ConflictException();
+    if (isChildInQueue || isChildInSlot) throw new ConflictException();
     let res: RegisterInfoDto;
     const chilsInQueueAccepted = await this.prisma.queue.findFirst({
+      // on verifie que la queue est vide
       where: {
         periodeId: periodeId,
         day: date,
-        state: 'ACCEPTED',
+        state: {
+          in: ['ACCEPTED', 'PENDING'],
+        },
       },
     });
     if (slots.length < periode.capacity && !chilsInQueueAccepted) {
