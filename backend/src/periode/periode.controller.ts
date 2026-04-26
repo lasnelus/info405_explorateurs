@@ -57,24 +57,24 @@ export class PeriodeController {
   }
 
   @Get(':periodeId/slots')
-  @ApiOkResponse({ type: SlotInfoDto })
+  @ApiOkResponse({ type: SlotInfoDto, isArray: true })
   @UseGuards(accessTokenAuthGuard)
   @ApiBearerAuth('accessToken')
   async getSlotsFromPeriode(
     @Request() request: RequestWithUser,
     @Param('periodeId') periodeId: string,
-  ) {
+  ): Promise<SlotInfoDto[]> {
     return await this.periodeService.getSlotsFromPeriode(periodeId);
   }
 
   @Get(':periodeId/queues')
-  @ApiOkResponse({ type: QueueInfoDto })
+  @ApiOkResponse({ type: QueueInfoDto, isArray: true })
   @UseGuards(accessTokenAuthGuard)
   @ApiBearerAuth('accessToken')
   async getQueueFromPeriode(
     @Request() request: RequestWithUser,
     @Param('periodeId') periodeId: string,
-  ) {
+  ): Promise<QueueInfoDto[]> {
     return await this.periodeService.getQueueFromPeriode(periodeId);
   }
 
