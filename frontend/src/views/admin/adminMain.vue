@@ -64,8 +64,7 @@ import ChildManagement from '@/components/admin/ChildManagement.vue'
 
 import router from '@/router'
 import { role } from '@/services/authServices'
-import { onMounted } from 'vue'
-import { ref } from 'vue'
+import { onMounted, shallowRef } from 'vue'
 
 const roleUser = await role()
 
@@ -78,7 +77,7 @@ onMounted(async () => {
 
 // Component stuff
 
-const currentComponent = ref(TodayInfo)
+const currentComponent = shallowRef(TodayInfo)
 
 function switch_to(pannel: number) {
   const button = document.querySelector('.activeButton')
