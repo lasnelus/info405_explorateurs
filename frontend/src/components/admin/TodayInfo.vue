@@ -47,7 +47,7 @@
               </td>
               <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                 <span>
-                  <button @click="gotoChildEdit(enfant.id_enfant)">
+                  <button @click="gotoChildEdit(enfant.id_enfant)" class="edit">
                     <p>Editer un enfant</p>
                   </button>
                 </span>

@@ -37,7 +37,7 @@
               <td>{{ activite.desc }}</td>
               <td class="text-right">
                 <span>
-                  <button @click="gotoActivityEdit(activite.id_activite)">
+                  <button @click="gotoActivityEdit(activite.id_activite)" class="edit">
                     <p>Editer</p>
                   </button>
                 </span>

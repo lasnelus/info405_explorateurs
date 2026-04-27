@@ -1,5 +1,5 @@
 <template>
-  <div class="m-3 mr-6">
+  <div class="m-3 mr-6 mb-6">
     <h1 class="text-2xl font-bold mb-6 color-primary">Demain</h1>
 
     <!-- ENFANTS ATTENDUS -->
@@ -25,11 +25,11 @@
               <td>{{ enfant.regime_special }}</td>
               <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                 <span>
-                  <button @click="gotoChildEdit(enfant.id_enfant)">
+                  <button @click="gotoChildEdit(enfant.id_enfant)" class="edit">
                     <p>Editer</p>
                   </button>
                   -
-                  <button @click="gotoChildDelete(enfant.id_enfant)">
+                  <button @click="gotoChildDelete(enfant.id_enfant)" class="delete">
                     <p>Supprimer</p>
                   </button>
                 </span>

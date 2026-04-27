@@ -44,7 +44,7 @@
               <td>{{ groupe.commentaire }}</td>
               <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                 <span>
-                  <button @click="gotoGroupEdit(groupe.id_groupe)">
+                  <button @click="gotoGroupEdit(groupe.id_groupe)" class="edit">
                     <p>Editer</p>
                   </button>
                 </span>

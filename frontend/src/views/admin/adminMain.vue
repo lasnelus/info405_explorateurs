@@ -231,4 +231,20 @@ tr:nth-of-type(odd) {
   background-color: color-mix(in oklab, var(--color-primary-background) /* var(--color-text) */ 50%, transparent);
 }
 
+td button {
+  padding: 2px 10px;
+  border-radius: 2rem;
+  color: var(--color-text);
+
+
+  &.edit {
+    background-color: var(--color-warn);
+  }
+
+  &.delete{
+    background-color: var(--color-error);
+  }
+}
+
+
 </style>
