@@ -97,24 +97,6 @@ export class PeriodeController {
     );
   }
 
-  @Delete(':periodeId/register')
-  @ApiCreatedResponse()
-  @ApiUnauthorizedResponse()
-  @ApiForbiddenResponse()
-  @ApiBearerAuth('accessToken')
-  @UseGuards(accessTokenAuthGuard)
-  async deleteRegisterInPeriode(
-    @Param('periodeId') periodeId: string,
-    @Request() request: RequestWithUser,
-    @Body() boby: RegisterDto,
-  ) {
-    await this.periodeService.deleteRegisterInPeriode(
-      periodeId,
-      boby.childId,
-      boby.date,
-    );
-  }
-
   @Post(':periodeId/queue/:queueId/accept')
   @ApiCreatedResponse()
   @ApiUnauthorizedResponse()
