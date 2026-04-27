@@ -93,6 +93,10 @@
             <ul class="space-y-2">
               <li v-for="queue in child.queues" :key="queue.id" class="text-text/70">
                 <time :datetime="queue.date">{{ formatDate(queue.date) }}</time>
+                  <div v-if="queue.state == 'ACCEPT'">
+                    <button @click="acceptChild(queue.periodeId, queue.id)"> accepter place </button>
+                    <button @click="declineChild(queue.periodeId, queue.id)"> désinscrire l'enfant </button>
+                  </div>
               </li>
             </ul>
           </div>
@@ -111,7 +115,7 @@
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { getChild } from '@/services/familyServices';
+import { getChild, acceptChildQueue, declineChildQueue } from '@/services/familyServices';
 import { loadProfileIfNeeded } from '@/services/authServices';
 
 const route = useRoute()
@@ -131,6 +135,14 @@ function formatDate(dateString: string | null | undefined): string {
     month: '2-digit',
     day: '2-digit',
   })
+}
+
+function declineChild(periodeId: string, queueId: string){
+  declineChildQueue(periodeId, queueId)
+}
+
+function acceptChild(periodeId: string, queueId: string){
+  acceptChildQueue(periodeId, queueId)
 }
 
 onMounted(async () =>{

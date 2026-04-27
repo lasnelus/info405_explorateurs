@@ -14,3 +14,11 @@ export const createFamily = (name: string, guardianId: string) => {
 export const getChild = (childId: string) => {
   return api.get(`/child/${childId}`)
 }
+
+export const acceptChildQueue = (periodeId: string, queueId: string) => {
+  return api.post(`/periode/${periodeId}/queue/${queueId}/accept`)
+}
+
+export const declineChildQueue = (periodeId: string, queueId: string) => {
+  return api.delete(`/periode/${periodeId}/queue/${queueId}`)
+}
