@@ -8,8 +8,8 @@ export const addEmergencyContact = (childId: string, firstName: string, lastName
     })
 }
 
-export const addAllergieChild = (childId: string, id: string) => {
+export const addAllergieChild = (childId: string, allergy: string) => {
     return api.post(`/child/${childId}/allergy`, {
-        id
+        allergy
     })
 }

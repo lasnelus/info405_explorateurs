@@ -38,7 +38,7 @@
           <div v-if="child.allergies.length > 0">
             <ul class="space-y-2">
               <li v-for="allergy in child.allergies" :key="allergy.id" class="text-text/70">
-                {{ allergy.name }}
+                {{ allergy.allergy }}
               </li>
             </ul>
           </div>
@@ -48,7 +48,13 @@
             <form @submit.prevent="addAllergie" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block font-semibold mb-2 text-primary">Allergie</label>
-              <p>insert scroller pour les allergies, merci aline du futur</p>
+              <input
+                v-model="newAllergy.allergy"
+                type="text"
+                class="w-full rounded-lg border border-primary/20 bg-primary-background/50 px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
+                placeholder="allergie"
+                required
+              />
             </div>
 
             <div class="md:col-span-2">
@@ -164,6 +170,10 @@ const newContact = reactive({
   phone: '',
 })
 
+const newAllergy = reactive({
+  allergy:'',
+})
+
 function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return '-'
   const date = new Date(dateString)
@@ -179,8 +189,8 @@ function addContact(firstName: string, lastName: string, tel: string){
   addEmergencyContact(childId, newContact.firstName, newContact.lastName, newContact.phone)
 }
 
-function addAllergie(allergieId: string){
-  addAllergieChild(childId, allergieId)
+function addAllergie(allergie: string){
+  addAllergieChild(childId, allergie)
 }
 
 onMounted(async () =>{
