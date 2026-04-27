@@ -141,4 +141,17 @@ export class PeriodeController {
   ) {
     await this.periodeService.leaveQueue(periodeId, queueId);
   }
+
+  @Delete(':periodeId/slot/:slotId')
+  @ApiCreatedResponse()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  @ApiBearerAuth('accessToken')
+  async leaveSlot(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+    @Param('slotId') slotId: string,
+  ) {
+    await this.periodeService.leaveSlots(periodeId, slotId);
+  }
 }

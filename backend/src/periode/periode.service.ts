@@ -48,39 +48,42 @@ export class PeriodeService {
     });
     for (const periode of periodesToUpdate) {
       const daysOfPeriode = periode.firstDay;
-      const capacity = periode.capacity;
+      await this.updateDayInPeriode(periode.id, daysOfPeriode);
       while (daysOfPeriode <= periode.lastDay) {
-        const toUpdate: number =
-          capacity -
-          (await this.countSlots(periode.id, daysOfPeriode)) -
-          (await this.countQueuesAccepted(periode.id, daysOfPeriode));
-        const queueToAccept = await this.prisma.queue.findMany({
-          where: {
-            periodeId: periode.id,
-            day: daysOfPeriode,
-            state: 'PENDING',
-          },
-          orderBy: {
-            createdAt: 'asc',
-          },
-          take: toUpdate,
-        });
-
-        for (const queue of queueToAccept) {
-          await this.prisma.queue.update({
-            where: {
-              id: queue.id,
-            },
-            data: {
-              state: 'ACCEPTED',
-            },
-          });
-
-          await this.mailService.sendAcceptedEmail(queue.childId);
-        }
-
         daysOfPeriode.setDate(daysOfPeriode.getDate() + 1);
       }
+    }
+  }
+
+  async updateDayInPeriode(periodeId: string, day: Date) {
+    const capacity = (await this.getPeriodesById(periodeId))!.capacity;
+    const toUpdate: number =
+      capacity -
+      (await this.countSlots(periodeId, day)) -
+      (await this.countQueuesAccepted(periodeId, day));
+    const queueToAccept = await this.prisma.queue.findMany({
+      where: {
+        periodeId,
+        day,
+        state: 'PENDING',
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+      take: toUpdate,
+    });
+
+    for (const queue of queueToAccept) {
+      await this.prisma.queue.update({
+        where: {
+          id: queue.id,
+        },
+        data: {
+          state: 'ACCEPTED',
+        },
+      });
+
+      await this.mailService.sendAcceptedEmail(queue.childId);
     }
   }
 
@@ -316,6 +319,23 @@ export class PeriodeService {
         id: queueId,
       },
     });
+    await this.updateDayInPeriode(queue.periodeId, queue.day);
+  }
+
+  async leaveSlots(periodeId: string, slotId: string) {
+    const slot = await this.prisma.slot.findUnique({
+      where: {
+        id: slotId,
+        periodeId: periodeId,
+      },
+    });
+    if (!slot) throw new NotFoundException();
+    await this.prisma.slot.delete({
+      where: {
+        id: slotId,
+      },
+    });
+    await this.updateDayInPeriode(slot.periodeId, slot.day);
   }
 
   async getSlotsFromPeriode(periodeId: string): Promise<SlotInfoDto[]> {
