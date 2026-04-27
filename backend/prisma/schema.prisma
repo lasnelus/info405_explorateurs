@@ -94,6 +94,7 @@ model EmergencyContact {
 model Allergy {
   id             String        @id                   @default(cuid())
 
+  allergy        String
   child          Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
   childId        String
 }
