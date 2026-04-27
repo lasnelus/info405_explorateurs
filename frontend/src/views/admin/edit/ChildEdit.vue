@@ -38,11 +38,35 @@
           <div v-if="child.allergies.length > 0">
             <ul class="space-y-2">
               <li v-for="allergy in child.allergies" :key="allergy.id" class="text-text/70">
-                {{ allergy.name }}
+                {{ allergy.allergy }}
               </li>
             </ul>
           </div>
           <p v-else class="text-text/70">Aucune allergie connue</p>
+          <div class="mt-8 border-t border-primary/20 pt-6">
+          <h3 class="text-xl font-bold mb-4 text-primary">Ajouter un contact d'urgence</h3>
+            <form @submit.prevent="addAllergie" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold mb-2 text-primary">Allergie</label>
+              <input
+                v-model="newAllergy.allergy"
+                type="text"
+                class="w-full rounded-lg border border-primary/20 bg-primary-background/50 px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
+                placeholder="allergie"
+                required
+              />
+            </div>
+
+            <div class="md:col-span-2">
+              <button
+                type="submit"
+                class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
+              >
+                Ajouter allergies
+              </button>
+            </div>
+          </form>
+        </div>
         </div>
 
 
@@ -61,13 +85,13 @@
           <div class="mt-8 border-t border-primary/20 pt-6">
           <h3 class="text-xl font-bold mb-4 text-primary">Ajouter un contact d'urgence</h3>
 
-          <form @submit.prevent="submitEmergencyContact" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form @submit.prevent="addContact" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block font-semibold mb-2 text-primary">Prénom</label>
               <input
                 v-model="newContact.firstName"
                 type="text"
-                class="w-full rounded-lg border border-primary/20 bg-white px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
+                class="w-full rounded-lg border border-primary/20 bg-primary-background/50 px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
                 placeholder="Prénom"
                 required
               />
@@ -78,7 +102,7 @@
               <input
                 v-model="newContact.lastName"
                 type="text"
-                class="w-full rounded-lg border border-primary/20 bg-white px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
+                class="w-full rounded-lg border border-primary/20 bg-primary-background/50 px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
                 placeholder="Nom"
                 required
               />
@@ -89,7 +113,7 @@
               <input
                 v-model="newContact.phone"
                 type="tel"
-                class="w-full rounded-lg border border-primary/20 bg-white px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
+                class="w-full rounded-lg border border-primary/20 bg-primary-background/50 px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
                 placeholder="Téléphone"
                 required
               />
@@ -129,7 +153,7 @@ import { onMounted, ref, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getChild } from '@/services/familyServices';
 import { role } from '@/services/authServices'
-import { addEmergencyContact } from '@/services/adminServices'
+import { addEmergencyContact, addAllergieChild } from '@/services/adminServices'
 
 const route = useRoute()
 const router = useRouter()
@@ -146,6 +170,10 @@ const newContact = reactive({
   phone: '',
 })
 
+const newAllergy = reactive({
+  allergy:'',
+})
+
 function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return '-'
   const date = new Date(dateString)
@@ -159,6 +187,10 @@ function formatDate(dateString: string | null | undefined): string {
 
 function addContact(firstName: string, lastName: string, tel: string){
   addEmergencyContact(childId, newContact.firstName, newContact.lastName, newContact.phone)
+}
+
+function addAllergie(allergie: string){
+  addAllergieChild(childId, allergie)
 }
 
 onMounted(async () =>{

@@ -38,7 +38,7 @@
           <div v-if="child.allergies.length > 0">
             <ul class="space-y-2">
               <li v-for="allergy in child.allergies" :key="allergy.id" class="text-text/70">
-                {{ allergy.name }}
+                {{ allergy.allergy }}
               </li>
             </ul>
           </div>

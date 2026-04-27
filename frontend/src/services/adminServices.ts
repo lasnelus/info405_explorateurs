@@ -7,3 +7,9 @@ export const addEmergencyContact = (childId: string, firstName: string, lastName
         phoneNumber
     })
 }
+
+export const addAllergieChild = (childId: string, allergy: string) => {
+    return api.post(`/child/${childId}/allergy`, {
+        allergy
+    })
+}
