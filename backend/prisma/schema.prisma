@@ -20,19 +20,6 @@ model Guardian {
 
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  id             String        @id                   @default(cuid())
-  email          String       @unique
-  password       String
-
-  firstName      String
-  lastName       String
-
-  role           Role          @default(GUARDIAN)
-
-  families       Family[]
-
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
 }
 
 model Family {
@@ -41,14 +28,8 @@ model Family {
 
   guardians      Guardian[]
   childs          Child[]
-  id             String        @id                   @default(cuid())
-  name           String
 
-  guardians      Guardian[]
-  childs          Child[]
 
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 }
@@ -160,19 +141,6 @@ enum Role {
   OWNER
   INSTRUCTOR
   GUARDIAN
-}
-model Manager {
-  id             String        @id                   @default(cuid())
-  email          String        @unique
-  password       String
-
-  firstName      String
-  lastName       String
-
-  role           Role          @default(INSTRUCTOR)
-
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
 }
 model Manager {
   id             String        @id                   @default(cuid())
