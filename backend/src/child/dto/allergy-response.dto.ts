@@ -6,4 +6,7 @@ export class AllergyResponseDto {
 
   @ApiProperty({ example: 'ckx123abc456' })
   childId: string;
+
+  @ApiProperty({ example: 'Pollen' })
+  allergy: string;
 }

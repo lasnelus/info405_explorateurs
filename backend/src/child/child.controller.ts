@@ -8,6 +8,7 @@ import { AddEmergencyContactDto } from './dto/add-emergency-contact.dto';
 import { ChildResponseDto } from './dto/child-response.dto';
 import { EmergencyContactResponseDto } from './dto/emergency-contact-response.dto';
 import { AllergyResponseDto } from './dto/allergy-response.dto';
+import { AddAllergyDto } from './dto/add-allergy.dto';
 import { DeleteResponseDto } from './dto/delete-response.dto';
 
 @Controller('child')
@@ -76,7 +77,7 @@ export class ChildController {
     return await this.childService.addEmergencyContact(id, body);
   }
 
-  @Post(':id/allergy')
+  @Post(':id/allergies')
   @ApiOperation({ summary: 'Add an allergy to a child' })
   @ApiParam({ name: 'id', description: 'Child ID' })
   @ApiResponse({
@@ -84,8 +85,17 @@ export class ChildController {
     description: 'Allergy added successfully',
     type: AllergyResponseDto,
   })
-  async addAllergy(@Param('id') id: string) {
-    return await this.childService.addAllergy(id);
+  async addAllergy(
+    @Param('id') id: string,
+    @Body() dto: AddAllergyDto,
+  ): Promise<AllergyResponseDto> {
+    const allergy = await this.childService.addAllergy(id, dto.allergy);
+
+    return {
+      id: allergy.id,
+      childId: allergy.childId,
+      allergy: allergy.allergy,
+    };
   }
 
   @Post(':id/family/:familyId')

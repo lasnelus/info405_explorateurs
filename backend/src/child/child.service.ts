@@ -86,9 +86,18 @@ export class ChildService {
     });
   }
 
-  async addAllergy(childId: string): Promise<Allergy> {
+  async addAllergy(childId: string, allergy: string): Promise<Allergy> {
+    allergy = allergy.toLowerCase().trim();
+
+    await this.prisma.child.findUniqueOrThrow({
+      where: { id: childId },
+    });
+
     return await this.prisma.allergy.create({
-      data: { childId },
+      data: {
+        childId,
+        allergy,
+      },
     });
   }
 

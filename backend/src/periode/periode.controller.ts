@@ -21,9 +21,12 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { RegisterDto, RegisterInfoDto } from './dto/registerPeriodeDto';
+import { SlotInfoDto } from './dto/slotDto';
+import { QueueInfoDto } from './dto/queueDto';
 
 @Controller('periode')
 export class PeriodeController {
@@ -51,6 +54,28 @@ export class PeriodeController {
   @Get(':periodeId')
   async getPeriodesById(@Param('periodeId') periodeId: string) {
     return await this.periodeService.getPeriodesById(periodeId);
+  }
+
+  @Get(':periodeId/slots')
+  @ApiOkResponse({ type: SlotInfoDto, isArray: true })
+  @UseGuards(accessTokenAuthGuard)
+  @ApiBearerAuth('accessToken')
+  async getSlotsFromPeriode(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+  ): Promise<SlotInfoDto[]> {
+    return await this.periodeService.getSlotsFromPeriode(periodeId);
+  }
+
+  @Get(':periodeId/queues')
+  @ApiOkResponse({ type: QueueInfoDto, isArray: true })
+  @UseGuards(accessTokenAuthGuard)
+  @ApiBearerAuth('accessToken')
+  async getQueueFromPeriode(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+  ): Promise<QueueInfoDto[]> {
+    return await this.periodeService.getQueueFromPeriode(periodeId);
   }
 
   @Post(':periodeId/register')
@@ -115,5 +140,18 @@ export class PeriodeController {
     @Param('queueId') queueId: string,
   ) {
     await this.periodeService.leaveQueue(periodeId, queueId);
+  }
+
+  @Delete(':periodeId/slot/:slotId')
+  @ApiCreatedResponse()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  @ApiBearerAuth('accessToken')
+  async leaveSlot(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+    @Param('slotId') slotId: string,
+  ) {
+    await this.periodeService.leaveSlots(periodeId, slotId);
   }
 }
