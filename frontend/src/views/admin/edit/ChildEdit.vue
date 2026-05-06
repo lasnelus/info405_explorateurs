@@ -44,10 +44,9 @@
           </div>
           <p v-else class="text-text/70">Aucune allergie connue</p>
           <div class="mt-8 border-t border-primary/20 pt-6">
-          <h3 class="text-xl font-bold mb-4 text-primary">Ajouter un contact d'urgence</h3>
-            <form @submit.prevent="addAllergie" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 class="text-xl font-bold mb-4 text-primary">Ajouter une allergie</h3>
+          <form @submit.prevent="addAllergie" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block font-semibold mb-2 text-primary">Allergie</label>
               <input
                 v-model="newAllergy.allergy"
                 type="text"
@@ -76,8 +75,7 @@
             <div class="space-y-4">
               <div v-for="contact in child.EmergencyContact" :key="contact.id" class="border-b border-primary/20 pb-4">
                 <h3 class="font-semibold text-primary">{{ contact.firstName }} {{ contact.lastName }}</h3>
-                <p class="text-text/70">Relation: {{ contact.relationship }}</p>
-                <p class="text-text/70">Téléphone: {{ contact.phone }}</p>
+                <p class="text-text/70">Téléphone: {{ contact.phoneNumber }}</p>
               </div>
             </div>
           </div>
@@ -153,7 +151,7 @@ import { onMounted, ref, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getChild } from '@/services/familyServices';
 import { role } from '@/services/authServices'
-import { addEmergencyContact, addAllergieChild } from '@/services/adminServices'
+import { addEmergencyContact, addAllergieChild, addFamilyChild } from '@/services/adminServices'
 
 const route = useRoute()
 const router = useRouter()
@@ -185,13 +183,19 @@ function formatDate(dateString: string | null | undefined): string {
   })
 }
 
-function addContact(firstName: string, lastName: string, tel: string){
+function addContact(){
   addEmergencyContact(childId, newContact.firstName, newContact.lastName, newContact.phone)
 }
 
-function addAllergie(allergie: string){
-  addAllergieChild(childId, allergie)
+function addAllergie(){
+  addAllergieChild(childId, newAllergy.allergy)
 }
+
+function addFamily(){
+  addFamilyChild(childId, familyId)
+}
+
+
 
 onMounted(async () =>{
     if (roleUser.data.role != 'OWNER' && roleUser.data.role != 'INSTRUCTOR') {
