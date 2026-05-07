@@ -17,3 +17,26 @@ export const addAllergieChild = (childId: string, allergy: string) => {
 export const addFamilyChild = (childId: string, FamilyId: string) => {
     return api.post(`/child/${childId}/family/${FamilyId}`)
 }
+
+// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+/**
+ * Renvoie tout les enfants
+ */
+export const getChildren = () => {
+  return api.get(`/child`)
+}
+
+/**
+ * Renvoie toutes les familles
+ */
+export const getFamillies = () => {
+  // TODO -- Pas de route existante At The Moment
+}
+
+/**
+ * Renvoie tout les animateurs
+ */
+export const getStaff = () => {
+  // TODO -- Pas de route existante At The Moment
+}

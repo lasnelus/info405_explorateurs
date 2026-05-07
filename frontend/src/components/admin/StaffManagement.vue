@@ -1,11 +1,6 @@
 <template>
-  <p>
-
-    Tableau des animateurs : ID_ANIM | nom | prenom | groupe | est_present_aujourd_hui | modif/supr
-
-  </p>
   <div class="m-3 mr-6 mb-6">
-    <h1 class="text-2xl font-bold mb-6 color-primary">Gestionaire d'animateurs'</h1>
+    <h1 class="text-2xl font-bold mb-6 color-primary">Gestionaire d'animateurs</h1>
 
     <div>
       <h2 class="text-xl font-bold mb-1 text-text/85 uppercase">Action rapide</h2>
@@ -81,7 +76,7 @@ function newInstructor() {
 }
 
 // TODO
-function gotoInstructorEdit() {
-  console.log("Editing Instructor !")
+function gotoInstructorEdit(id_anim: string) {
+  console.log("Editing Instructor !", id_anim)
 }
 </script>

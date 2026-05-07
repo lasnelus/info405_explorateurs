@@ -1,3 +1,10 @@
+<!--
+
+  Just got a word that cette page ne peut exister, on as pas de liste de groupes dans la BDD lol
+  Ducoup c'est deprecated pour l'instant, et UP TO DELETION.
+
+-->
+
 <template>
   <div class="m-3 mr-6 mb-6">
     <h1 class="text-2xl font-bold mb-6 color-primary">Gestionaire de groupes</h1>

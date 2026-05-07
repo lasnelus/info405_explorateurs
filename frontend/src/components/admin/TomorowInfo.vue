@@ -73,14 +73,14 @@
 
 <script setup lang="ts">
 // Test data
-const enfantsDemain = ref([
-  { id_enfant: 'enf001', nom: 'VERSTAPPEN', prenom: 'Max', regime_special: 'non' },
-  { id_enfant: 'enf002', nom: 'HAMILTON', prenom: 'Lewis', regime_special: 'non' },
-  { id_enfant: 'enf003', nom: 'LECLERC', prenom: 'Charles', regime_special: 'non' },
-  { id_enfant: 'enf004', nom: 'NORRIS', prenom: 'Lando', regime_special: 'vegetarien' },
-  { id_enfant: 'enf005', nom: 'RUSSELL', prenom: 'George', regime_special: 'sans_gluten' },
-  { id_enfant: 'enf006', nom: 'ALONSO', prenom: 'Fernando', regime_special: 'non' },
-])
+// const enfantsDemain = ref([
+//   { id_enfant: 'enf001', nom: 'VERSTAPPEN', prenom: 'Max', regime_special: 'non' },
+//   { id_enfant: 'enf002', nom: 'HAMILTON', prenom: 'Lewis', regime_special: 'non' },
+//   { id_enfant: 'enf003', nom: 'LECLERC', prenom: 'Charles', regime_special: 'non' },
+//   { id_enfant: 'enf004', nom: 'NORRIS', prenom: 'Lando', regime_special: 'vegetarien' },
+//   { id_enfant: 'enf005', nom: 'RUSSELL', prenom: 'George', regime_special: 'sans_gluten' },
+//   { id_enfant: 'enf006', nom: 'ALONSO', prenom: 'Fernando', regime_special: 'non' },
+// ])
 
 const repasDemain = ref([
   { id_repas: 'rep101', type: 'Dejeuner', nb_unit: 28, regime_special: 'non' },
@@ -96,6 +96,14 @@ import { role } from '@/services/authServices'
 import { ref } from 'vue'
 
 const roleUser = await role()
+
+defineProps({
+  enfantsDemain: {
+    type: Array,
+    required: true,
+    default: () => [] // Si la donnée n'arrive pas, on init un tableau vide
+  }
+})
 
 // TODO
 function gotoChildEdit(childID: string) {

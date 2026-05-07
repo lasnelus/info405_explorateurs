@@ -91,26 +91,26 @@
 
 <script setup lang="ts">
 // Test data
-const enfantsAujourdhui = ref([
-  { id_enfant: 'enf001', nom: 'VERSTAPPEN', prenom: 'Max', regime_special: 'non', present: true },
-  { id_enfant: 'enf002', nom: 'HAMILTON', prenom: 'Lewis', regime_special: 'non', present: true },
-  { id_enfant: 'enf003', nom: 'LECLERC', prenom: 'Charles', regime_special: 'non', present: false },
-  {
-    id_enfant: 'enf004',
-    nom: 'NORRIS',
-    prenom: 'Lando',
-    regime_special: 'vegetarien',
-    present: true,
-  },
-  {
-    id_enfant: 'enf005',
-    nom: 'RUSSELL',
-    prenom: 'George',
-    regime_special: 'sans_gluten',
-    present: true,
-  },
-  { id_enfant: 'enf006', nom: 'ALONSO', prenom: 'Fernando', regime_special: 'non', present: false },
-])
+// const enfantsAujourdhui = ref([
+//   { id_enfant: 'enf001', nom: 'VERSTAPPEN', prenom: 'Max', regime_special: 'non', present: true },
+//   { id_enfant: 'enf002', nom: 'HAMILTON', prenom: 'Lewis', regime_special: 'non', present: true },
+//   { id_enfant: 'enf003', nom: 'LECLERC', prenom: 'Charles', regime_special: 'non', present: false },
+//   {
+//     id_enfant: 'enf004',
+//     nom: 'NORRIS',
+//     prenom: 'Lando',
+//     regime_special: 'vegetarien',
+//     present: true,
+//   },
+//   {
+//     id_enfant: 'enf005',
+//     nom: 'RUSSELL',
+//     prenom: 'George',
+//     regime_special: 'sans_gluten',
+//     present: true,
+//   },
+//   { id_enfant: 'enf006', nom: 'ALONSO', prenom: 'Fernando', regime_special: 'non', present: false },
+// ])
 
 const repasAujourdhui = ref([
   { id_repas: 'rep001', type: 'Dejeuner', nb_unit: 25, regime_special: 'non' },
@@ -129,6 +129,14 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const roleUser = await role()
+
+defineProps({
+  enfantsAujourdhui: {
+    type: Array,
+    required: true,
+    default: () => [] // Si la donnée n'arrive pas, on init un tableau vide
+  }
+})
 
 // TODO
 function gotoChildEdit(childID: string) {

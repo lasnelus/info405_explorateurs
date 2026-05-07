@@ -1,8 +1,11 @@
 <template>
   <div class="min-h-screen bg-background">
     <!-- Placement du titre cohérent avec les autres pages -->
-    <div class="max-w-4xl mx-auto px-6 pt-12 pb-6">
-      <h2 class="text-2xl font-bold mb-6 color-primary">Page d'administration</h2>
+    <div class="mx-auto pt-12 pb-6 ml-64">
+      <h2 v-if="roleUser.data.role == 'OWNER'" class="text-2xl font-bold mb-6 color-primary">
+        Page d'administration
+      </h2>
+      <h2 v-else class="text-2xl font-bold mb-6 color-primary">Page Animateur</h2>
     </div>
 
     <!--  -->
@@ -14,38 +17,77 @@
           <button
             @click="switch_to(0)"
             id="Aujourdhui"
-            class="activeButton btn-side-panel rounded-tl-[6px]"
+            :class="{ 'activeButton': activeTab === 0 }"
+            class="btn-side-panel rounded-tl-[6px]"
           >
             Aujourd'hui
           </button>
 
           <!-- Demain/Semaine (owner) -->
-          <button @click="switch_to(1)" id="Demain" class="btn-side-panel">Demain</button>
+          <button
+            @click="switch_to(1)"
+            id="Demain"
+            class="btn-side-panel"
+            :class="{ activeButton: activeTab === 1 }"
+          >
+            Demain
+          </button>
 
           <!-- Activitées -->
-          <button @click="switch_to(2)" id="Activitees" class="btn-side-panel">Activités</button>
+          <button
+            @click="switch_to(2)"
+            id="Activitees"
+            class="btn-side-panel"
+            :class="{ activeButton: activeTab === 2 }"
+          >
+            Activités
+          </button>
 
           <!-- Groupes -->
-          <button @click="switch_to(3)" id="Groupes" class="btn-side-panel">Groupes</button>
+          <!-- <button v-if="roleUser.data.role == 'OWNER'" @click="switch_to(3)" id="Groupes" class="btn-side-panel">Groupes</button> -->
 
           <!-- Enfants -->
-          <button @click="switch_to(4)" id="Enfants" class="btn-side-panel">Enfants</button>
+          <button
+            v-if="roleUser.data.role == 'OWNER'"
+            @click="switch_to(4)"
+            id="Enfants"
+            :class="{ activeButton: activeTab === 4 }"
+            class="btn-side-panel"
+          >
+            Enfants
+          </button>
 
           <!-- Familles -->
-          <button @click="switch_to(5)" id="Familles" class="btn-side-panel">Familles</button>
+          <button
+            v-if="roleUser.data.role == 'OWNER'"
+            @click="switch_to(5)"
+            id="Familles"
+            :class="{ activeButton: activeTab === 5 }"
+            class="btn-side-panel"
+          >
+            Familles
+          </button>
 
           <!-- Animateurs -->
-          <button @click="switch_to(6)" id="Animateurs" class="btn-side-panel rounded-bl-[6px]">
+          <button
+            v-if="roleUser.data.role == 'OWNER'"
+            @click="switch_to(6)"
+            id="Animateurs"
+            :class="{ activeButton: activeTab === 6 }"
+            class="btn-side-panel rounded-bl-[6px]"
+          >
             Animateurs
           </button>
         </div>
       </div>
 
-      <div
-        id="componentContainer"
-        class="w-full h-fit pl-3 rounded-xl bg-primary/25 inline-block"
-      >
-        <component :is="currentComponent" @switch="switch_to"/>
+      <div id="componentContainer" class="w-full h-fit pl-3 rounded-xl bg-primary/25 inline-block">
+        <component
+          :is="currentComponent"
+          :today-childs="ChildrenToday"
+          :tomorrow-childs="ChildrenTomorrow"
+          @switch="switch_to"
+        />
       </div>
 
       <!--  -->
@@ -58,76 +100,92 @@ import TodayInfo from '@/components/admin/TodayInfo.vue'
 import TomorowInfo from '@/components/admin/TomorowInfo.vue'
 import ActivityManagement from '@/components/admin/ActivityManagement.vue'
 import FamilyManagement from '@/components/admin/FamilyManagement.vue'
-import GroupManagement from '@/components/admin/GroupManagement.vue'
+// import GroupManagement from '@/components/admin/GroupManagement.vue'
 import StaffManagement from '@/components/admin/StaffManagement.vue'
 import ChildManagement from '@/components/admin/ChildManagement.vue'
 
 import router from '@/router'
 import { role } from '@/services/authServices'
-import { onMounted, shallowRef } from 'vue'
+import { getChildren } from '@/services/adminServices'
+import { computed, onMounted, ref, shallowRef } from 'vue'
 
 const roleUser = await role()
+
+// Tab administrateur
+const activeTab = ref(0)
+
+// Composant régis par activeTab
+const currentComponent = shallowRef(TodayInfo)
+
+// Liste de tout les enfants
+const allChildren = ref([])
 
 onMounted(async () => {
   // Les utilisateurs "normaux" n'ont pas à acceder a cette page. Redirection sur /login
   if (roleUser.data.role != 'OWNER' && roleUser.data.role != 'INSTRUCTOR') {
     router.push('/login')
   }
+
+  try {
+    const response = await getChildren()
+    allChildren.value = response.data
+  } catch (error) {
+    console.error('Erreur lors de la récupération des enfants:', error)
+  }
 })
 
-// Component stuff
-
-const currentComponent = shallowRef(TodayInfo)
-
+/**
+ * Switches to a pannel depending on the said pannel
+ * @param pannel pannel number
+ */
 function switch_to(pannel: number) {
-  const button = document.querySelector('.activeButton')
-  button?.classList.remove('activeButton')
+  // On met simplement à jour le numéro de l'onglet actif
+  activeTab.value = pannel
 
   switch (pannel) {
     case 0:
-      document.querySelector('#Aujourdhui')?.classList.add('activeButton')
       currentComponent.value = TodayInfo
       break
-
     case 1:
-      document.querySelector('#Demain')?.classList.add('activeButton')
       currentComponent.value = TomorowInfo
       break
-
-    // Activitees
     case 2:
-      document.querySelector('#Activitees')?.classList.add('activeButton')
       currentComponent.value = ActivityManagement
       break
-
-    // Groupes
-    case 3:
-      document.querySelector('#Groupes')?.classList.add('activeButton')
-      currentComponent.value = GroupManagement
-      break
-
-    // Enfants
     case 4:
-      document.querySelector('#Enfants')?.classList.add('activeButton')
       currentComponent.value = ChildManagement
       break
-
-    // Familles
     case 5:
-      document.querySelector('#Familles')?.classList.add('activeButton')
       currentComponent.value = FamilyManagement
       break
-
-    // Animateurs
     case 6:
-      document.querySelector('#Animateurs')?.classList.add('activeButton')
       currentComponent.value = StaffManagement
       break
-
     default:
       break
   }
 }
+
+// Requetes API
+// --- GET ---
+
+/**
+ * Renvoie tout les enfants présents aujourd'hui
+ */
+const ChildrenToday = computed(() => {
+  const today = new Date().toISOString().split('T')[0]
+  return allChildren.value.filter((enfant: any) => enfant.date === today)
+})
+
+/**
+ * Renvoie tout les enfants présents demain
+ */
+const ChildrenTomorrow = computed(() => {
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const tomorrowDate = tomorrow.toISOString().split('T')[0]
+  return allChildren.value.filter((enfant: any) => enfant.date === tomorrowDate)
+})
 </script>
 
 <!-- Surtout ne pas scope ("<style scoped>"), casse les tables des sous components -->
@@ -176,22 +234,22 @@ function switch_to(pannel: number) {
 /* Tables */
 
 table {
-  --header-color: color-mix(in oklab, var(--color-primary) 50%, var(--color-text)) ;
+  --header-color: color-mix(in oklab, var(--color-primary) 50%, var(--color-text));
 }
 
 table button p {
   text-decoration: underline;
   text-decoration-thickness: 2px;
-  transition: .3s;
+  transition: 0.3s;
   cursor: pointer;
 }
 
 table button p:hover {
   font-weight: bolder;
-  transition: .3s;
+  transition: 0.3s;
 }
 
-thead tr{
+thead tr {
   background-color: var(--header-color) !important;
 }
 
@@ -203,12 +261,12 @@ th {
   white-space: nowrap;
 }
 
-th[scope="col"] {
+th[scope='col'] {
   color: var(--color-primary-background);
   text-transform: uppercase;
 }
 
-th[scope="row"] {
+th[scope='row'] {
   color: color-mix(in oklab, var(--color-text) /* var(--color-text) */ 75%, transparent);
   width: 0;
 }
@@ -224,11 +282,19 @@ tr {
 }
 
 tr:nth-of-type(even) {
-  background-color: color-mix(in oklab, var(--color-primary) /* var(--color-text) */ 75%, transparent);
+  background-color: color-mix(
+    in oklab,
+    var(--color-primary) /* var(--color-text) */ 75%,
+    transparent
+  );
 }
 
 tr:nth-of-type(odd) {
-  background-color: color-mix(in oklab, var(--color-primary-background) /* var(--color-text) */ 50%, transparent);
+  background-color: color-mix(
+    in oklab,
+    var(--color-primary-background) /* var(--color-text) */ 50%,
+    transparent
+  );
 }
 
 td button {
@@ -236,14 +302,12 @@ td button {
   border-radius: 2rem;
   color: var(--color-text);
 
-
   &.edit {
     background-color: var(--color-warn);
   }
 
-  &.delete{
+  &.delete {
     background-color: var(--color-error);
   }
 }
-
 </style>
