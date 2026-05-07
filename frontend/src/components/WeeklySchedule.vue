@@ -18,8 +18,8 @@
       <div>
         <label class="color-primary block text-sm font-semibold mb-2">Semaine</label>
         <input
-          type="week"
-          v-model="selectedWeek"
+          type="date"
+          v-model="selectedDate"
           class="border-secondary w-full h-10 px-4 py-2 border rounded-lg"
         />
       </div>
@@ -136,10 +136,12 @@ interface Activity {
 
 const periods = ref<Period[]>([])
 
-const selectedWeek = ref(getCurrentWeek())
 const selectedGroup = ref("6-10")
 
 const groups = ["6-10", "8-12", "13-17", "18+"]
+
+const selectedDate = ref(getToday())
+
 
 onMounted(async () => {
   try {
@@ -152,7 +154,31 @@ onMounted(async () => {
   }
 })
 
+function getToday() {
+  return formatISODateLocal(new Date())
+}
 
+const selectedWeek = computed(() => {
+  return getWeekFromDate(selectedDate.value)
+})
+
+function getWeekFromDate(dateString: string) {
+  const date = new Date(dateString)
+
+  const d = new Date(Date.UTC(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  ))
+
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7))
+
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+
+  const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`
+}
 
 function getCurrentWeek() {
   const date = new Date()
