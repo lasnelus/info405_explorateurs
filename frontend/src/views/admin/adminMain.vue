@@ -87,6 +87,7 @@
           :today-childs="ChildrenToday"
           :tomorrow-childs="ChildrenTomorrow"
           :all-childs="allChildren"
+          :all-activities="allActivities"
           @switch="switch_to"
         />
       </div>
@@ -97,6 +98,9 @@
 </template>
 
 <script setup lang="ts">
+
+// --- IMPORTS ---
+
 import TodayInfo from '@/components/admin/TodayInfo.vue'
 import TomorowInfo from '@/components/admin/TomorowInfo.vue'
 import ActivityManagement from '@/components/admin/ActivityManagement.vue'
@@ -108,7 +112,13 @@ import ChildManagement from '@/components/admin/ChildManagement.vue'
 import router from '@/router'
 import { role } from '@/services/authServices'
 import { getChildren } from '@/services/adminServices'
+import { getActivities } from '@/services/activityServices'
 import { computed, onMounted, ref, shallowRef } from 'vue'
+
+
+
+// -----------------
+// --- CONSTANTS ---
 
 const roleUser = await role()
 
@@ -121,17 +131,37 @@ const currentComponent = shallowRef(TodayInfo)
 // Liste de tout les enfants
 const allChildren = ref([])
 
+// List de toutes les activités
+const allActivities = ref([])
+
+
+// ---------------
+// --- --- --- ---
+
 onMounted(async () => {
   // Les utilisateurs "normaux" n'ont pas à acceder a cette page. Redirection sur /login
   if (roleUser.data.role != 'OWNER' && roleUser.data.role != 'INSTRUCTOR') {
     router.push('/login')
   }
 
+  // --- GET ENFANTS ---
   try {
-    const response = await getChildren()
-    allChildren.value = response.data
+    const childResponse = await getChildren()
+    allChildren.value = childResponse.data
   } catch (error) {
     console.error('Erreur lors de la récupération des enfants:', error)
+  }
+
+  // --- GET ACTIVITES ---
+  try {
+    const actrivitiesResponse = await getActivities()
+    allActivities.value = actrivitiesResponse.data
+
+    console.log(allActivities);
+
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des activités:', error)
   }
 })
 
@@ -191,8 +221,6 @@ const ChildrenTomorrow = computed(() => {
     return enfant.slots.some((slot: any) => slot.day === tomorrowDate)
   })
 })
-
-console.log(allChildren);
 </script>
 
 <!-- Surtout ne pas scope ("<style scoped>"), casse les tables des sous components -->

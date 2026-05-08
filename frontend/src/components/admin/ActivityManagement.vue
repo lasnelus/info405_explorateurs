@@ -24,25 +24,40 @@
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="border-b border-default">
             <tr>
-              <th scope="col">ID_activité</th>
               <th scope="col">titre</th>
               <th scope="col">description</th>
+              <th scope="col">Tranche d'age</th>
+              <th scope="col">Debut</th>
+              <th scope="col">Fin</th>
+              <th scope="col">Capacitée</th>
               <th scope="col" class="text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(activite, index) in activites" :key="index">
-              <th scope="row">{{ activite.id_activite }}</th>
-              <td>{{ activite.titre }}</td>
-              <td>{{ activite.desc }}</td>
-              <td class="text-right">
-                <span>
-                  <button @click="gotoActivityEdit(activite.id_activite)" class="edit">
-                    <p>Editer</p>
-                  </button>
-                </span>
-              </td>
-            </tr>
+            <template v-if="allActivities.length > 0">
+              <tr v-for="(activite, index) in allActivities" :key="index">
+                <td>{{ activite.title != '' ? 'N/A' : activite.title }}</td>
+                <td>{{ activite.description != '' ? 'N/A' : activite.description }}</td>
+                <td>{{ activite.ageMin }} - {{ activite.ageMax }} ans</td>
+                <td>{{ activite.firstDay.split('T')[0] }}</td>
+                <td>{{ activite.lastDay.split('T')[0] }}</td>
+                <td>{{ activite.capacity }}</td>
+                <td class="text-right">
+                  <span>
+                    <button @click="gotoActivityEdit(activite.id)" class="edit">
+                      <p>Editer</p>
+                    </button>
+                  </span>
+                </td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr>
+                <td colspan="10" class="p-8 text-center text-text font-medium italic">
+                  Aucune activité...
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -52,27 +67,24 @@
 </template>
 
 <script setup lang="ts">
-// Test data
-const activites = ref([
-  { id_activite: 'act001', titre: 'Peinture', desc: 'Atelier créatif avec peinture' },
-  { id_activite: 'act002', titre: 'Football', desc: 'Match en extérieur' },
-  { id_activite: 'act003', titre: 'Lecture', desc: 'Temps calme bibliothèque' },
-  { id_activite: 'act004', titre: 'Danse', desc: 'Chorégraphie en groupe' },
-  { id_activite: 'act005', titre: 'Jeux de société', desc: 'Activité intérieure' },
-])
 
-// ---------
-
-import { ref } from 'vue'
+defineProps({
+  allActivities: {
+    type: Array,
+    required: true,
+    default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
+  },
+})
 
 // TODO
-// NOTE : Accessible aux animateurs & a la direction.
+// NOTE : Accessible aux animateurs
 function gotoActivityEdit(activityID: string) {
   console.log(activityID)
 }
 
 // TODO
+// NOTE : Accessible aux animateurs
 function newActivity() {
-  console.log("New activity !")
+  console.log('New activity !')
 }
 </script>

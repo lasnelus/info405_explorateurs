@@ -42,11 +42,11 @@
                 <td>{{ enfant.birthDate.split('T')[0] }}</td>
                 <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                   <span>
-                    <button @click="gotoChildEdit(enfant.id_enfant)" class="edit">
+                    <button @click="gotoChildEdit(enfant.id)" class="edit">
                       <p>Editer</p>
                     </button>
                     -
-                    <button @click="gotoChildDelete(enfant.id_enfant)" class="delete">
+                    <button @click="gotoChildDelete(enfant.id)" class="delete">
                       <p>Supprimer</p>
                     </button>
                   </span>

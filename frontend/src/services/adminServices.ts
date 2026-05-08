@@ -31,7 +31,8 @@ export const getChildren = () => {
  * Renvoie toutes les familles
  */
 export const getFamillies = () => {
-  // TODO -- Pas de route existante At The Moment
+  // FIXME -- Pas de route existante At The Moment
+  return api.get(`/family`)
 }
 
 /**
