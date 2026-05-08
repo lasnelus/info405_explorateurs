@@ -17,7 +17,7 @@
           <button
             @click="switch_to(0)"
             id="Aujourdhui"
-            :class="{ 'activeButton': activeTab === 0 }"
+            :class="{ activeButton: activeTab === 0 }"
             class="btn-side-panel rounded-tl-[6px]"
           >
             Aujourd'hui
@@ -86,6 +86,7 @@
           :is="currentComponent"
           :today-childs="ChildrenToday"
           :tomorrow-childs="ChildrenTomorrow"
+          :all-childs="allChildren"
           @switch="switch_to"
         />
       </div>
@@ -173,8 +174,10 @@ function switch_to(pannel: number) {
  * Renvoie tout les enfants présents aujourd'hui
  */
 const ChildrenToday = computed(() => {
-  const today = new Date().toISOString().split('T')[0]
-  return allChildren.value.filter((enfant: any) => enfant.date === today)
+  const today = new Date().toISOString()
+  return allChildren.value.filter((enfant: any) => {
+    return enfant.slots.some((slot: any) => slot.day === today)
+  })
 })
 
 /**
@@ -183,9 +186,13 @@ const ChildrenToday = computed(() => {
 const ChildrenTomorrow = computed(() => {
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
-  const tomorrowDate = tomorrow.toISOString().split('T')[0]
-  return allChildren.value.filter((enfant: any) => enfant.date === tomorrowDate)
+  const tomorrowDate = tomorrow.toISOString()
+  return allChildren.value.filter((enfant: any) => {
+    return enfant.slots.some((slot: any) => slot.day === tomorrowDate)
+  })
 })
+
+console.log(allChildren);
 </script>
 
 <!-- Surtout ne pas scope ("<style scoped>"), casse les tables des sous components -->

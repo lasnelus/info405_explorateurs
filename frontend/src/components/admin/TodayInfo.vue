@@ -10,50 +10,57 @@
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="border-b border-default">
             <tr>
-              <th scope="col">ID_ENFANT</th>
               <th scope="col">NOM</th>
               <th scope="col">PRENOM</th>
               <th scope="col">REGIME SPECIAL ?</th>
               <th scope="col">PRESENT ?</th>
-              <th scope="col" class="text-right">ACTIONs</th>
+              <th scope="col" class="text-right">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(enfant, index) in enfantsAujourdhui" :key="index">
-              <th scope="row">{{ enfant.id_enfant }}</th>
-              <td>{{ enfant.nom }}</td>
-              <td>{{ enfant.prenom }}</td>
-              <td>{{ enfant.regime_special }}</td>
+            <template v-if="todayChilds.length > 0">
+              <tr v-for="(enfant, index) in todayChilds" :key="index">
+                <td>{{ enfant.lastName }}</td>
+                <td>{{ enfant.firstName }}</td>
+                <td>{{ enfant.foodConstraint == "NONE" ? "N/A" : enfant.foodConstraint }}</td>
 
-              <!-- TODO: UPDATE SERVEUR QUAND CHECKBOX -->
-              <td class="p-0!">
-                <label class="flex justify-center items-center cursor-pointer w-1/2">
-                  <input type="checkbox" v-model="enfant.present" class="sr-only peer" />
-                  <div
-                    class="w-10 h-10 flex items-center justify-center bg-(--header-color) rounded border border-text peer-checked:bg-success"
-                  >
-                    <svg
-                      class="w-7 h-7 text-white opacity-0 transition"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="3"
-                      viewBox="0 0 24 24"
-                      :class="{ 'opacity-100': enfant.present }"
+                <!-- TODO: UPDATE SERVEUR QUAND CHECKBOX -->
+                <td class="p-0!">
+                  <label class="flex justify-center items-center cursor-pointer w-1/2">
+                    <input type="checkbox" v-model="enfant.present" class="sr-only peer" />
+                    <div
+                      class="w-10 h-10 flex items-center justify-center bg-(--header-color) rounded border border-text peer-checked:bg-success"
                     >
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                </label>
-              </td>
-              <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
-                <span>
-                  <button @click="gotoChildEdit(enfant.id_enfant)" class="edit">
-                    <p>Editer un enfant</p>
-                  </button>
-                </span>
-              </td>
-              <td class="text-right" v-else>N/A</td>
-            </tr>
+                      <svg
+                        class="w-7 h-7 text-white opacity-0 transition"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        viewBox="0 0 24 24"
+                        :class="{ 'opacity-100': enfant.present }"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </label>
+                </td>
+                <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
+                  <span>
+                    <button @click="gotoChildEdit(enfant.id_enfant)" class="edit">
+                      <p>Editer un enfant</p>
+                    </button>
+                  </span>
+                </td>
+                <td class="text-right" v-else>N/A</td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr>
+                <td colspan="6" class="p-8 text-center text-text font-medium italic">
+                  Aucun enfant n'est présent pour cette date.
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -131,11 +138,11 @@ const router = useRouter()
 const roleUser = await role()
 
 defineProps({
-  enfantsAujourdhui: {
+  todayChilds: {
     type: Array,
     required: true,
-    default: () => [] // Si la donnée n'arrive pas, on init un tableau vide
-  }
+    default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
+  },
 })
 
 // TODO

@@ -10,7 +10,6 @@
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="border-b border-default">
             <tr>
-              <th scope="col">ID_ENFANT</th>
               <th scope="col">NOM</th>
               <th scope="col">PRENOM</th>
               <th scope="col">REGIME SPECIAL ?</th>
@@ -18,24 +17,32 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(enfant, index) in enfantsDemain" :key="index">
-              <th scope="row">{{ enfant.id_enfant }}</th>
-              <td>{{ enfant.nom }}</td>
-              <td>{{ enfant.prenom }}</td>
-              <td>{{ enfant.regime_special }}</td>
-              <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
-                <span>
-                  <button @click="gotoChildEdit(enfant.id_enfant)" class="edit">
-                    <p>Editer</p>
-                  </button>
-                  -
-                  <button @click="gotoChildDelete(enfant.id_enfant)" class="delete">
-                    <p>Supprimer</p>
-                  </button>
-                </span>
-              </td>
-              <td class="text-right" v-else>N/A</td>
-            </tr>
+            <template v-if="tomorrowChilds.length > 0">
+              <tr v-for="(enfant, index) in tomorrowChilds" :key="index">
+                <td>{{ enfant.lastName }}</td>
+                <td>{{ enfant.firstName }}</td>
+                <td>{{ enfant.foodConstraint }}</td>
+                <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
+                  <span>
+                    <button @click="gotoChildEdit(enfant.id_enfant)" class="edit">
+                      <p>Editer</p>
+                    </button>
+                    -
+                    <button @click="gotoChildDelete(enfant.id_enfant)" class="delete">
+                      <p>Supprimer</p>
+                    </button>
+                  </span>
+                </td>
+                <td class="text-right" v-else>N/A</td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr>
+                <td colspan="6" class="p-8 text-center text-text font-medium italic">
+                  Aucun enfant n'est présent pour cette date.
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -98,20 +105,20 @@ import { ref } from 'vue'
 const roleUser = await role()
 
 defineProps({
-  enfantsDemain: {
+  tomorrowChilds: {
     type: Array,
     required: true,
-    default: () => [] // Si la donnée n'arrive pas, on init un tableau vide
-  }
+    default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
+  },
 })
 
 // TODO
 function gotoChildEdit(childID: string) {
-  console.log(childID);
+  console.log(childID)
 }
 
 // TODO
 function gotoChildDelete(childID: string) {
-  console.log(childID);
+  console.log(childID)
 }
 </script>
