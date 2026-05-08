@@ -218,11 +218,11 @@
               hover:shadow-lg
               hover:-translate-y-0.5
 
-              bg-white/60
+              bg-primary/40
               backdrop-blur
             "
             :class="{
-              'opacity-40 bg-transparent': cell.isOtherMonth
+              'opacity-40 bg-primary-background/10': cell.isOtherMonth
             }"
           >
             <!-- Day number -->
@@ -256,7 +256,7 @@
 
                     rounded-lg
 
-                    bg-primary/15
+                    bg-primary-background/25
                     hover:bg-primary
                     hover:text-white
 
