@@ -69,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+import router from '@/router'
 import { role } from '@/services/authServices'
 
 defineProps({
@@ -86,13 +87,21 @@ function newChild() {
   console.log('New child !')
 }
 
-// TODO
-function gotoChildEdit(childId: string) {
-  console.log(childId)
+function gotoChildEdit(childID: string) {
+  router.push({
+    name: 'childEdit',
+    query: {
+      childId: childID,
+    },
+  })
 }
 
-// TODO
-function gotoChildDelete(childId: string) {
-  console.log(childId)
+function gotoChildDelete(childID: string) {
+  router.push({
+    name: 'childDelete',
+    query: {
+      childId: childID,
+    },
+  })
 }
 </script>

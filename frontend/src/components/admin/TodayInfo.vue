@@ -22,7 +22,7 @@
               <tr v-for="(enfant, index) in todayChilds" :key="index">
                 <td>{{ enfant.lastName }}</td>
                 <td>{{ enfant.firstName }}</td>
-                <td>{{ enfant.foodConstraint == "NONE" ? "N/A" : enfant.foodConstraint }}</td>
+                <td>{{ enfant.foodConstraint == 'NONE' ? 'N/A' : enfant.foodConstraint }}</td>
 
                 <!-- TODO: UPDATE SERVEUR QUAND CHECKBOX -->
                 <td class="p-0!">
@@ -83,12 +83,21 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(repas, index) in repasAujourdhui" :key="index">
-              <th scope="row">{{ repas.id_repas }}</th>
-              <td>{{ repas.type }}</td>
-              <td>{{ repas.nb_unit }}</td>
-              <td>{{ repas.regime_special }}</td>
-            </tr>
+            <template v-if="repasAujourdhui.length > 0">
+              <tr v-for="(repas, index) in repasAujourdhui" :key="index">
+                <th scope="row">{{ repas.id_repas }}</th>
+                <td>{{ repas.type }}</td>
+                <td>{{ repas.nb_unit }}</td>
+                <td>{{ repas.regime_special }}</td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr>
+                <td colspan="6" class="p-8 text-center text-text font-medium italic">
+                  Aucun repas n'est présent pour cette date.
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -120,11 +129,11 @@
 // ])
 
 const repasAujourdhui = ref([
-  { id_repas: 'rep001', type: 'Dejeuner', nb_unit: 25, regime_special: 'non' },
-  { id_repas: 'rep002', type: 'Vegetarien', nb_unit: 5, regime_special: 'vegetarien' },
-  { id_repas: 'rep003', type: 'Sans gluten', nb_unit: 2, regime_special: 'sans_gluten' },
-  { id_repas: 'rep004', type: 'Allergie arachide', nb_unit: 1, regime_special: 'arachide' },
-  { id_repas: 'rep005', type: 'Halal', nb_unit: 6, regime_special: 'halal' },
+  // { id_repas: 'rep001', type: 'Dejeuner', nb_unit: 25, regime_special: 'non' },
+  // { id_repas: 'rep002', type: 'Vegetarien', nb_unit: 5, regime_special: 'vegetarien' },
+  // { id_repas: 'rep003', type: 'Sans gluten', nb_unit: 2, regime_special: 'sans_gluten' },
+  // { id_repas: 'rep004', type: 'Allergie arachide', nb_unit: 1, regime_special: 'arachide' },
+  // { id_repas: 'rep005', type: 'Halal', nb_unit: 6, regime_special: 'halal' },
 ])
 
 // ---------
@@ -145,7 +154,6 @@ defineProps({
   },
 })
 
-// TODO
 function gotoChildEdit(childID: string) {
   router.push({
     name: 'childEdit',

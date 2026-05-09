@@ -273,8 +273,6 @@ table {
 }
 
 table button p {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
   transition: 0.3s;
   cursor: pointer;
 }
@@ -333,9 +331,10 @@ tr:nth-of-type(odd) {
 }
 
 td button {
-  padding: 2px 10px;
+  padding: 4px 16px;
   border-radius: 2rem;
-  color: var(--color-text);
+  color: var(--color-primary-light);
+  font-weight: bold;
 
   &.edit {
     background-color: var(--color-warn);

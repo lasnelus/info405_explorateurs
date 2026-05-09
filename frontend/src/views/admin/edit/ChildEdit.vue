@@ -198,7 +198,7 @@ function addFamily(){
 
 
 onMounted(async () =>{
-    if (roleUser.data.role != 'OWNER' && roleUser.data.role != 'INSTRUCTOR') {
+    if (roleUser.data.role != 'OWNER') {
         router.push('/login')
     }else{
         const res = await getChild(childId)
