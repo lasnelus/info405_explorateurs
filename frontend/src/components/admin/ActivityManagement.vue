@@ -67,6 +67,9 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 defineProps({
   allActivities: {
@@ -85,6 +88,6 @@ function gotoActivityEdit(activityID: string) {
 // TODO
 // NOTE : Accessible aux animateurs
 function newActivity() {
-  console.log('New activity !')
+  router.push('/activityCreate')
 }
 </script>
