@@ -1,6 +1,10 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from './../prisma/prisma.service';
-import { registerManagerCredentials } from './dto/managerDto';
+import {
+  ManagerDtoOpt,
+  ManagerInfoDto,
+  registerManagerCredentials,
+} from './dto/managerDto';
 import { hash } from 'bcrypt';
 import { Role } from '@prisma/client';
 
@@ -35,6 +39,57 @@ export class ManagerService {
         lastName: registerBody.lastName,
         password: hashedPassword,
         role: role,
+      },
+    });
+  }
+
+  async getManagers(): Promise<ManagerInfoDto[]> {
+    return await this.prisma.manager.findMany({
+      omit: {
+        password: true,
+      },
+    });
+  }
+
+  async getManagerById(managerId: string): Promise<ManagerInfoDto | null> {
+    return await this.prisma.manager.findUnique({
+      where: {
+        id: managerId,
+      },
+      omit: {
+        password: true,
+      },
+    });
+  }
+
+  async deleteManagerById(managerId: string): Promise<void> {
+    await this.prisma.manager.delete({
+      where: {
+        id: managerId,
+      },
+    });
+  }
+
+  async editMangerById(
+    managerId: string,
+    data: ManagerDtoOpt,
+  ): Promise<ManagerInfoDto> {
+    if (data.password) data.password = await this.hashPassword(data.password);
+    const role = data.role === 'OWNER' ? Role.OWNER : Role.INSTRUCTOR;
+    return await this.prisma.manager.update({
+      where: {
+        id: managerId,
+      },
+      data: {
+        id: data.id,
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        role,
+      },
+      omit: {
+        password: true,
       },
     });
   }
