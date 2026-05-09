@@ -50,6 +50,7 @@ CREATE TABLE `EmergencyContact` (
 -- CreateTable
 CREATE TABLE `Allergy` (
     `id` VARCHAR(191) NOT NULL,
+    `allergy` VARCHAR(191) NOT NULL,
     `childId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -60,10 +61,13 @@ CREATE TABLE `Queue` (
     `id` VARCHAR(191) NOT NULL,
     `childId` VARCHAR(191) NOT NULL,
     `periodeId` VARCHAR(191) NOT NULL,
+    `day` DATETIME(3) NOT NULL,
     `state` ENUM('PENDING', 'ACCEPTED', 'TIMEOUT') NOT NULL,
+    `acceptedAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Queue_childId_day_key`(`childId`, `day`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -72,15 +76,19 @@ CREATE TABLE `Slot` (
     `id` VARCHAR(191) NOT NULL,
     `childId` VARCHAR(191) NOT NULL,
     `periodeId` VARCHAR(191) NOT NULL,
+    `day` DATETIME(3) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Slot_childId_day_key`(`childId`, `day`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Periode` (
     `id` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
+    `description` TEXT NULL,
     `ageMin` INTEGER NOT NULL,
     `ageMax` INTEGER NOT NULL,
     `capacity` INTEGER NOT NULL,

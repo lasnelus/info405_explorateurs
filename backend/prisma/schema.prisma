@@ -125,6 +125,9 @@ model Slot {
 model Periode {
   id             String        @id                   @default(cuid())
 
+  title          String
+  description    String?       @db.Text
+
   ageMin         Int
   ageMax         Int
 

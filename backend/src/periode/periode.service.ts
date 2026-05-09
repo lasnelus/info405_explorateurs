@@ -6,7 +6,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreatePeriodeDto, PeriodeInfoDto } from './dto/periodeDto';
+import {
+  CreatePeriodeDto,
+  PeriodeDtoOpt,
+  PeriodeInfoDto,
+} from './dto/periodeDto';
 import { SlotInfoDto } from './dto/slotDto';
 import {
   RegisterInfoDto,
@@ -118,6 +122,26 @@ export class PeriodeService {
     });
   }
 
+  async editPeriodesById(
+    perdiodeId: string,
+    data: PeriodeDtoOpt,
+  ): Promise<PeriodeInfoDto | null> {
+    return await this.prisma.periode.update({
+      where: {
+        id: perdiodeId,
+      },
+      data,
+    });
+  }
+
+  async deletePeriode(perdiodeId: string) {
+    await this.prisma.periode.delete({
+      where: {
+        id: perdiodeId,
+      },
+    });
+  }
+
   async createPeriodes(creationBody: CreatePeriodeDto) {
     await this.prisma.periode.create({
       data: creationBody,
@@ -223,64 +247,6 @@ export class PeriodeService {
       },
     });
     return !!slots;
-  }
-
-  async deleteRegisterInPeriode(
-    periodeId: string,
-    childId: string,
-    dateIso: string,
-  ) {
-    const date = this.extractDateFromCompleteDate(new Date(dateIso));
-    const isChildInQueue = await this.isChildInQueue(childId, date);
-    const isChildInSlot = await this.isChildInSlot(childId, date);
-    if (!isChildInQueue && !isChildInSlot) throw new NotFoundException();
-    if (isChildInQueue) {
-      await this.prisma.queue.delete({
-        where: {
-          periodeId: periodeId,
-          childId_day: {
-            childId,
-            day: date,
-          },
-        },
-      });
-    } else {
-      await this.prisma.slot.delete({
-        where: {
-          periodeId: periodeId,
-          childId_day: {
-            childId,
-            day: date,
-          },
-        },
-      });
-    }
-    const userToAcceptInQueue = await this.prisma.queue.findFirst({
-      where: {
-        periodeId: periodeId,
-        day: date,
-        state: 'PENDING',
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
-    });
-    if (userToAcceptInQueue) {
-      await this.prisma.queue.update({
-        where: {
-          childId_day: {
-            childId: userToAcceptInQueue.childId,
-            day: date,
-          },
-          periodeId: periodeId,
-        },
-        data: {
-          state: 'ACCEPTED',
-          acceptedAt: new Date(),
-        },
-      });
-      await this.mailService.sendAcceptedEmail(userToAcceptInQueue.childId);
-    }
   }
 
   async accepteSlot(periodeId: string, queueId: string) {

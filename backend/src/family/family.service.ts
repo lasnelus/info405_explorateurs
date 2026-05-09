@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { FamilyCreationDto, FamilyDto } from './dto/familyDto';
+import { FamilyCreationDto, FamilyDto, FamilyInfoDto } from './dto/familyDto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -49,6 +49,10 @@ export class FamilyService {
     });
     if (!family) throw new NotFoundException('family not found');
     return family;
+  }
+
+  async getFamilies(): Promise<FamilyInfoDto[]> {
+    return await this.prisma.family.findMany();
   }
 
   async isGuardianInFamily(
