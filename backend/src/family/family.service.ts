@@ -96,4 +96,80 @@ export class FamilyService {
       data,
     });
   }
+
+  async getChild(childId: string) {
+    return await this.prisma.child.findUnique({
+      where: {
+        id: childId,
+      },
+    });
+  }
+
+  async getGuardian(guardianId: string) {
+    return await this.prisma.guardian.findUnique({
+      where: {
+        id: guardianId,
+      },
+    });
+  }
+
+  async connectChild(familyId: string, childId: string) {
+    await this.prisma.child.update({
+      where: {
+        id: childId,
+      },
+      data: {
+        families: {
+          connect: {
+            id: familyId,
+          },
+        },
+      },
+    });
+  }
+
+  async disconnectChild(familyId: string, childId: string) {
+    await this.prisma.child.update({
+      where: {
+        id: childId,
+      },
+      data: {
+        families: {
+          disconnect: {
+            id: familyId,
+          },
+        },
+      },
+    });
+  }
+
+  async connectGuardian(familyId: string, guardianId: string) {
+    await this.prisma.guardian.update({
+      where: {
+        id: guardianId,
+      },
+      data: {
+        families: {
+          connect: {
+            id: familyId,
+          },
+        },
+      },
+    });
+  }
+
+  async disconnectGuardian(familyId: string, guardianId: string) {
+    await this.prisma.guardian.update({
+      where: {
+        id: guardianId,
+      },
+      data: {
+        families: {
+          disconnect: {
+            id: familyId,
+          },
+        },
+      },
+    });
+  }
 }

@@ -130,4 +130,100 @@ export class FamilyController {
     if (!family) throw new NotFoundException();
     await this.familyService.deleteFamily(familyId);
   }
+
+  @ApiOperation({
+    summary: 'add a child in a family',
+    description: 'add a child in a family',
+  })
+  @ApiCreatedResponse({
+    description: 'connected with success',
+  })
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse()
+  @Post(':familyId/childs/:childId')
+  async addChildFamilyById(
+    @Param('familyId') familyId: string,
+    @Param('childId') childId: string,
+    @Request() request: RequestWithUser,
+  ): Promise<void> {
+    const user = request.user;
+    const role = user.role;
+    if (role == 'GUARDIAN') throw new ForbiddenException();
+    const family = await this.familyService.getFamilyById(familyId);
+    const child = await this.familyService.getChild(childId);
+    if (!family || !child) throw new NotFoundException();
+    await this.familyService.connectChild(familyId, childId);
+  }
+
+  @ApiOperation({
+    summary: 'remove a child of a family',
+    description: 'remove a child of a family',
+  })
+  @ApiOkResponse({
+    description: 'disconnected with success',
+  })
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse()
+  @Delete(':familyId/childs/:childId')
+  async removeChildFamilyById(
+    @Param('familyId') familyId: string,
+    @Param('childId') childId: string,
+    @Request() request: RequestWithUser,
+  ): Promise<void> {
+    const user = request.user;
+    const role = user.role;
+    if (role == 'GUARDIAN') throw new ForbiddenException();
+    const family = await this.familyService.getFamilyById(familyId);
+    const child = await this.familyService.getChild(childId);
+    if (!family || !child) throw new NotFoundException();
+    await this.familyService.disconnectChild(familyId, childId);
+  }
+
+  @ApiOperation({
+    summary: 'add a guardian in a family',
+    description: 'add a guardian in a family',
+  })
+  @ApiCreatedResponse({
+    description: 'connected with success',
+  })
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse()
+  @Post(':familyId/guardians/:guardianId')
+  async addGuardianFamilyById(
+    @Param('familyId') familyId: string,
+    @Param('guardianId') guardianId: string,
+    @Request() request: RequestWithUser,
+  ): Promise<void> {
+    const user = request.user;
+    const role = user.role;
+    if (role == 'GUARDIAN') throw new ForbiddenException();
+    const family = await this.familyService.getFamilyById(familyId);
+    const guardian = await this.familyService.getChild(guardianId);
+    if (!family || !guardian) throw new NotFoundException();
+    await this.familyService.connectGuardian(familyId, guardianId);
+  }
+
+  @ApiOperation({
+    summary: 'remove a guardian of a family',
+    description: 'remove a guardian of a family',
+  })
+  @ApiOkResponse({
+    description: 'disconnected with success',
+  })
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse()
+  @Delete(':familyId/guardians/:guardianId')
+  async removeGuardianFamilyById(
+    @Param('familyId') familyId: string,
+    @Param('guardianId') guardianId: string,
+    @Request() request: RequestWithUser,
+  ): Promise<void> {
+    const user = request.user;
+    const role = user.role;
+    if (role == 'GUARDIAN') throw new ForbiddenException();
+    const family = await this.familyService.getFamilyById(familyId);
+    const guardian = await this.familyService.getChild(guardianId);
+    if (!family || !guardian) throw new NotFoundException();
+    await this.familyService.disconnectGuardian(familyId, guardianId);
+  }
 }
