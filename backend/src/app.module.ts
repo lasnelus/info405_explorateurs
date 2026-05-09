@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { PeriodeModule } from './periode/periode.module';
 import { MailModule } from './mail/mail.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ManagerModule } from './manager/manager.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     PeriodeModule,
     MailModule,
     ScheduleModule.forRoot(),
+    ManagerModule,
   ],
   controllers: [],
   providers: [],
