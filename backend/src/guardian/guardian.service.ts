@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
+  guardianDtoOpt,
   guardianInfoDto,
   registerGuardianCredentials,
 } from './dto/guardianDto';
@@ -122,5 +123,22 @@ export class GuardianService {
 
   private async hashPassword(password: string): Promise<string> {
     return await hash(password, 10);
+  }
+
+  async editGuardian(guardianId: string, data: guardianDtoOpt): Promise<void> {
+    await this.prisma.guardian.update({
+      where: {
+        id: guardianId,
+      },
+      data,
+    });
+  }
+
+  async deleteGuardian(guardianId: string): Promise<void> {
+    await this.prisma.guardian.delete({
+      where: {
+        id: guardianId,
+      },
+    });
   }
 }

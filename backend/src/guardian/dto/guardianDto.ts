@@ -2,11 +2,42 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
+
+export class guardianDtoOpt {
+  @ApiProperty({
+    description: 'primary key',
+    example: 'cmkv7yhjs0000hwjmuo9c1c2h',
+  })
+  @IsOptional()
+  id?: string;
+
+  @ApiProperty({
+    description: "guardian's email",
+    example: 'contact@example.fr',
+  })
+  @IsOptional()
+  email?: string;
+
+  @ApiProperty({
+    description: "guardian's firstname",
+    example: 'Jean',
+  })
+  @IsOptional()
+  firstName?: string;
+
+  @ApiProperty({
+    description: "guardian's lastname",
+    example: 'MALABRE',
+  })
+  @IsOptional()
+  lastName?: string;
+}
 
 export class guardianInfoDto {
   @ApiProperty({
