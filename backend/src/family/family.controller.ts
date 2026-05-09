@@ -10,19 +10,35 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { FamilyCreationDto, FamilyDto } from './dto/familyDto';
+import { FamilyCreationDto, FamilyDto, FamilyInfoDto } from './dto/familyDto';
 import { FamilyService } from './family.service';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { accessTokenAuthGuard } from 'src/auth/accessToken.auth.guard';
 
 @Controller('family')
 export class FamilyController {
   constructor(private readonly familyService: FamilyService) {}
+
+  @Get()
+  @ApiOperation({
+    summary: 'fetch all families',
+    description: 'fetch all families, admin auth required',
+  })
+  @ApiOkResponse({
+    description: 'All families',
+    type: FamilyInfoDto,
+    isArray: true,
+  })
+  async getFamilies() {
+    return await this.familyService.getFamilies();
+  }
+
   @ApiCreatedResponse({
     description: 'creation successful',
   })

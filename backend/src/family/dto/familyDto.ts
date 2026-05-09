@@ -38,6 +38,30 @@ export class FamilyDto {
   childs: ChildFamilyDto[];
 }
 
+export class FamilyInfoDto {
+  @ApiProperty({
+    description: 'primary key',
+    example: 'cmkv7yhjs0000hwjmuo9c1c2h',
+  })
+  id: string;
+
+  @ApiProperty({
+    description: "family's name",
+    example: 'MALABRE',
+  })
+  name: string;
+  @ApiProperty({
+    description: "family's creation date",
+    example: '2026-01-26T13:44:34.479Z',
+  })
+  createdAt: Date;
+  @ApiProperty({
+    description: "family's last update",
+    example: '2026-01-28T13:44:34.479Z',
+  })
+  updatedAt: Date;
+}
+
 class GuardianFamilyDto {
   @ApiProperty({
     description: 'guardian id',
