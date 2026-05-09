@@ -119,7 +119,7 @@ function formatDate(dateString: string | null | undefined): string {
 }
 
 function childDelete() {
-  // deleteChild(childId)
+  deleteChild(childId)
 }
 
 function gotoAdminDashboard() {
