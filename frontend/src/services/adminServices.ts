@@ -1,21 +1,26 @@
-import api from "@/services/api"
+import api from '@/services/api'
 
-export const addEmergencyContact = (childId: string, firstName: string, lastName: string, phoneNumber:string) => {
-    return api.post(`/child/${childId}/emergency-contact`, {
-        firstName,
-        lastName,
-        phoneNumber
-    })
+export const addEmergencyContact = (
+  childId: string,
+  firstName: string,
+  lastName: string,
+  phoneNumber: string,
+) => {
+  return api.post(`/child/${childId}/emergency-contact`, {
+    firstName,
+    lastName,
+    phoneNumber,
+  })
 }
 
 export const addAllergieChild = (childId: string, allergy: string) => {
-    return api.post(`/child/${childId}/allergies`, {
-        allergy
-    })
+  return api.post(`/child/${childId}/allergies`, {
+    allergy,
+  })
 }
 
 export const addFamilyChild = (childId: string, FamilyId: string) => {
-    return api.post(`/child/${childId}/family/${FamilyId}`)
+  return api.post(`/child/${childId}/family/${FamilyId}`)
 }
 
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -49,4 +54,25 @@ export const getStaff = () => {
  */
 export const deleteChild = (childId: string) => {
   return api.delete(`/child/${childId}`)
+}
+
+// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+/**
+ * crée un nouvel enfant
+ */
+export const addNewChild = (
+  firstName: string,
+  lastName: string,
+  birthDate: string | Date,
+  foodConstraint?: string,
+  familyIds?: Array<string>,
+) => {
+  return api.post(`/child`, {
+    firstName,
+    lastName,
+    birthDate,
+    foodConstraint,
+    familyIds
+  })
 }

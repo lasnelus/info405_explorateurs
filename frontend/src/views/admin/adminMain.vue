@@ -99,6 +99,7 @@
 
 <script setup lang="ts">
 
+// ---------------
 // --- IMPORTS ---
 
 import TodayInfo from '@/components/admin/TodayInfo.vue'
@@ -156,10 +157,6 @@ onMounted(async () => {
   try {
     const actrivitiesResponse = await getActivities()
     allActivities.value = actrivitiesResponse.data
-
-    console.log(allActivities);
-
-
   } catch (error) {
     console.error('Erreur lors de la récupération des activités:', error)
   }

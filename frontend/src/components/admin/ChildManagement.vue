@@ -84,7 +84,7 @@ const roleUser = await role()
 
 // TODO
 function newChild() {
-  console.log('New child !')
+  router.push('childCreate')
 }
 
 function gotoChildEdit(childID: string) {
