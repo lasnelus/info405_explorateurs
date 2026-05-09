@@ -72,6 +72,11 @@ const router = createRouter({
       path: '/ActivityCreate',
       name: 'activityCreate',
       component: () => import('../views/admin/create/ActivityCreate.vue')
+    },
+    {
+      path: '/ActivityEdit',
+      name: 'activityEdit',
+      component: () => import('../views/admin/edit/ActivityEdit.vue')
     }
   ],
 })

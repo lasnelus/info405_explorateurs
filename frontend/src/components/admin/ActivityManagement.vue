@@ -81,8 +81,13 @@ defineProps({
 
 // TODO
 // NOTE : Accessible aux animateurs
-function gotoActivityEdit(activityID: string) {
-  console.log(activityID)
+function gotoActivityEdit(activityId: string) {
+  router.push({
+    name: 'activityEdit',
+    query: {
+      activityId,
+    }
+  })
 }
 
 // TODO

@@ -21,7 +21,7 @@ export const postActivity =(title: string, description: string, ageMin: number, 
 }
 
 export const patchActivity = (id: string, title: string, description: string, ageMin: number, ageMax: number, capacity: number, firstDay: string, lastDay: string) => {
-  return api.post(`/periode/${id}`, {
+  return api.patch(`/periode/${id}`, {
     id,
     title,
     description,
