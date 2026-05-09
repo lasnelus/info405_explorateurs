@@ -138,7 +138,7 @@ const periods = ref<Period[]>([])
 
 const selectedGroup = ref("6-10")
 
-const groups = ["6-10", "8-12", "13-17", "18+"]
+const groups = ["6-10", "11-12", "13-17", "18+"]
 
 const selectedDate = ref(getToday())
 
@@ -178,13 +178,6 @@ function getWeekFromDate(dateString: string) {
   const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
 
   return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`
-}
-
-function getCurrentWeek() {
-  const date = new Date()
-  const annee = new Date(date.getFullYear(),0,1)
-  const week = Math.ceil((((date.getTime() - annee.getTime()) / 86400000) + annee.getDay()+1)/7)
-  return `${date.getFullYear()}-W${week.toString().padStart(2,"0")}`
 }
 
 function getDaysOfWeek(weekStr:string) {

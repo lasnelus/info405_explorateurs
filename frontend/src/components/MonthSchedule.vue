@@ -313,7 +313,7 @@ const displayDate = ref(
 )
 
 const selectedGroup = ref("6-10")
-const groups = ["6-10", "8-12", "13-17", "18+"]
+const groups = ["6-10", "11-12", "13-17", "18+"]
 
 const weekDays = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
 
