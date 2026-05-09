@@ -1,6 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { FamilyCreationDto, FamilyDto, FamilyInfoDto } from './dto/familyDto';
+import {
+  FamilyCreationDto,
+  FamilyDto,
+  FamilyDtoOpt,
+  FamilyInfoDto,
+} from './dto/familyDto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -70,5 +75,25 @@ export class FamilyService {
       },
     });
     return !!family;
+  }
+
+  async deleteFamily(familyId: string): Promise<void> {
+    await this.prisma.family.delete({
+      where: {
+        id: familyId,
+      },
+    });
+  }
+
+  async editFamily(
+    familyId: string,
+    data: FamilyDtoOpt,
+  ): Promise<FamilyInfoDto> {
+    return await this.prisma.family.update({
+      where: {
+        id: familyId,
+      },
+      data,
+    });
   }
 }
