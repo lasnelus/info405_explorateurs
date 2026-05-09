@@ -6,7 +6,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreatePeriodeDto, PeriodeInfoDto } from './dto/periodeDto';
+import {
+  CreatePeriodeDto,
+  PeriodeDtoOpt,
+  PeriodeInfoDto,
+} from './dto/periodeDto';
 import { SlotInfoDto } from './dto/slotDto';
 import {
   RegisterInfoDto,
@@ -112,6 +116,26 @@ export class PeriodeService {
 
   async getPeriodesById(perdiodeId: string): Promise<PeriodeInfoDto | null> {
     return await this.prisma.periode.findUnique({
+      where: {
+        id: perdiodeId,
+      },
+    });
+  }
+
+  async editPeriodesById(
+    perdiodeId: string,
+    data: PeriodeDtoOpt,
+  ): Promise<PeriodeInfoDto | null> {
+    return await this.prisma.periode.update({
+      where: {
+        id: perdiodeId,
+      },
+      data,
+    });
+  }
+
+  async deletePeriode(perdiodeId: string) {
+    await this.prisma.periode.delete({
       where: {
         id: perdiodeId,
       },
