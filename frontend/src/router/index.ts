@@ -57,6 +57,11 @@ const router = createRouter({
       path: '/ChildEdit',
       name: 'childEdit',
       component: () => import('../views/admin/edit/ChildEdit.vue')
+    },
+    {
+      path: '/ChildDelete',
+      name: 'childDelete',
+      component: () => import('../views/admin/delete/ChildDelete.vue')
     }
   ],
 })

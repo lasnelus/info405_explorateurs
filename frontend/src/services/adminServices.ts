@@ -41,3 +41,12 @@ export const getFamillies = () => {
 export const getStaff = () => {
   // TODO -- Pas de route existante At The Moment
 }
+
+// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+/**
+ * Suprime un enfant
+ */
+export const deleteChild = (childId: string) => {
+  return api.delete(`/child/${childId}`)
+}
