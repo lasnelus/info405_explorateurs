@@ -11,7 +11,7 @@ import {
   PeriodeDtoOpt,
   PeriodeInfoDto,
 } from './dto/periodeDto';
-import { SlotInfoDto } from './dto/slotDto';
+import { attendanceDto, SlotInfoDto } from './dto/slotDto';
 import {
   RegisterInfoDto,
   stateRegisterPeriode,
@@ -159,6 +159,7 @@ export class PeriodeService {
       },
       select: {
         id: true,
+        isChildPresent: true,
         child: {
           select: {
             firstName: true,
@@ -318,6 +319,7 @@ export class PeriodeService {
             id: true,
           },
         },
+        isChildPresent: true,
         day: true,
         periodeId: true,
       },
@@ -347,5 +349,14 @@ export class PeriodeService {
       },
     });
     return queues;
+  }
+
+  async setChildAttendance(slotId: string, data: attendanceDto): Promise<void> {
+    await this.prisma.slot.update({
+      where: {
+        id: slotId,
+      },
+      data,
+    });
   }
 }

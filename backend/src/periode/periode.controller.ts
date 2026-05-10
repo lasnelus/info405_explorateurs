@@ -11,6 +11,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -32,7 +33,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { RegisterDto, RegisterInfoDto } from './dto/registerPeriodeDto';
-import { SlotInfoDto } from './dto/slotDto';
+import { attendanceDto, SlotInfoDto } from './dto/slotDto';
 import { QueueInfoDto } from './dto/queueDto';
 
 @Controller('periode')
@@ -253,5 +254,24 @@ export class PeriodeController {
     @Param('slotId') slotId: string,
   ) {
     await this.periodeService.leaveSlots(periodeId, slotId);
+  }
+
+  @Put(':periodeId/slot/:slotId/attendance')
+  @ApiOperation({
+    summary: 'set child attendance',
+    description: 'set child attendance',
+  })
+  @ApiCreatedResponse()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  @ApiBearerAuth('accessToken')
+  async setChildAttendance(
+    @Request() request: RequestWithUser,
+    @Param('periodeId') periodeId: string,
+    @Param('slotId') slotId: string,
+    @Body() body: attendanceDto,
+  ) {
+    if (request.user.role == 'GUARDIAN') throw new ForbiddenException();
+    await this.periodeService.setChildAttendance(slotId, body);
   }
 }

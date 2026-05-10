@@ -9,6 +9,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import {
+  guardianDtoOpt,
   guardianInfoDto,
   registerGuardianCredentials,
 } from './dto/guardianDto';
@@ -17,8 +18,10 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  Patch,
   Post,
   Request,
   Res,
@@ -110,5 +113,45 @@ export class GuardianController {
     @Param('guardianId') guardianId: string,
   ): Promise<guardianInfoDto> {
     return await this.guardianService.getGuardian(guardianId);
+  }
+
+  @ApiOperation({
+    summary: "edit guardian's informations",
+  })
+  @ApiBody({
+    type: guardianDtoOpt,
+  })
+  @ApiResponse({
+    description: 'edit with success',
+    type: guardianInfoDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'guardian not found',
+  })
+  @Patch(':guardianId')
+  async editGuardianInfo(
+    @Param('guardianId') guardianId: string,
+    @Body() body: guardianDtoOpt,
+  ): Promise<void> {
+    await this.guardianService.getGuardian(guardianId);
+    await this.guardianService.editGuardian(guardianId, body);
+  }
+
+  @ApiOperation({
+    summary: 'delete a guardian',
+  })
+  @ApiResponse({
+    description: 'delete with success',
+    type: guardianInfoDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'guardian not found',
+  })
+  @Delete(':guardianId')
+  async deleteGuardianInfo(
+    @Param('guardianId') guardianId: string,
+  ): Promise<void> {
+    await this.guardianService.getGuardian(guardianId);
+    await this.guardianService.deleteGuardian(guardianId);
   }
 }

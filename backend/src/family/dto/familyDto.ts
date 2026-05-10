@@ -62,6 +62,34 @@ export class FamilyInfoDto {
   updatedAt: Date;
 }
 
+export class FamilyDtoOpt {
+  @ApiProperty({
+    description: 'primary key',
+    example: 'cmkv7yhjs0000hwjmuo9c1c2h',
+  })
+  @IsOptional()
+  id?: string;
+
+  @ApiProperty({
+    description: "family's name",
+    example: 'MALABRE',
+  })
+  @IsOptional()
+  name?: string;
+  @ApiProperty({
+    description: "family's creation date",
+    example: '2026-01-26T13:44:34.479Z',
+  })
+  @IsOptional()
+  createdAt?: Date;
+  @ApiProperty({
+    description: "family's last update",
+    example: '2026-01-28T13:44:34.479Z',
+  })
+  @IsOptional()
+  updatedAt?: Date;
+}
+
 class GuardianFamilyDto {
   @ApiProperty({
     description: 'guardian id',

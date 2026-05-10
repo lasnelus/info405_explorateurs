@@ -1,6 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { FamilyCreationDto, FamilyDto, FamilyInfoDto } from './dto/familyDto';
+import {
+  FamilyCreationDto,
+  FamilyDto,
+  FamilyDtoOpt,
+  FamilyInfoDto,
+} from './dto/familyDto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -70,5 +75,101 @@ export class FamilyService {
       },
     });
     return !!family;
+  }
+
+  async deleteFamily(familyId: string): Promise<void> {
+    await this.prisma.family.delete({
+      where: {
+        id: familyId,
+      },
+    });
+  }
+
+  async editFamily(
+    familyId: string,
+    data: FamilyDtoOpt,
+  ): Promise<FamilyInfoDto> {
+    return await this.prisma.family.update({
+      where: {
+        id: familyId,
+      },
+      data,
+    });
+  }
+
+  async getChild(childId: string) {
+    return await this.prisma.child.findUnique({
+      where: {
+        id: childId,
+      },
+    });
+  }
+
+  async getGuardian(guardianId: string) {
+    return await this.prisma.guardian.findUnique({
+      where: {
+        id: guardianId,
+      },
+    });
+  }
+
+  async connectChild(familyId: string, childId: string) {
+    await this.prisma.child.update({
+      where: {
+        id: childId,
+      },
+      data: {
+        families: {
+          connect: {
+            id: familyId,
+          },
+        },
+      },
+    });
+  }
+
+  async disconnectChild(familyId: string, childId: string) {
+    await this.prisma.child.update({
+      where: {
+        id: childId,
+      },
+      data: {
+        families: {
+          disconnect: {
+            id: familyId,
+          },
+        },
+      },
+    });
+  }
+
+  async connectGuardian(familyId: string, guardianId: string) {
+    await this.prisma.guardian.update({
+      where: {
+        id: guardianId,
+      },
+      data: {
+        families: {
+          connect: {
+            id: familyId,
+          },
+        },
+      },
+    });
+  }
+
+  async disconnectGuardian(familyId: string, guardianId: string) {
+    await this.prisma.guardian.update({
+      where: {
+        id: guardianId,
+      },
+      data: {
+        families: {
+          disconnect: {
+            id: familyId,
+          },
+        },
+      },
+    });
   }
 }

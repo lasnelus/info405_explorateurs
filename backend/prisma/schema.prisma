@@ -116,6 +116,8 @@ model Slot {
 
   day            DateTime
 
+  isChildPresent Boolean      @default(false)
+
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 

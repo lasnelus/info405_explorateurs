@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean } from 'class-validator';
 
 class ChildInfoInSlotOrQueue {
   @ApiProperty({
@@ -34,4 +35,19 @@ export class SlotInfoDto {
     description: 'Day choose of the periode',
   })
   day: Date;
+
+  @ApiProperty({
+    example: false,
+    description: 'to take attendance',
+  })
+  isChildPresent: boolean;
+}
+
+export class attendanceDto {
+  @ApiProperty({
+    example: false,
+    description: 'to take attendance',
+  })
+  @IsBoolean()
+  isChildPresent: boolean;
 }
