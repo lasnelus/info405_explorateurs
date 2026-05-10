@@ -57,6 +57,9 @@
           </div>
         </div>
 
+        <!-- ---------------- -->
+        <!--     FAMILIES     -->
+        <!-- ---------------- -->
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8 mb-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Familles</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -102,13 +105,13 @@
           <p>
             <button
               type="submit"
-              class="cursor-pointer bg-success p-2 rounded-full text-primary-light font-bold mr-3"
+              class="cursor-pointer bg-success p-3 rounded-full text-primary-light font-bold mr-3"
             >
               Créer un enfant
             </button>
             <button
               @click="gotoAdminDashboard()"
-              class="cursor-pointer bg-info p-2 rounded-full text-primary-light font-bold"
+              class="cursor-pointer bg-info p-3 rounded-full text-primary-light font-bold"
             >
               Revenir au panel admin
             </button>

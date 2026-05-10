@@ -63,13 +63,13 @@
           <p>
             <button
               type="submit"
-              class="cursor-pointer bg-success p-2 rounded-full text-primary-light font-bold mr-3"
+              class="cursor-pointer bg-success p-3 rounded-full text-primary-light font-bold mr-3"
             >
               Créer un manager
             </button>
             <button
               @click="gotoAdminDashboard()"
-              class="cursor-pointer bg-info p-2 rounded-full text-primary-light font-bold"
+              class="cursor-pointer bg-info p-3 rounded-full text-primary-light font-bold"
             >
               Revenir au panel admin
             </button>

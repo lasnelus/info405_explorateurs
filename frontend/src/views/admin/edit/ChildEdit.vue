@@ -134,13 +134,41 @@
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Familles</h2>
           <div v-if="child.families.length > 0">
-            <ul class="space-y-2">
-              <li v-for="family in child.families" :key="family.id" class="text-text/70">
-                {{ family.name }}
-              </li>
-            </ul>
+            <!-- ---------------- -->
+            <!--     FAMILIES     -->
+            <!-- ---------------- -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ul v-if="child.families.length > 0" class="mb-3 space-y-2">
+                <li
+                  v-for="family in child.families"
+                  :key="family.id"
+                  class="flex items-center justify-between bg-primary/20 border border-primary/30 px-3 py-2 rounded-lg text-text"
+                >
+                  <span>{{ getFamilyName(family.id) }}</span>
+
+                  <button
+                    type="button"
+                    @click="removeFamilyFromChild(family.id)"
+                    class="text-text bg-error rounded-full cursor-pointer font-bold hover:bg-error/75 px-2"
+                    title="Retirer cette famille"
+                  >
+                    Retirer
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <select
+              v-model="familyToAdd"
+              @change="addFamilyToChild"
+              class="w-full rounded-lg border border-primary/20 bg-primary-background/50 px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
+            >
+              <option disabled value="">-- Ajouter une famille --</option>
+
+              <option v-for="famille in availableFamilies" :key="famille.id" :value="famille.id">
+                {{ famille.name }}
+              </option>
+            </select>
           </div>
-          <p v-else class="text-text/70">Aucune famille associée</p>
         </div>
       </div>
     </div>
@@ -148,11 +176,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getChild, addEmergencyContact, addAllergieChild } from '@/services/childServices'
 import { role } from '@/services/authServices'
 import { formatDate } from '@/utils/dateFormat'
+import { getFamilies } from '@/services/familyServices'
 
 const route = useRoute()
 const router = useRouter()
@@ -161,24 +190,24 @@ const router = useRouter()
 // Types
 // --------------------
 type Allergy = {
-  id: number
+  id: string
   allergy: string
 }
 
 type EmergencyContact = {
-  id: number
+  id: string
   firstName: string
   lastName: string
   phoneNumber: string
 }
 
 type Family = {
-  id: number
+  id: string
   name: string
 }
 
 type Child = {
-  id: number
+  id: string
   firstName: string
   lastName: string
   birthDate: string
@@ -191,9 +220,7 @@ type Child = {
 // --------------------
 // Route param safe typing
 // --------------------
-const childId = Array.isArray(route.query.childId)
-  ? route.query.childId[0]
-  : route.query.childId
+const childId = Array.isArray(route.query.childId) ? route.query.childId[0] : route.query.childId
 
 // --------------------
 // State
@@ -224,12 +251,7 @@ const newAllergy = reactive({
 async function addContact() {
   if (!childId) return
 
-  await addEmergencyContact(
-    childId,
-    newContact.firstName,
-    newContact.lastName,
-    newContact.phone
-  )
+  await addEmergencyContact(childId, newContact.firstName, newContact.lastName, newContact.phone)
 }
 
 async function addAllergie() {
@@ -237,6 +259,50 @@ async function addAllergie() {
 
   await addAllergieChild(childId, newAllergy.allergy)
 }
+
+// ---------------------------
+// Gestion d'ajout de familles
+// ---------------------------
+
+const allFamilies = ref<Family[]>([])
+
+const familyToAdd = ref<string>('')
+
+const editedChild = reactive({
+  id: '',
+  firstName: '',
+  lastName: '',
+  birthDate: '',
+  foodConstraint: 'NONE',
+  familyIds: [] as string[],
+})
+
+const availableFamilies = computed(() => {
+  return allFamilies.value.filter((family) => !child.value.families.includes(family.id))
+})
+
+const addFamilyToChild = () => {
+  if (familyToAdd.value && !child.value.families.includes(familyToAdd.value)) {
+    child.value.families.push(familyToAdd.value)
+    familyToAdd.value = ''
+  }
+}
+
+const removeFamilyFromChild = (idToRemove: string) => {
+  const index = child.value.families.findIndex((id) => id === idToRemove)
+
+  if (index !== -1) {
+    newChild.familyIds.splice(index, 1)
+  }
+}
+
+const getFamilyName = (id: string): string => {
+  const family = allFamilies.value.find((f) => f.id === id)
+
+  return family ? family.name : 'Inconnue'
+}
+
+// --- --- --- --- --- --- ---
 
 // --------------------
 // Init
@@ -249,7 +315,31 @@ onMounted(async () => {
 
   if (!childId) return
 
-  const res = await getChild(childId)
-  child.value = res.data
+  try {
+    const res = await getChild(childId)
+    child.value = res.data
+
+    editedChild.id = res.data.id
+    editedChild.firstName = res.data.firstName
+    editedChild.lastName = res.data.lastName
+    editedChild.birthDate = res.data.birthDate
+    editedChild.foodConstraint = res.data.foodConstraint
+
+    editedChild.familyIds = res.data.families.map((family: any) => family.id)
+  }
+
+  catch (error) {
+    console.error('Erreur lors de la récupération de l\'enfant:', error)
+  }
+
+  try {
+    const familiesResponse = await getFamilies()
+
+    allFamilies.value = familiesResponse.data as Family[]
+
+    console.log(allFamilies.value)
+  } catch (error) {
+    console.error('Erreur lors de la récupération des familles:', error)
+  }
 })
 </script>

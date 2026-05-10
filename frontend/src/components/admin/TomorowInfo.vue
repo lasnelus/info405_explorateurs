@@ -21,7 +21,7 @@
               <tr v-for="(enfant, index) in tomorrowChilds" :key="index">
                 <td>{{ enfant.lastName }}</td>
                 <td>{{ enfant.firstName }}</td>
-                <td>{{ enfant.foodConstraint }}</td>
+                <td>{{ enfant.foodConstraint == 'NONE' ? 'NON' : enfant.foodConstraint }}</td>
                 <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                   <span>
                     <button @click="gotoChildEdit(enfant.id)" class="edit">

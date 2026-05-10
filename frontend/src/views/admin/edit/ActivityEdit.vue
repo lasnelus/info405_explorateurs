@@ -111,7 +111,7 @@
           <p>
             <button
               type="submit"
-              class="cursor-pointer bg-warn p-2 rounded-full text-primary-light font-bold mr-3"
+              class="cursor-pointer bg-warn p-3 rounded-full text-primary-light font-bold mr-3"
             >
               Modifier l'activité
             </button>
@@ -119,7 +119,7 @@
             <button
               type="button"
               @click="gotoAdminDashboard"
-              class="cursor-pointer bg-info p-2 rounded-full text-primary-light font-bold"
+              class="cursor-pointer bg-info p-3 rounded-full text-primary-light font-bold"
             >
               Revenir au panel admin
             </button>

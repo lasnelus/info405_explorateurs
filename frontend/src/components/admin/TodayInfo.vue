@@ -22,7 +22,7 @@
               <tr v-for="(enfant, index) in todayChilds" :key="index">
                 <td>{{ enfant.lastName }}</td>
                 <td>{{ enfant.firstName }}</td>
-                <td>{{ enfant.foodConstraint == 'NONE' ? 'N/A' : enfant.foodConstraint }}</td>
+                <td>{{ enfant.foodConstraint == 'NONE' ? 'NON' : enfant.foodConstraint }}</td>
 
                 <td class="p-0!">
                   <label class="flex justify-center items-center cursor-pointer w-1/2">
