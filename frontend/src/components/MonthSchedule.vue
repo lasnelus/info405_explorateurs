@@ -492,7 +492,7 @@ function getActivities(day: Date): Activity[] {
       id: p.id,
       date: dateStr,
       group: `${p.ageMin}-${p.ageMax}`,
-      title: `Période ${p.ageMin}-${p.ageMax}`,
+      title: p.title,
       description: `Du ${formatDate(
         p.firstDay
       )} au ${formatDate(p.lastDay)} (capacité ${
