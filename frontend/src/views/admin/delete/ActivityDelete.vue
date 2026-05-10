@@ -92,6 +92,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { deleteActivity, getActivity } from '@/services/activityServices'
+import { formatDate } from '@/utils/dateFormat'
 
 const route = useRoute()
 const router = useRouter()
@@ -103,17 +104,6 @@ const activity = ref(null)
 const errorMessage = ref('')
 
 const roleUser = await role()
-
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return '-'
-  const date = new Date(dateString)
-  if (Number.isNaN(date.getTime())) return dateString
-  return date.toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-}
 
 async function activityDelete() {
   errorMessage.value = ''

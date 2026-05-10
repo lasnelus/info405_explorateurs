@@ -107,6 +107,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getChild } from '@/services/childServices'
 import { role } from '@/services/authServices'
 import { deleteChild } from '@/services/childServices'
+import { formatDate } from '@/utils/dateFormat'
 
 const route = useRoute()
 const router = useRouter()
@@ -118,17 +119,6 @@ const child = ref(null)
 const errorMessage = ref();
 
 const roleUser = await role()
-
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return '-'
-  const date = new Date(dateString)
-  if (Number.isNaN(date.getTime())) return dateString
-  return date.toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-}
 
 async function childDelete() {
   errorMessage.value = ''

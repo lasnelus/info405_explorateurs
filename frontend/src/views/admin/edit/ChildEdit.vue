@@ -153,6 +153,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getChild } from '@/services/childServices'
 import { role } from '@/services/authServices'
 import { addEmergencyContact, addAllergieChild, addFamilyChild } from '@/services/childServices'
+import { formatDate } from '@/utils/dateFormat'
 
 const route = useRoute()
 const router = useRouter()
@@ -172,17 +173,6 @@ const newContact = reactive({
 const newAllergy = reactive({
   allergy: '',
 })
-
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return '-'
-  const date = new Date(dateString)
-  if (Number.isNaN(date.getTime())) return dateString
-  return date.toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-}
 
 function addContact() {
   addEmergencyContact(childId, newContact.firstName, newContact.lastName, newContact.phone)

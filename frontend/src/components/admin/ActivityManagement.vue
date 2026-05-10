@@ -39,8 +39,8 @@
                 <td>{{ activite.title }}</td>
                 <td>{{ activite.description }}</td>
                 <td>{{ activite.ageMin }} - {{ activite.ageMax }} ans</td>
-                <td>{{ activite.firstDay.split('T')[0] }}</td>
-                <td>{{ activite.lastDay.split('T')[0] }}</td>
+                <td>{{ formatDate(activite.firstDay) }}</td>
+                <td>{{ formatDate(activite.lastDay) }}</td>
                 <td>{{ activite.capacity }}</td>
                 <td class="text-right">
                   <span>
@@ -82,6 +82,17 @@ defineProps({
     default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
   },
 })
+
+function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) return dateString
+  return date.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+}
 
 // NOTE : Accessible aux animateurs
 function gotoActivityEdit(activityId: string) {
