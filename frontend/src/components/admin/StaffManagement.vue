@@ -58,6 +58,12 @@ import { getManager } from '@/services/adminServices'
 
 const router = useRouter()
 
+interface Manager {
+  id: string
+  firstName: string
+  lastName: string
+}
+
 const managers = ref<Manager[]>([])
 
 const roleUser = await role()

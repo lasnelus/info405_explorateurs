@@ -73,13 +73,17 @@ import router from '@/router'
 import { role } from '@/services/authServices'
 import { formatDate } from '@/utils/dateFormat'
 
-defineProps({
-  allChilds: {
-    type: Array,
-    required: true,
-    default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
-  },
-})
+interface Child {
+  id: string
+  firstName: string
+  lastName: string
+  birthDate: string
+  foodConstraint: string
+}
+
+defineProps<{
+  allChilds: Child[]
+}>()
 
 const roleUser = await role()
 

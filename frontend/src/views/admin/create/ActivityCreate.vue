@@ -159,13 +159,13 @@ async function createNewActivity() {
     firstDay: new Date(newActivity.firstDay).toISOString(),
     lastDay: new Date(newActivity.lastDay).toISOString(),
   }
-  
+
   await postActivity(payload.title, payload.description, payload.ageMin, payload.ageMax, payload.capacity, payload.firstDay, payload.lastDay)
-  
+
   router.push('/admin')
-  } catch (error: any) {
+  } catch (error: unknown) {
     errorMessage.value =
-    error?.response?.data?.message ||
+    (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
     "Une erreur est survenue lors de la création de l'activité."
   }
 }

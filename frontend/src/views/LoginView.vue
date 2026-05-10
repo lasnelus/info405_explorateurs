@@ -150,11 +150,11 @@ const handleLogin = async () => {
       router.push('/admin')
     }
 
-  } catch (e: any) {
+  } catch (e: unknown) {
     // log server response if available
-    console.error('Login error', e.response?.data || e)
+    console.error('Login error', e instanceof Error ? e.message : String(e))
     error.value =
-      e.response?.data?.message ||
+      (e instanceof Error ? e.message : String(e)) ||
       'Identifiants invalides'
   }
 }

@@ -4,7 +4,7 @@ export const getActivities = () => {
   return api.get("/periode")
 }
 
-export const getActivity = (id: number) => {
+export const getActivity = (id: string) => {
   return api.get(`/periode/${id}`)
 }
 

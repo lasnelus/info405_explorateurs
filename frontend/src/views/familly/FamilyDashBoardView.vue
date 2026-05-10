@@ -86,18 +86,56 @@ import { loadProfileIfNeeded } from "@/services/authServices"
 import { getFamily } from "@/services/familyServices"
 import { getChild } from "@/services/childServices"
 
+export interface Slot {
+  id: string
+  child: Child
+  periodeId: string
+  day: string
+  isChildPresent: boolean
+}
+
+export interface Queue {
+  id: string
+  date?: string | null
+}
+
+export interface Child {
+  id: string
+  firstName: string
+  lastName: string
+  slots?: Slot[]
+  queues?: Queue[]
+}
+
+interface FamilyWithChildren extends Family {
+  childs?: Child[]
+}
+
+interface EnrichedSlot extends Slot {
+  childId: string
+  childName: string
+  familyName?: string
+}
+
+interface EnrichedQueue extends Queue {
+  childId: string
+  childName: string
+  familyName?: string
+}
+
+
 const auth = useAuthStore()
 const router = useRouter()
 
 const guardian = ref<Guardian | null>(null)
 const families = ref<Family[]>([])
-const familiesWithChildren = ref<any[]>([])
-const allSlots = ref<any[]>([])
-const allQueues = ref<any[]>([])
+const familiesWithChildren = ref<FamilyWithChildren[]>([])
+const allSlots = ref<EnrichedSlot[]>([])
+const allQueues = ref<EnrichedQueue[]>([])
 const error = ref<string | null>(null)
 
 const allUpcomingActivities = computed(() =>
-  allSlots.value.map((slot: any) => ({
+  allSlots.value.map((slot) => ({
     id: `${slot.id}-${slot.childId ?? slot.child?.id ?? 'unknown'}`,
     title:  formatDate(slot.day),
     childName: slot.childName,
@@ -106,7 +144,7 @@ const allUpcomingActivities = computed(() =>
 )
 
 const allRegistrations = computed(() =>
-  allQueues.value.map((queue: any) => ({
+  allQueues.value.map((queue) => ({
     id: queue.id,
     childName: queue.childName,
     activityTitle: formatDate(queue.date),
@@ -134,7 +172,7 @@ const fetchFamilyAndChildren = async () => {
         const familyRes = await getFamily(family.id)
         const familyData = familyRes.data
         const childDetails = await Promise.all(
-          (familyData.childs || []).map(async (child: any) => {
+          (familyData.childs || []).map(async (child: Child) => {
             const childRes = await getChild(child.id)
             return childRes.data
           }),
@@ -143,15 +181,15 @@ const fetchFamilyAndChildren = async () => {
         return {
           ...familyData,
           childs: childDetails,
-        }
+        } as FamilyWithChildren
       }),
     )
 
     familiesWithChildren.value = loaded
 
     allSlots.value = loaded.flatMap((family) =>
-      (family.childs || []).flatMap((child: any) =>
-        (child.slots || []).map((slot: any) => ({
+      (family.childs || []).flatMap((child: Child) =>
+        (child.slots || []).map((slot: Slot) => ({
           ...slot,
           childId: child.id,
           childName: `${child.firstName} ${child.lastName}`,
@@ -161,8 +199,8 @@ const fetchFamilyAndChildren = async () => {
     )
 
     allQueues.value = loaded.flatMap((family) =>
-      (family.childs || []).flatMap((child: any) =>
-        (child.queues || []).map((queue: any) => ({
+      (family.childs || []).flatMap((child: Child) =>
+        (child.queues || []).map((queue: Queue) => ({
           ...queue,
           childId: child.id,
           childName: `${child.firstName} ${child.lastName}`,

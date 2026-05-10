@@ -249,10 +249,10 @@ const handleSignup = async () => {
 
     router.push('/family-dashboard')
 
-  } catch (e: any) {
-    console.error('Signup error', e.response?.data || e)
+  } catch (e: unknown) {
+    console.error('Signup error', e instanceof Error ? e.message : String(e))
     error.value =
-      e.response?.data?.message ||
+      (e instanceof Error ? e.message : String(e)) ||
       'Erreur lors de la création du compte'
   }
 }

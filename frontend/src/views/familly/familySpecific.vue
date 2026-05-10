@@ -66,11 +66,28 @@ import { loadProfileIfNeeded } from "@/services/authServices"
 const route = useRoute()
 const router = useRouter()
 
-const familyId = route.query.familyId
+const familyId = Array.isArray(route.query.familyId)
+  ? route.query.familyId[0]
+  : route.query.familyId
 
 const auth = useAuthStore()
 
-const family = ref<any>(null)
+interface Family {
+  id: string
+  name: string
+  guardians: {
+    id: string
+    firstName: string
+    lastName: string
+  }[]
+  childs: {
+    id: string
+    firstName: string
+    lastName: string
+  }[]
+}
+
+const family = ref<Family>()
 
 function gotoChild(childId : string) {
   router.push({
@@ -84,7 +101,7 @@ function gotoChild(childId : string) {
 onMounted(async () =>{
   if(auth.isLoggedIn){
     await loadProfileIfNeeded(auth)
-    if (auth.profile != null) {
+    if (auth.profile != null && familyId) {
       const res = await getFamily(familyId)
       family.value = res.data
     } else {

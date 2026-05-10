@@ -116,6 +116,7 @@
 import { ref, computed, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { getActivities as fetchPeriods } from "@/services/activityServices"
+import { formatDate } from '@/utils/dateFormat'
 
 interface Period {
   id: string
@@ -212,7 +213,7 @@ const weekDays = computed(()=>{
 
 function toLocalDate(dateInput: Date | string) {
   if (typeof dateInput === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
-    const [year, month, day] = dateInput.split("-").map(Number)
+    const [year=0, month=1, day=1] = dateInput.split("-").map(Number)
     return new Date(year, month - 1, day)
   }
 
@@ -225,6 +226,14 @@ function formatISODateLocal(date: Date) {
   const month = String(date.getMonth() + 1).padStart(2, "0")
   const day = String(date.getDate()).padStart(2, "0")
   return `${year}-${month}-${day}`
+}
+
+function formatDay(date: Date) {
+  return date.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long"
+  })
 }
 
 function getActivities(day: Date) {
@@ -255,25 +264,6 @@ function getActivities(day: Date) {
 
   return matches
 }
-
-
-
-function formatDay(day:Date){
-  return day.toLocaleDateString("fr-FR",{
-    weekday:"long",
-    day:"numeric",
-    month:"long"
-  })
-}
-
-function formatDate(dateStr:string){
-  return new Date(dateStr).toLocaleDateString("fr-FR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  })
-}
-
 
 // inscription des enfants à une activité
 const router = useRouter()

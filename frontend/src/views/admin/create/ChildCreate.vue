@@ -126,48 +126,74 @@ import { role } from '@/services/authServices'
 import { addNewChild } from '@/services/childServices'
 import { getFamilies } from '@/services/familyServices'
 
+interface Family {
+  id: string
+  name: string
+}
+
+interface NewChild {
+  firstName: string
+  lastName: string
+  birthDate: string
+  foodConstraint: string
+  familyIds: string[]
+}
+
 const router = useRouter()
 
 const roleUser = await role()
 
 const errorMessage = ref('')
 
-const newChild = reactive({
+const newChild = reactive<NewChild>({
   firstName: '',
   lastName: '',
   birthDate: '',
   foodConstraint: 'NONE',
-  familyIds: [] as string[],
+  familyIds: [],
 })
 
 // ---------------------------
 // Gestion d'ajout de familles
 
-const familyToAdd = ref('')
+const familyToAdd = ref<string>('')
 
 const availableFamilies = computed(() => {
-  return allFamillies.value.filter((famille) => !newChild.familyIds.includes(famille.id))
+  return allFamilies.value.filter(
+    (family) => !newChild.familyIds.includes(family.id),
+  )
 })
 
+
 const addFamilyToChild = () => {
-  if (familyToAdd.value && !newChild.familyIds.includes(familyToAdd.value)) {
+  if (
+    familyToAdd.value &&
+    !newChild.familyIds.includes(familyToAdd.value)
+  ) {
     newChild.familyIds.push(familyToAdd.value)
     familyToAdd.value = ''
   }
 }
 
 const removeFamilyFromChild = (idToRemove: string) => {
-  newChild.familyIds = newChild.familyIds.filter((id) => id != idToRemove)
+  const index = newChild.familyIds.findIndex(
+    (id) => id === idToRemove,
+  )
+
+  if (index !== -1) {
+    newChild.familyIds.splice(index, 1)
+  }
 }
 
-const getFamilyName = (id: string) => {
-  const family = allFamillies.value.find((f) => f.id === id)
+const getFamilyName = (id: string): string => {
+  const family = allFamilies.value.find((f) => f.id === id)
+
   return family ? family.name : 'Inconnue'
 }
 
 // --- --- --- --- --- --- ---
 
-const allFamillies = ref([])
+const allFamilies = ref<Family[]>([])
 
 async function createNewChild() {
   errorMessage.value = ''
@@ -187,9 +213,9 @@ async function createNewChild() {
     )
 
     router.push('/admin')
-  } catch (error: any) {
+  } catch (error: unknown) {
     errorMessage.value =
-      error?.response?.data?.message || "Une erreur est survenue lors de la creation de l'enfant"
+      (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Une erreur est survenue lors de la creation de l'enfant"
   }
 }
 
@@ -206,17 +232,22 @@ const foodConstraintsOptions = [
 ]
 
 onMounted(async () => {
-  if (roleUser.data.role != 'OWNER') {
+  if (roleUser.data.role !== 'OWNER') {
     router.push('/login')
+    return
   }
 
-  // --- GET FAMILLES ---
   try {
-    const familliesResponse = await getFamilies()
-    allFamillies.value = familliesResponse.data
-    console.log(allFamillies.value)
+    const familiesResponse = await getFamilies()
+
+    allFamilies.value = familiesResponse.data as Family[]
+
+    console.log(allFamilies.value)
   } catch (error) {
-    console.error('Erreur lors de la récupération des enfants:', error)
+    console.error(
+      'Erreur lors de la récupération des familles:',
+      error,
+    )
   }
 })
 </script>

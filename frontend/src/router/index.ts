@@ -51,7 +51,7 @@ const router = createRouter({
     {
       path: '/schedule',
       name: 'schedule',
-      component: () => import('../views/familly/Schedule.vue'),
+      component: () => import('../views/familly/ScheduleView.vue'),
     },
     {
       path: '/ChildEdit',

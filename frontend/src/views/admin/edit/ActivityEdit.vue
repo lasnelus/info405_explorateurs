@@ -131,21 +131,38 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted, ref, computed } from 'vue'
+import { useRoute, useRouter, type LocationQueryValue } from 'vue-router'
 import { getActivity, patchActivity } from '@/services/activityServices'
 import { role } from '@/services/authServices'
+
+interface Activity {
+  title: string
+  description: string
+  ageMin: number
+  ageMax: number
+  capacity: number
+  firstDay: string
+  lastDay: string
+}
 
 const route = useRoute()
 const router = useRouter()
 
-const activityId = route.query.activityId
+const activityId = computed<string | null>(() => {
+  const id = route.query.activityId as LocationQueryValue | LocationQueryValue[] | undefined
 
-const activity = ref<any>(null)
+  if (!id) return null
+  if (Array.isArray(id)) return id[0] ?? null
 
+  return id
+})
+
+const activity = ref<Activity | null>(null)
 const errorMessage = ref('')
 
-const roleUser = await role()
+// ✅ typage du rôle
+const roleUser = await role() as { data: { role: string } }
 
 function formatDateForInput(date: string) {
   return new Date(date).toISOString().split('T')[0]
@@ -154,19 +171,30 @@ function formatDateForInput(date: string) {
 async function updateActivity() {
   errorMessage.value = ''
 
+  if (!activity.value || !activityId.value) return
+
   try {
-    const payload = {
+    const payload: Activity = {
       ...activity.value,
       firstDay: new Date(activity.value.firstDay).toISOString(),
       lastDay: new Date(activity.value.lastDay).toISOString(),
     }
 
-    await patchActivity(activityId, payload.title, payload.description, payload.ageMin, payload.ageMax, payload.capacity, payload.firstDay, payload.lastDay)
+    await patchActivity(
+      activityId.value,
+      payload.title,
+      payload.description,
+      payload.ageMin,
+      payload.ageMax,
+      payload.capacity,
+      payload.firstDay,
+      payload.lastDay
+    )
 
     router.push('/admin')
-  } catch (error: any) {
+  } catch (e: unknown) {
     errorMessage.value =
-      error?.response?.data?.message ||
+      (e as { response?: { data?: { message?: string } } })?.response?.data?.message ||
       "Une erreur est survenue lors de la modification de l'activité."
   }
 }
@@ -176,21 +204,27 @@ function gotoAdminDashboard() {
 }
 
 onMounted(async () => {
-  if (roleUser.data.role != 'OWNER') {
+  if (roleUser.data.role !== 'OWNER') {
     router.push('/login')
-  } else {
-    try {
-      const res = await getActivity(activityId)
+    return
+  }
 
-      activity.value = {
-        ...res.data,
-        firstDay: formatDateForInput(res.data.firstDay),
-        lastDay: formatDateForInput(res.data.lastDay),
-      }
-    } catch (error) {
-      errorMessage.value =
-        "Impossible de charger les informations de l'activité."
+  if (!activityId.value) {
+    errorMessage.value = "ID d'activité manquant."
+    return
+  }
+
+  try {
+    const res = await getActivity(activityId.value)
+
+    activity.value = {
+      ...res.data,
+      firstDay: formatDateForInput(res.data.firstDay),
+      lastDay: formatDateForInput(res.data.lastDay),
     }
+  } catch {
+    errorMessage.value =
+      "Impossible de charger les informations de l'activité."
   }
 })
 </script>

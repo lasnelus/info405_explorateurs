@@ -106,7 +106,6 @@ import TodayInfo from '@/components/admin/TodayInfo.vue'
 import TomorowInfo from '@/components/admin/TomorowInfo.vue'
 import ActivityManagement from '@/components/admin/ActivityManagement.vue'
 import FamilyManagement from '@/components/admin/FamilyManagement.vue'
-// import GroupManagement from '@/components/admin/GroupManagement.vue'
 import StaffManagement from '@/components/admin/StaffManagement.vue'
 import ChildManagement from '@/components/admin/ChildManagement.vue'
 
@@ -114,30 +113,44 @@ import router from '@/router'
 import { role } from '@/services/authServices'
 import { getChildren } from '@/services/childServices'
 import { getActivities } from '@/services/activityServices'
-import { getManager } from '@/services/adminServices'
-import { computed, onMounted, ref, shallowRef } from 'vue'
+import { computed, onMounted, ref, shallowRef, type Component } from 'vue'
 
+interface Slot {
+  day: string
+}
 
+interface Child {
+  slots: Slot[]
+}
+
+interface Activity {
+  id: number
+  name: string
+  description: string
+  startTime: string
+  endTime: string
+}
+
+interface RoleResponse {
+  data: {
+    role: 'OWNER' | 'INSTRUCTOR' | 'GUARDIAN' | string
+  }
+}
 
 // -----------------
 // --- CONSTANTS ---
 
-const roleUser = await role()
+const roleUser = (await role()) as RoleResponse
 
 // Tab administrateur
 const activeTab = ref(0)
 
 // Composant régis par activeTab
-const currentComponent = shallowRef(TodayInfo)
+const currentComponent = shallowRef<Component>(TodayInfo)
 
 // Liste de tout les enfants
-const allChildren = ref([])
-
-// List de toutes les activités
-const allActivities = ref([])
-
-// List de tous les managers
-const allManager = ref([])
+const allChildren = ref<Child[]>([])
+const allActivities = ref<Activity[]>([])
 
 
 // ---------------
@@ -205,22 +218,22 @@ function switch_to(pannel: number) {
  * Renvoie tout les enfants présents aujourd'hui
  */
 const ChildrenToday = computed(() => {
-  const today = new Date().toISOString()
-  return allChildren.value.filter((enfant: any) => {
-    return enfant.slots.some((slot: any) => slot.day === today)
-  })
+  const today = new Date().toISOString().split('T')[0] ?? ''
+
+  return allChildren.value.filter((enfant) =>
+    enfant.slots.some((slot) => slot.day.startsWith(today))
+  )
 })
 
-/**
- * Renvoie tout les enfants présents demain
- */
 const ChildrenTomorrow = computed(() => {
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
-  const tomorrowDate = tomorrow.toISOString()
-  return allChildren.value.filter((enfant: any) => {
-    return enfant.slots.some((slot: any) => slot.day === tomorrowDate)
-  })
+
+  const tomorrowDate = tomorrow.toISOString().split('T')[0] ?? ''
+
+  return allChildren.value.filter((enfant) =>
+    enfant.slots.some((slot) => slot.day.startsWith(tomorrowDate))
+  )
 })
 </script>
 

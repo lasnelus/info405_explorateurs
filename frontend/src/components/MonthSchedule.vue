@@ -287,6 +287,7 @@
 import { ref, computed, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { getActivities as fetchPeriods } from "@/services/activityServices"
+import { formatDate } from "@/utils/dateFormat"
 
 interface Period {
   id: string
@@ -312,8 +313,13 @@ const displayDate = ref(
   new Date(today.getFullYear(), today.getMonth(), 1)
 )
 
-const selectedGroup = ref("6-10")
-const groups = ["6-10", "11-12", "13-17", "18+"]
+const selectedGroup = ref<string>("6-10")
+const groups = ref<string[]>([
+  "6-10",
+  "11-12",
+  "13-17",
+  "18+",
+])
 
 const weekDays = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
 
@@ -321,8 +327,10 @@ onMounted(async () => {
   try {
     const response = await fetchPeriods()
 
-    if (response?.data && Array.isArray(response.data)) {
-      periods.value = response.data
+    const data: unknown = response?.data
+
+    if (Array.isArray(data)) {
+      periods.value = data as Period[]
     }
   } catch (error) {
     console.error("Erreur chargement des périodes :", error)
@@ -395,19 +403,21 @@ const monthGrid = computed(() => {
   return cells
 })
 
-function toLocalDate(dateInput: Date | string) {
+function toLocalDate(dateInput: Date | string): Date {
   if (
     typeof dateInput === "string" &&
     /^\d{4}-\d{2}-\d{2}$/.test(dateInput)
   ) {
-    const [year, month, day] = dateInput
+    const [year = 0, month = 1, day = 1] = dateInput
       .split("-")
       .map(Number)
 
-    return new Date(year, month - 1, day)
+return new Date(year, month - 1, day)
   }
-
-  const date = new Date(dateInput)
+  const date =
+    dateInput instanceof Date
+      ? dateInput
+      : new Date(dateInput)
 
   return new Date(
     date.getFullYear(),
@@ -416,7 +426,7 @@ function toLocalDate(dateInput: Date | string) {
   )
 }
 
-function formatISODateLocal(date: Date) {
+function formatISODateLocal(date: Date): string {
   const year = date.getFullYear()
 
   const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -426,21 +436,13 @@ function formatISODateLocal(date: Date) {
   return `${year}-${month}-${day}`
 }
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("fr-FR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  })
-}
-
-function getActivities(day: Date) {
+function getActivities(day: Date): Activity[] {
   const current = toLocalDate(day)
   const dateStr = formatISODateLocal(current)
 
   if (!dateStr) return []
 
-  function parseGroupRange(rangeStr: string) {
+  function parseGroupRange(rangeStr: string): [number, number] {
     if (!rangeStr) return [0, 999]
 
     const s = rangeStr.trim()
@@ -451,10 +453,19 @@ function getActivities(day: Date) {
       return [Number.isFinite(min) ? min : 0, 999]
     }
 
-    const parts = s.split("-").map((p) => Number(p.trim()))
+    const parts = s
+      .split("-")
+      .map((p) => Number(p.trim()))
 
-    const min = Number.isFinite(parts[0]) ? parts[0] : 0
-    const max = Number.isFinite(parts[1]) ? parts[1] : 999
+    const min =
+      typeof parts[0] === "number" && !Number.isNaN(parts[0])
+        ? parts[0]
+        : 0
+
+    const max =
+      typeof parts[1] === "number" && !Number.isNaN(parts[1])
+        ? parts[1]
+        : 999
 
     return [min, max]
   }
@@ -496,8 +507,8 @@ function goToRegistration(activity: Activity) {
   router.push({
     name: "inscription",
     query: {
-      periodId: activity.id,
-      date: activity.date,
+      periodId: String(activity.id),
+      date: String(activity.date),
     },
   })
 }

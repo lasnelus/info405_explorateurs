@@ -128,14 +128,14 @@
 //   { id_enfant: 'enf006', nom: 'ALONSO', prenom: 'Fernando', regime_special: 'non', present: false },
 // ])
 
-const repasAujourdhui = ref([
-  // { id_repas: 'rep001', type: 'Dejeuner', nb_unit: 25, regime_special: 'non' },
-  // { id_repas: 'rep002', type: 'Vegetarien', nb_unit: 5, regime_special: 'vegetarien' },
-  // { id_repas: 'rep003', type: 'Sans gluten', nb_unit: 2, regime_special: 'sans_gluten' },
-  // { id_repas: 'rep004', type: 'Allergie arachide', nb_unit: 1, regime_special: 'arachide' },
-  // { id_repas: 'rep005', type: 'Halal', nb_unit: 6, regime_special: 'halal' },
-])
+interface Repas {
+  id_repas: string
+  type: string
+  nb_unit: number
+  regime_special: string
+}
 
+const repasAujourdhui = ref<Repas[]>([])
 // ---------
 
 import { role } from '@/services/authServices'
@@ -146,13 +146,17 @@ const router = useRouter()
 
 const roleUser = await role()
 
-defineProps({
-  todayChilds: {
-    type: Array,
-    required: true,
-    default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
-  },
-})
+interface Enfant {
+  id: string
+  firstName: string
+  lastName: string
+  foodConstraint: string
+  present: boolean
+}
+
+defineProps<{
+  todayChilds: Enfant[]
+}>()
 
 function gotoChildEdit(childID: string) {
   router.push({

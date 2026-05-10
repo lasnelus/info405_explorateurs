@@ -112,20 +112,67 @@
 
 <script setup lang="ts">
 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { getChild } from '@/services/childServices'
 import { acceptSlot, leaveQueue } from '@/services/activityServices';
 import { loadProfileIfNeeded } from '@/services/authServices';
 
+
+interface Allergy {
+  id: string
+  allergy: string
+}
+
+interface EmergencyContact {
+  id: string
+  firstName: string
+  lastName: string
+  relationship: string
+  phone: string
+}
+
+interface Family {
+  id: string
+  name: string
+}
+
+interface Slot {
+  id: string
+  day: string
+}
+
+interface Queue {
+  id: string
+  date: string
+  periodeId: string
+  state: 'ACCEPT' | 'PENDING' | 'DECLINED' | string
+}
+
+interface Child {
+  firstName: string
+  lastName: string
+  birthDate: string
+  foodConstraint?: string
+  allergies: Allergy[]
+  EmergencyContact: EmergencyContact[]
+  families: Family[]
+  slots: Slot[]
+  queues: Queue[]
+}
+
+
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 
-const childId = route.query.childId
+const childId = computed(() => {
+  const id = route.query.childId
+  return Array.isArray(id) ? id[0] : id
+})
 
-const child = ref(null)
+const child = ref<Child>()
 
 function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return '-'
@@ -147,10 +194,11 @@ function acceptChild(periodeId: string, queueId: string){
 }
 
 onMounted(async () =>{
-  if(auth.isLoggedIn){
+  if (auth.isLoggedIn) {
     await loadProfileIfNeeded(auth)
-    if (auth.profile != null) {
-      const res = await getChild(childId)
+
+    if (auth.profile && childId.value) {
+      const res = await getChild(childId.value)
       child.value = res.data
     } else {
       router.push('/')

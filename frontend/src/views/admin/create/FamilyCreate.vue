@@ -91,44 +91,63 @@ import { role } from '@/services/authServices'
 import { getGuardian } from '@/services/guardianService'
 import { createFamily } from '@/services/familyServices'
 
+interface Guardian {
+  id: string
+  firstName: string
+  lastName: string
+}
+
+interface NewFamily {
+  name: string
+  guardianId: string
+}
+
 const router = useRouter()
 
-const guardians = ref([])
+const guardians = ref<Guardian[]>([])
 
 const roleUser = await role()
 
-const newFamily = reactive({
+const newFamily = reactive<NewFamily>({
   name: '',
   guardianId: '',
 })
 
 async function createNewFamily() {
   try {
-    await createFamily(newFamily.name, newFamily.guardianId)
-
+    await createFamily(
+      newFamily.name,
+      newFamily.guardianId,
+    )
     router.push('/admin')
-  } catch (error) {
-    console.error('Erreur lors de la création de la famille :', error)
+  } catch (error: unknown) {
+    console.error(
+      'Erreur lors de la création de la famille :',
+      error,
+    )
   }
 }
+
 
 function gotoAdminDashboard() {
   router.push('/admin')
 }
 
 onMounted(async () => {
-  // Vérification rôle
-  if (roleUser.data.role != 'OWNER') {
+
+  if (roleUser.data.role !== 'OWNER') {
     router.push('/login')
     return
   }
 
-  // Récupération des guardians
   try {
     const response = await getGuardian()
-    guardians.value = response.data
-  } catch (error) {
-    console.error('Erreur lors du chargement des guardians :', error)
+    guardians.value = response.data as Guardian[]
+  } catch (error: unknown) {
+    console.error(
+      'Erreur lors du chargement des guardians :',
+      error,
+    )
   }
 })
 </script>

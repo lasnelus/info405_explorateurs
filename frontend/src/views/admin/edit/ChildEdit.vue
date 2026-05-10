@@ -150,20 +150,64 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getChild } from '@/services/childServices'
+import { getChild, addEmergencyContact, addAllergieChild } from '@/services/childServices'
 import { role } from '@/services/authServices'
-import { addEmergencyContact, addAllergieChild, addFamilyChild } from '@/services/childServices'
 import { formatDate } from '@/utils/dateFormat'
 
 const route = useRoute()
 const router = useRouter()
 
-const childId = route.query.childId
+// --------------------
+// Types
+// --------------------
+type Allergy = {
+  id: number
+  allergy: string
+}
 
-const child = ref(null)
+type EmergencyContact = {
+  id: number
+  firstName: string
+  lastName: string
+  phoneNumber: string
+}
 
+type Family = {
+  id: number
+  name: string
+}
+
+type Child = {
+  id: number
+  firstName: string
+  lastName: string
+  birthDate: string
+  foodConstraint: string
+  allergies: Allergy[]
+  EmergencyContact: EmergencyContact[]
+  families: Family[]
+}
+
+// --------------------
+// Route param safe typing
+// --------------------
+const childId = Array.isArray(route.query.childId)
+  ? route.query.childId[0]
+  : route.query.childId
+
+// --------------------
+// State
+// --------------------
+const child = ref<Child | null>(null)
+
+// --------------------
+// Role
+// --------------------
 const roleUser = await role()
 
+// --------------------
+// Forms
+// --------------------
 const newContact = reactive({
   firstName: '',
   lastName: '',
@@ -174,24 +218,38 @@ const newAllergy = reactive({
   allergy: '',
 })
 
-function addContact() {
-  addEmergencyContact(childId, newContact.firstName, newContact.lastName, newContact.phone)
+// --------------------
+// Methods
+// --------------------
+async function addContact() {
+  if (!childId) return
+
+  await addEmergencyContact(
+    childId,
+    newContact.firstName,
+    newContact.lastName,
+    newContact.phone
+  )
 }
 
-function addAllergie() {
-  addAllergieChild(childId, newAllergy.allergy)
+async function addAllergie() {
+  if (!childId) return
+
+  await addAllergieChild(childId, newAllergy.allergy)
 }
 
-function addFamily() {
-  addFamilyChild(childId, familyId)
-}
-
+// --------------------
+// Init
+// --------------------
 onMounted(async () => {
-  if (roleUser.data.role != 'OWNER') {
+  if (roleUser.data.role !== 'OWNER') {
     router.push('/login')
-  } else {
-    const res = await getChild(childId)
-    child.value = res.data
+    return
   }
+
+  if (!childId) return
+
+  const res = await getChild(childId)
+  child.value = res.data
 })
 </script>

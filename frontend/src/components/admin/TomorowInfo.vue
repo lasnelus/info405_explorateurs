@@ -91,29 +91,38 @@
 </template>
 
 <script setup lang="ts">
-// Test data
-const repasDemain = ref([
-  // { id_repas: 'rep101', type: 'Dejeuner', nb_unit: 28, regime_special: 'non' },
-  // { id_repas: 'rep102', type: 'Vegetarien', nb_unit: 4, regime_special: 'vegetarien' },
-  // { id_repas: 'rep103', type: 'Sans lactose', nb_unit: 3, regime_special: 'lactose' },
-  // { id_repas: 'rep104', type: 'Halal', nb_unit: 7, regime_special: 'halal' },
-  // { id_repas: 'rep105', type: 'Allergie oeuf', nb_unit: 1, regime_special: 'oeuf' },
-])
-
 import router from '@/router'
 
 import { role } from '@/services/authServices'
 import { ref } from 'vue'
 
+interface Repas {
+  id_repas: string
+  type: string
+  nb_unit: number
+  regime_special: string
+}
+
+const repasDemain = ref<Repas[]>([])
+
 const roleUser = await role()
 
-defineProps({
-  tomorrowChilds: {
-    type: Array,
-    required: true,
-    default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
-  },
-})
+interface slots {
+  id: string
+  date: string
+  id_repas: string
+}
+
+interface Child {
+  id: string
+  firstName: string
+  lastName: string
+  foodConstraint: string
+  slots: slots[]
+}
+defineProps<{
+  tomorrowChilds: Child[]
+}>()
 
 // TODO
 function gotoChildEdit(childID: string) {
@@ -126,7 +135,7 @@ function gotoChildEdit(childID: string) {
 }
 
 // TODO
-function gotoChildRemovalFromSlot(childID: string, childSlots: any) {
+function gotoChildRemovalFromSlot(childID: string, childSlots: slots[]) {
   console.log(childID, childSlots)
 }
 </script>

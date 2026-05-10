@@ -94,14 +94,28 @@ import { role } from '@/services/authServices'
 import { deleteActivity, getActivity } from '@/services/activityServices'
 import { formatDate } from '@/utils/dateFormat'
 
+interface Activity {
+  id: string
+  title: string
+  description: string
+  ageMin: number
+  ageMax: number
+  capacity: number
+  firstDay: string
+  lastDay: string
+}
+
 const route = useRoute()
 const router = useRouter()
 
-const activityId = route.query.activityId
+const activityId =
+  typeof route.query.activityId === 'string'
+    ? route.query.activityId
+    : ''
 
-const activity = ref(null)
+const activity = ref<Activity | null>(null)
 
-const errorMessage = ref('')
+const errorMessage = ref<string>('')
 
 const roleUser = await role()
 
@@ -112,10 +126,10 @@ async function activityDelete() {
   await deleteActivity(activityId)
 
   router.push('/admin')
-  } catch (error: any) {
+  } catch (error: unknown) {
     errorMessage.value =
-    error?.response?.data?.message ||
-    "Une erreur est survenue lors de la création de l'activité."
+      (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+      "Une erreur est survenue lors de la création de l'activité."
   }
 }
 
@@ -124,11 +138,18 @@ function gotoAdminDashboard() {
 }
 
 onMounted(async () => {
-  if (roleUser.data.role != 'OWNER') {
+  if (roleUser.data.role !== 'OWNER') {
     router.push('/login')
-  } else {
+    return
+  }
+  try {
     const res = await getActivity(activityId)
-    activity.value = res.data
+    activity.value = res.data as Activity
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération de l'activité :",
+      error,
+    )
   }
 })
 </script>

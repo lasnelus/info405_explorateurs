@@ -99,6 +99,35 @@ import { getFamily } from "@/services/familyServices"
 import { loadProfileIfNeeded } from "@/services/authServices"
 import { registerChildToActivity } from "@/services/activityServices"
 
+/* ---------------- TYPES ---------------- */
+
+interface Child {
+  id: string
+  firstName: string
+  lastName: string
+}
+
+interface Family {
+  id: string
+  name: string
+  childs?: Child[]
+}
+
+interface Profile {
+  firstName: string
+  lastName: string
+  email: string
+  families?: Family[]
+}
+
+interface ChildOption {
+  id: string
+  label: string
+  value: string
+}
+
+/* ---------------- SETUP ---------------- */
+
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
@@ -106,42 +135,38 @@ const auth = useAuthStore()
 const periodId = computed(() => (route.query.periodId as string) || "")
 const date = computed(() => (route.query.date as string) || "")
 
-const profile = computed(() => auth.profile)
+const profile = computed<Profile | null>(() => auth.profile)
 
-const selectedOption = ref("")
-const errorMessage = ref("")
-
-const options = ref<Array<{ id: string; label: string; value: string }>>([])
+const selectedOption = ref<string>("")
+const errorMessage = ref<string>("")
+const options = ref<ChildOption[]>([])
 
 async function fetchChildren() {
-  if (!profile.value) return
+  if (!profile.value?.families?.length) return
 
   try {
-    const familyRequests = profile.value.families?.map((family: any) =>
-      getFamily(family.id)
-    ) || []
+    const familiesData = await Promise.all(
+      profile.value.families.map((family) => getFamily(family.id))
+    )
 
-    const familiesData = await Promise.all(familyRequests)
+    const childrenList: ChildOption[] = []
 
-    const childrenList: Array<{ id: string; label: string; value: string }> = []
+    familiesData.forEach((familyResponse, index) => {
+      const familyMeta = profile.value!.families?.[index]
+      const childs: Child[] = familyResponse?.data?.childs ?? []
 
-    familiesData.forEach((familyResponse: any, index: number) => {
-      const family = profile.value!.families[index]
-
-      if (familyResponse.data.childs) {
-        familyResponse.data.childs.forEach((child: any) => {
-          childrenList.push({
-            id: child.id,
-            label: `${child.firstName} ${child.lastName} (${family.name})`,
-            value: child.id
-          })
+      childs.forEach((child) => {
+        childrenList.push({
+          id: child.id,
+          label: `${child.firstName} ${child.lastName} (${familyMeta?.name ?? ""})`,
+          value: child.id,
         })
-      }
+      })
     })
 
     options.value = childrenList
-  } catch (error) {
-    console.error("Erreur récupération enfants", error)
+  } catch (err: unknown) {
+    console.error("Erreur récupération enfants", err)
   }
 }
 
@@ -179,7 +204,7 @@ async function submitRegistration() {
     }
   })
   } catch (error: unknown) {
-    const errorStatus = (error as any)?.response?.status
+    const errorStatus = (error as { response?: { status?: number } })?.response?.status
     if (errorStatus === 409) {
       errorMessage.value = "Cet enfant est déjà inscrit ce jour-ci."
     } else {

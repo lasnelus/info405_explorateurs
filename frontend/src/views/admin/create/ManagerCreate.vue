@@ -117,9 +117,9 @@ async function createNewManager() {
     )
 
     router.push('/admin')
-  } catch (error: any) {
+  } catch (error: unknown) {
     errorMessage.value =
-      error?.response?.data?.message || "Une erreur est survenue lors de la creation de l'enfant"
+      (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Une erreur est survenue lors de la creation de l'enfant"
   }
 }
 

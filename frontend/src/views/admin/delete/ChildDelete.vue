@@ -109,14 +109,43 @@ import { role } from '@/services/authServices'
 import { deleteChild } from '@/services/childServices'
 import { formatDate } from '@/utils/dateFormat'
 
+interface Allergy {
+  id: number
+  allergy: string
+}
+
+interface EmergencyContact {
+  id: number
+  firstName: string
+  lastName: string
+  phoneNumber: string
+}
+
+interface Family {
+  id: number
+  name: string
+}
+
+interface Child {
+  firstName: string
+  lastName: string
+  birthDate: string
+  foodConstraint: string
+  allergies: Allergy[]
+  EmergencyContact: EmergencyContact[]
+  families: Family[]
+}
+
 const route = useRoute()
 const router = useRouter()
 
-const childId = route.query.childId
+const childId =
+  typeof route.query.childId === 'string'
+    ? route.query.childId
+    : ''
 
-const child = ref(null)
-
-const errorMessage = ref();
+const child = ref<Child | null>(null)
+const errorMessage = ref<string>('')
 
 const roleUser = await role()
 
@@ -127,9 +156,10 @@ async function childDelete() {
     await deleteChild(childId)
 
     router.push('/admin')
-  } catch (error: any) {
+  } catch (error: unknown) {
     errorMessage.value =
-      error?.response?.data?.message || "Une erreur est survenue lors de la création de l'activité."
+      (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+      "Une erreur est survenue lors de la création de l'activité."
   }
 }
 

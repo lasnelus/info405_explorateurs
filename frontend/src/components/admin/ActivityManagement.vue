@@ -74,15 +74,22 @@
 import { formatDate } from '@/utils/dateFormat'
 import { useRouter } from 'vue-router'
 
+interface Activity {
+  id: string
+  title: string
+  description: string
+  ageMin: number
+  ageMax: number
+  firstDay: string
+  lastDay: string
+  capacity: number
+}
+
 const router = useRouter()
 
-defineProps({
-  allActivities: {
-    type: Array,
-    required: true,
-    default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
-  },
-})
+defineProps<{
+  allActivities: Activity[]
+}>()
 
 // NOTE : Accessible aux animateurs
 function gotoActivityEdit(activityId: string) {

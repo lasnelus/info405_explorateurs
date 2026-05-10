@@ -18,8 +18,13 @@ const accent = color.colorAccent
 
 const theme  = color.colorTheme
 
-document.body.classList.add(accent)
-document.body.classList.add(theme)
+if (accent) {
+  document.body.classList.add(accent)
+}
+
+if (theme) {
+  document.body.classList.add(theme)
+}
 
 console.log("Theme: " + theme)
 console.log("Couleur d'accent : " + accent)
