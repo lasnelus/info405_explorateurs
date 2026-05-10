@@ -83,6 +83,16 @@ const router = createRouter({
       name: 'activityDelete',
       component: () => import('../views/admin/delete/ActivityDelete.vue'),
     },
+    {
+      path: '/FamilyCreate',
+      name: 'familyCreate',
+      component: () => import ('../views/admin/create/FamilyCreate.vue')
+    },
+    {
+      path: '/FamilyEdit',
+      name: 'familyEdit',
+      component: () => import ('../views/admin/edit/FamilyEdit.vue')
+    }
   ],
 })
 
