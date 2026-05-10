@@ -6,78 +6,83 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/MainPage.vue')
+      component: () => import('../views/MainPage.vue'),
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/AboutView.vue'),
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginView.vue')
+      component: () => import('../views/LoginView.vue'),
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('../views/SignupView.vue')
+      component: () => import('../views/SignupView.vue'),
     },
     {
       path: '/family-dashboard',
       name: 'family-dashboard',
-      component: () => import('../views/familly/FamilyDashBoardView.vue')
+      component: () => import('../views/familly/FamilyDashBoardView.vue'),
     },
     {
       path: '/inscription',
       name: 'inscription',
-      component: () => import('../views/familly/ChildRegistration.vue')
+      component: () => import('../views/familly/ChildRegistration.vue'),
     },
     {
       path: '/family',
       name: 'famille',
-      component: () => import('../views/familly/familySpecific.vue')
+      component: () => import('../views/familly/familySpecific.vue'),
     },
     {
       path: '/children',
       name: 'enfants',
-      component: () => import('../views/familly/ChildSpecific.vue')
+      component: () => import('../views/familly/ChildSpecific.vue'),
     },
     {
       path: '/admin',
       name: 'admin',
-      component: () => import('../views/admin/adminMain.vue')
+      component: () => import('../views/admin/adminMain.vue'),
     },
     {
       path: '/schedule',
       name: 'schedule',
-      component: () => import('../views/familly/Schedule.vue')
+      component: () => import('../views/familly/Schedule.vue'),
     },
     {
       path: '/ChildEdit',
       name: 'childEdit',
-      component: () => import('../views/admin/edit/ChildEdit.vue')
+      component: () => import('../views/admin/edit/ChildEdit.vue'),
     },
     {
       path: '/ChildDelete',
       name: 'childDelete',
-      component: () => import('../views/admin/delete/ChildDelete.vue')
+      component: () => import('../views/admin/delete/ChildDelete.vue'),
     },
     {
       path: '/childCreate',
       name: 'childCreate',
-      component: () => import('../views/admin/create/ChildCreate.vue')
+      component: () => import('../views/admin/create/ChildCreate.vue'),
     },
     {
       path: '/ActivityCreate',
       name: 'activityCreate',
-      component: () => import('../views/admin/create/ActivityCreate.vue')
+      component: () => import('../views/admin/create/ActivityCreate.vue'),
     },
     {
       path: '/ActivityEdit',
       name: 'activityEdit',
-      component: () => import('../views/admin/edit/ActivityEdit.vue')
-    }
+      component: () => import('../views/admin/edit/ActivityEdit.vue'),
+    },
+    {
+      path: '/ActivityDelete',
+      name: 'activityDelete',
+      component: () => import('../views/admin/delete/ActivityDelete.vue'),
+    },
   ],
 })
 

@@ -33,7 +33,7 @@ export const patchActivity = (id: string, title: string, description: string, ag
   })
 }
 
-export const deleteActifity = (periodeId: string) => {
+export const deleteActivity = (periodeId: string) => {
   return api.delete(`/periode/${periodeId}`)
 }
 

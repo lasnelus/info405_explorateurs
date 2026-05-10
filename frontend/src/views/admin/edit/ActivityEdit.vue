@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-12">
-      <div class="bg-warning/25 rounded-lg shadow-lg shadow-warning/35 p-8">
-        <h1 class="text-3xl font-bold text-warning text-center">
+      <div class="bg-warn/25 rounded-lg shadow-lg shadow-warn/35 p-8">
+        <h1 class="text-3xl font-bold text-warn text-center">
           Modification d'une activité
         </h1>
       </div>
@@ -93,8 +93,8 @@
           </div>
         </div>
 
-        <div class="bg-warning/25 rounded-lg shadow-lg shadow-warning/35 p-8">
-          <p class="text-xl font-bold text-warning">
+        <div class="bg-warn/25 rounded-lg shadow-lg shadow-warn/35 p-8">
+          <p class="text-xl font-bold text-warn">
             Voulez-vous vraiment modifier l'activité
             "{{ activity.title }}" ?
           </p>
@@ -111,7 +111,7 @@
           <p>
             <button
               type="submit"
-              class="cursor-pointer bg-warning p-2 rounded-full text-primary-light font-bold mr-3"
+              class="cursor-pointer bg-warn p-2 rounded-full text-primary-light font-bold mr-3"
             >
               Modifier l'activité
             </button>
@@ -161,7 +161,7 @@ async function updateActivity() {
       lastDay: new Date(activity.value.lastDay).toISOString(),
     }
 
-    await patchActivity(activityId, payload)
+    await patchActivity(activityId, payload.title, payload.description, payload.ageMin, payload.ageMax, payload.capacity, payload.firstDay, payload.lastDay)
 
     router.push('/admin')
   } catch (error: any) {
