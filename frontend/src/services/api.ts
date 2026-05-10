@@ -5,10 +5,9 @@ import axios, {
 } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
-import { config } from '@/config.ts'
 
 const api = axios.create({
-    baseURL: config.apiUrl,
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true,
 })
 
