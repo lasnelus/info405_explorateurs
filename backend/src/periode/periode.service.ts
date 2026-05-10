@@ -126,6 +126,14 @@ export class PeriodeService {
     perdiodeId: string,
     data: PeriodeDtoOpt,
   ): Promise<PeriodeInfoDto | null> {
+    if (data.firstDay)
+      data.firstDay = this.extractDateFromCompleteDate(
+        new Date(data.firstDay),
+      ).toISOString();
+    if (data.lastDay)
+      data.lastDay = this.extractDateFromCompleteDate(
+        new Date(data.lastDay),
+      ).toISOString();
     return await this.prisma.periode.update({
       where: {
         id: perdiodeId,

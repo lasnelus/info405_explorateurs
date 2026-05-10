@@ -216,6 +216,7 @@ export class PeriodeController {
   @ApiCreatedResponse()
   @ApiUnauthorizedResponse()
   @ApiBearerAuth('accessToken')
+  @UseGuards(accessTokenAuthGuard)
   @ApiNotFoundResponse()
   @ApiBadRequestResponse()
   async accepteSlot(
@@ -235,6 +236,7 @@ export class PeriodeController {
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiBearerAuth('accessToken')
+  @UseGuards(accessTokenAuthGuard)
   async leaveQueue(
     @Request() request: RequestWithUser,
     @Param('periodeId') periodeId: string,
@@ -252,6 +254,7 @@ export class PeriodeController {
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiBearerAuth('accessToken')
+  @UseGuards(accessTokenAuthGuard)
   async leaveSlot(
     @Request() request: RequestWithUser,
     @Param('periodeId') periodeId: string,
@@ -269,6 +272,7 @@ export class PeriodeController {
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiBearerAuth('accessToken')
+  @UseGuards(accessTokenAuthGuard)
   async setChildAttendance(
     @Request() request: RequestWithUser,
     @Param('periodeId') periodeId: string,
