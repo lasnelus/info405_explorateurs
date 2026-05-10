@@ -1,0 +1,37 @@
+services:
+  mariadb:
+    image: mariadb:12
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: prismadb
+      MYSQL_USER: prisma
+      MYSQL_PASSWORD: prismapassword
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    container_name: mariadb
+    volumes:
+      - ./db_data:/var/lib/mysql
+  backend:
+      build:
+        context: ./backend
+        dockerfile: Dockerfile
+      container_name: backend
+      restart: unless-stopped
+      environment:
+        DATABASE_URL: "mysql://prisma:prismapassword@mariadb:3306/prismadb"
+        ACCESSTOKEN_SECRET: ${ACCESSTOKEN_SECRET}
+        REFRESHTOKEN_SECRET: ${REFRESHTOKEN_SECRET}
+        ACCESS_TOKEN_EXPIRES_IN: ${ACCESS_TOKEN_EXPIRES_IN}
+        REFRESH_TOKEN_EXPIRES_IN: ${REFRESH_TOKEN_EXPIRES_IN}
+        REFRESHTOKEN_COOKIE_NAME: ${REFRESHTOKEN_COOKIE_NAME}
+        SMTP_HOST: ${SMTP_HOST}
+        SMTP_USER: ${SMTP_USER}
+        SMTP_PASS: ${SMTP_PASS}
+        SMTP_FROM: ${SMTP_FROM}
+        ADMIN_EMAIL: ${ADMIN_EMAIL}
+        ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+        ADMIN_FIRSTNAME: ${ADMIN_FIRSTNAME}
+        ADMIN_LASTNAME: ${ADMIN_LASTNAME}
+      ports:
+        - "3000:3000"
+      depends_on:
+        - mariadb
