@@ -143,6 +143,14 @@ export class PeriodeService {
   }
 
   async createPeriodes(creationBody: CreatePeriodeDto) {
+    if (creationBody.firstDay)
+      creationBody.firstDay = this.extractDateFromCompleteDate(
+        new Date(creationBody.firstDay),
+      ).toISOString();
+    if (creationBody.lastDay)
+      creationBody.lastDay = this.extractDateFromCompleteDate(
+        new Date(creationBody.lastDay),
+      ).toISOString();
     await this.prisma.periode.create({
       data: creationBody,
     });
