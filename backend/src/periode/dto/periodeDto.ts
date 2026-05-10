@@ -65,6 +65,8 @@ export class PeriodeDtoOpt {
     description: 'primary key',
     example: 'cmkv7yhjs0000hwjmuo9c1c2h',
   })
+  @IsString()
+  @IsOptional()
   id?: string;
 
   @ApiProperty({
@@ -72,6 +74,7 @@ export class PeriodeDtoOpt {
     example: 'Christmas 2025',
   })
   @IsString()
+  @IsOptional()
   title?: string;
 
   @ApiProperty({
@@ -87,6 +90,7 @@ export class PeriodeDtoOpt {
     description: 'Age minimum requis pour participer à la période',
   })
   @IsInt({ message: "L'âge minimum doit être un entier" })
+  @IsOptional()
   ageMin?: number;
 
   @ApiProperty({
@@ -94,6 +98,7 @@ export class PeriodeDtoOpt {
     description: 'Age maximum autorisé pour participer à la période',
   })
   @IsInt({ message: "L'âge maximum doit être un entier" })
+  @IsOptional()
   ageMax?: number;
 
   @ApiProperty({
@@ -102,6 +107,7 @@ export class PeriodeDtoOpt {
   })
   @IsInt({ message: 'La capacité doit être un entier' })
   @Min(1, { message: 'La capacité doit être au moins 1' })
+  @IsOptional()
   capacity?: number;
 
   @ApiProperty({
@@ -109,6 +115,7 @@ export class PeriodeDtoOpt {
     description: 'Première date de la période',
   })
   @IsDateString({}, { message: 'firstDay doit être une date valide' })
+  @IsOptional()
   firstDay?: string;
 
   @ApiProperty({
@@ -116,6 +123,7 @@ export class PeriodeDtoOpt {
     description: 'Dernière date de la période',
   })
   @IsDateString({}, { message: 'lastDay doit être une date valide' })
+  @IsOptional()
   lastDay?: string;
 }
 
