@@ -36,8 +36,8 @@
           <tbody>
             <template v-if="allActivities.length > 0">
               <tr v-for="(activite, index) in allActivities" :key="index">
-                <td>{{ activite.title != '' ? 'N/A' : activite.title }}</td>
-                <td>{{ activite.description != '' ? 'N/A' : activite.description }}</td>
+                <td>{{ activite.title }}</td>
+                <td>{{ activite.description }}</td>
                 <td>{{ activite.ageMin }} - {{ activite.ageMax }} ans</td>
                 <td>{{ activite.firstDay.split('T')[0] }}</td>
                 <td>{{ activite.lastDay.split('T')[0] }}</td>
@@ -46,6 +46,10 @@
                   <span>
                     <button @click="gotoActivityEdit(activite.id)" class="edit">
                       <p>Editer</p>
+                    </button>
+                    -
+                    <button @click="gotoActivityDelete(activite.id)" class="delete">
+                      <p>Supprimer</p>
                     </button>
                   </span>
                 </td>
@@ -79,18 +83,26 @@ defineProps({
   },
 })
 
-// TODO
 // NOTE : Accessible aux animateurs
 function gotoActivityEdit(activityId: string) {
   router.push({
     name: 'activityEdit',
     query: {
       activityId,
-    }
+    },
   })
 }
 
-// TODO
+// NOTE : Accessible aux animateurs
+function gotoActivityDelete(activityId: string) {
+  router.push({
+    name: 'activityDelete',
+    query: {
+      activityId,
+    },
+  })
+}
+
 // NOTE : Accessible aux animateurs
 function newActivity() {
   router.push('/activityCreate')
