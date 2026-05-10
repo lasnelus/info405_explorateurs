@@ -65,9 +65,7 @@ export class FamilyController {
     @Body() familyBody: FamilyCreationDto,
     @Request() request: RequestWithUser,
   ): Promise<void> {
-    if ((request.user.role = Role.GUARDIAN)) {
-      familyBody.guardianId = request.user.userId;
-    }
+    if (request.user.role != Role.OWNER) throw new ForbiddenException();
     await this.familyService.createFamily(familyBody);
   }
 
