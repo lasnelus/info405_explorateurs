@@ -70,7 +70,7 @@
 
           <p>
             <button
-              @click="deleteChild()"
+              type="submit"
               class="cursor-pointer bg-success p-2 rounded-full text-primary-light font-bold mr-3"
             >
               Créer un enfant
@@ -96,9 +96,9 @@ import { addNewChild } from '@/services/childServices'
 
 const router = useRouter()
 
-const child = ref(null)
-
 const roleUser = await role()
+
+const errorMessage = ref('')
 
 const newChild = reactive({
   firstName: '',
@@ -108,19 +108,28 @@ const newChild = reactive({
   familyIds: [],
 })
 
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return '-'
-  const date = new Date(dateString)
-  if (Number.isNaN(date.getTime())) return dateString
-  return date.toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-}
+async function createNewChild() {
+  errorMessage.value = ''
 
-function createNewChild() {
-  addNewChild()
+  try {
+    const payload = {
+      ...newChild,
+      birthDate: new Date(newChild.birthDate).toISOString(),
+    }
+
+    await addNewChild(
+      payload.firstName,
+      payload.lastName,
+      payload.birthDate,
+      payload.foodConstraint,
+      payload.familyIds,
+    )
+
+    router.push('/admin')
+  } catch (error: any) {
+    errorMessage.value =
+      error?.response?.data?.message || "Une erreur est survenue lors de la creation de l'enfant"
+  }
 }
 
 function gotoAdminDashboard() {
