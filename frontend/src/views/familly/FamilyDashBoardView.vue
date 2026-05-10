@@ -84,7 +84,7 @@ import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 import { loadProfileIfNeeded } from "@/services/authServices"
 import { getFamily } from "@/services/familyServices"
-import { getChild } from "@/services/familyServices"
+import { getChild } from "@/services/childServices"
 
 const auth = useAuthStore()
 const router = useRouter()
