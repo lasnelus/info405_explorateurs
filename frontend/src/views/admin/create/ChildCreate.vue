@@ -92,7 +92,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
-import { addNewChild } from '@/services/adminServices'
+import { addNewChild } from '@/services/childServices'
 
 const router = useRouter()
 

@@ -115,7 +115,8 @@
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { getChild, acceptChildQueue, declineChildQueue } from '@/services/familyServices';
+import { getChild } from '@/services/childServices'
+import { acceptSlot, leaveQueue } from '@/services/activityServices';
 import { loadProfileIfNeeded } from '@/services/authServices';
 
 const route = useRoute()
@@ -138,11 +139,11 @@ function formatDate(dateString: string | null | undefined): string {
 }
 
 function declineChild(periodeId: string, queueId: string){
-  declineChildQueue(periodeId, queueId)
+  leaveQueue(periodeId, queueId)
 }
 
 function acceptChild(periodeId: string, queueId: string){
-  acceptChildQueue(periodeId, queueId)
+  acceptSlot(periodeId, queueId)
 }
 
 onMounted(async () =>{

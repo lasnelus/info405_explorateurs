@@ -112,7 +112,7 @@ import ChildManagement from '@/components/admin/ChildManagement.vue'
 
 import router from '@/router'
 import { role } from '@/services/authServices'
-import { getChildren } from '@/services/adminServices'
+import { getChildren } from '@/services/childServices'
 import { getActivities } from '@/services/activityServices'
 import { computed, onMounted, ref, shallowRef } from 'vue'
 

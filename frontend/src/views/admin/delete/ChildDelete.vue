@@ -94,9 +94,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getChild } from '@/services/familyServices'
+import { getChild } from '@/services/childServices'
 import { role } from '@/services/authServices'
-import { deleteChild } from '@/services/adminServices'
+import { deleteChild } from '@/services/childServices'
 
 const route = useRoute()
 const router = useRouter()

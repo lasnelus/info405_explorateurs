@@ -165,10 +165,10 @@ async function createNewActivity() {
   router.push('/admin')
   } catch (error: any) {
     errorMessage.value =
+    error?.response?.data?.message ||
     "Une erreur est survenue lors de la création de l'activité."
   }
 }
-error?.response?.data?.message ||
 
 function gotoAdminDashboard() {
   router.push('/admin')

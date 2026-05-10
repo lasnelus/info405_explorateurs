@@ -63,3 +63,9 @@ export const leaveQueue  = (periodeId: string, queueId: string) => {
 export const leaveActivity = (periodeId: string, slotId: string) => {
   return api.delete(`/periode/${periodeId}/slot/${slotId}`)
 }
+
+export const setAttendance = (periodeId: string, slotId: string, isChildPresent: boolean) => {
+  return api.put(`/periode/${periodeId}/slot/${slotId}/attendance`, {
+    isChildPresent
+  })
+}

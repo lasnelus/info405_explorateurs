@@ -150,9 +150,9 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getChild } from '@/services/familyServices'
+import { getChild } from '@/services/childServices'
 import { role } from '@/services/authServices'
-import { addEmergencyContact, addAllergieChild, addFamilyChild } from '@/services/adminServices'
+import { addEmergencyContact, addAllergieChild, addFamilyChild } from '@/services/childServices'
 
 const route = useRoute()
 const router = useRouter()

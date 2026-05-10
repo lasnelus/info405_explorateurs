@@ -83,7 +83,8 @@ import { getProfile, type Guardian, type Family } from "@/services/guardianServi
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 import { loadProfileIfNeeded } from "@/services/authServices"
-import { getFamily, getChild } from "@/services/familyServices"
+import { getFamily } from "@/services/familyServices"
+import { getChild } from "@/services/familyServices"
 
 const auth = useAuthStore()
 const router = useRouter()
