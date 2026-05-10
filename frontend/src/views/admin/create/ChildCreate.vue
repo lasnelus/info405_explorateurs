@@ -18,7 +18,6 @@
                 placeholder="Mathéo"
                 required
               />
-              <!-- <p class="text-text/70">{{ child.firstName }}</p> -->
             </div>
             <div>
               <h3 class="font-semibold mb-2 text-primary">Nom</h3>
@@ -41,12 +40,19 @@
             </div>
             <div>
               <h3 class="font-semibold mb-2 text-primary">Contraintes Alimentaires</h3>
-              <input
+              <select
                 v-model="newChild.foodConstraint"
-                type="text"
                 class="w-full rounded-lg border border-primary/20 bg-primary-background/50 px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
-                placeholder="végétarien"
-              />
+              >
+                <option disabled value="">-- Selectionez un régime alimentaire --</option>
+                <option
+                  v-for="option in foodConstraintsOptions"
+                  :key="option.label"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
             </div>
           </div>
         </div>
@@ -104,7 +110,7 @@ const newChild = reactive({
   firstName: '',
   lastName: '',
   birthDate: '',
-  foodConstraint: '',
+  foodConstraint: 'NONE',
   familyIds: [],
 })
 
@@ -135,6 +141,14 @@ async function createNewChild() {
 function gotoAdminDashboard() {
   router.push('/admin')
 }
+
+// Food constraints
+const foodConstraintsOptions = [
+  { value: 'NONE', label: 'Aucune restriction' },
+  { value: 'NO_PORK', label: 'Sans porc' },
+  { value: 'NO_MEAT', label: 'Sans viande (Végétarien)' },
+  { value: 'ALLERGY_OR_INTOLERANCE', label: 'Allergie ou intolérance' },
+]
 
 onMounted(async () => {
   if (roleUser.data.role != 'OWNER') {
