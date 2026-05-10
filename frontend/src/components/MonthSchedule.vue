@@ -291,6 +291,7 @@ import { formatDate } from "@/utils/dateFormat"
 
 interface Period {
   id: string
+  title: string
   ageMin: number
   ageMax: number
   capacity: number
