@@ -82,8 +82,18 @@
           <span class="m-3"></span>
 
           <p>
-            <button @click="deleteChild()" class="cursor-pointer bg-error p-2 rounded-full text-primary-light font-bold mr-3">Supprimer</button>
-            <button @click="gotoAdminDashboard()" class="cursor-pointer bg-info p-2 rounded-full text-primary-light font-bold">Revenir au panel admin</button>
+            <button
+              @click="childDelete()"
+              class="cursor-pointer bg-error p-2 rounded-full text-primary-light font-bold mr-3"
+            >
+              Supprimer
+            </button>
+            <button
+              @click="gotoAdminDashboard()"
+              class="cursor-pointer bg-info p-2 rounded-full text-primary-light font-bold"
+            >
+              Revenir au panel admin
+            </button>
           </p>
         </div>
       </div>
@@ -105,6 +115,8 @@ const childId = route.query.childId
 
 const child = ref(null)
 
+const errorMessage = ref();
+
 const roleUser = await role()
 
 function formatDate(dateString: string | null | undefined): string {
@@ -118,8 +130,17 @@ function formatDate(dateString: string | null | undefined): string {
   })
 }
 
-function childDelete() {
-  deleteChild(childId)
+async function childDelete() {
+  errorMessage.value = ''
+
+  try {
+    await deleteChild(childId)
+
+    router.push('/admin')
+  } catch (error: any) {
+    errorMessage.value =
+      error?.response?.data?.message || "Une erreur est survenue lors de la création de l'activité."
+  }
 }
 
 function gotoAdminDashboard() {
