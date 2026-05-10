@@ -24,20 +24,18 @@
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="border-b border-default">
             <tr>
-              <th scope="col">NOM</th>
               <th scope="col">PRENOM</th>
-              <th scope="col">GROUPE</th>
+              <th scope="col">NOM</th>
               <th scope="col" class="text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(anim, index) in managers" :key="index">
-              <td>{{ anim.nom }}</td>
-              <td>{{ anim.prenom }}</td>
-              <td>{{ anim.groupe }}</td>
+            <tr v-for="anim in managers" :key="anim.id">
+              <td>{{ anim.firstName }}</td>
+              <td>{{ anim.lastName }}</td>
               <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                 <span>
-                  <button @click="gotoInstructorEdit(anim.id_anim)" class="edit">
+                  <button @click="gotoInstructorEdit(anim.id)" class="edit">
                     <p>Editer</p>
                   </button>
                 </span>
@@ -73,6 +71,7 @@ async function loadManagers() {
   try {
 
     const res = await getManager()
+    console.log("Managers loaded !", res)
     managers.value = res.data
 
   } catch (error) {
@@ -82,7 +81,7 @@ async function loadManagers() {
 
 // TODO
 function newInstructor() {
-  console.log('New familly !')
+  router.push('/ManagerCreate')
 }
 
 // TODO

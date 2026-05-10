@@ -92,7 +92,12 @@ const router = createRouter({
       path: '/FamilyEdit',
       name: 'familyEdit',
       component: () => import ('../views/admin/edit/FamilyEdit.vue')
-    }
+    },
+    {
+      path: '/ManagerCreate',
+      name: 'managerCreate',
+      component: () => import ('../views/admin/create/ManagerCreate.vue')
+    },
   ],
 })
 
