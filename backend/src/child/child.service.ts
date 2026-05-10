@@ -1,50 +1,69 @@
-import { Injectable, Param } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import {
-  Child,
-  EmergencyContact,
-  Allergy,
-  Prisma,
-  FoodConstraint,
-} from '@prisma/client';
+import { Prisma, FoodConstraint } from '@prisma/client';
 
 @Injectable()
 export class ChildService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllChild(): Promise<Child[]> {
-    return this.prisma.child.findMany({
-      include: {
-        allergies: true,
-        EmergencyContact: true,
-        families: true,
-        slots: true,
-        queues: true,
+  private childInclude = {
+    allergies: true,
+    EmergencyContact: true,
+    families: true,
+    slots: true,
+    queues: true,
+  };
+
+  private childSelect = {
+    id: true,
+    firstName: true,
+    lastName: true,
+    birthDate: true,
+    foodConstraint: true,
+    createdAt: true,
+    updatedAt: true,
+
+    allergies: {
+      select: {
+        id: true,
+        allergy: true,
       },
+    },
+
+    EmergencyContact: {
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        phoneNumber: true,
+      },
+    },
+
+    families: true,
+    slots: true,
+    queues: true,
+  };
+
+  getAllChild() {
+    return this.prisma.child.findMany({
+      select: this.childSelect,
     });
   }
 
-  async getChildById(@Param('id') id: string): Promise<Child | null> {
+  getChildById(id: string) {
     return this.prisma.child.findUnique({
       where: { id },
-      include: {
-        allergies: true,
-        EmergencyContact: true,
-        families: true,
-        slots: true,
-        queues: true,
-      },
+      select: this.childSelect,
     });
   }
 
-  async addChild(data: {
+  addChild(data: {
     firstName: string;
     lastName: string;
     birthDate: Date;
     foodConstraint?: FoodConstraint;
     familyIds?: string[];
-  }): Promise<Child> {
-    // Utilisation de l'enum FoodConstraint pour éviter unsafe assignment
+  }) {
     const childData: Prisma.ChildCreateInput = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -53,30 +72,33 @@ export class ChildService {
     };
 
     if (data.familyIds?.length) {
-      childData.families = { connect: data.familyIds.map((id) => ({ id })) };
+      childData.families = {
+        connect: data.familyIds.map((id) => ({ id })),
+      };
     }
 
     return this.prisma.child.create({
       data: childData,
-      include: { families: true },
+      include: this.childInclude,
     });
   }
 
-  async deleteChild(@Param('id') id: string): Promise<{ message: string }> {
-    try {
-      await this.prisma.child.delete({ where: { id } });
-      return { message: `Child with id ${id} deleted successfully.` };
-    } catch {
-      throw new Error(`Child with id ${id} not found`);
-    }
+  deleteChild(id: string) {
+    return this.prisma.child
+      .delete({ where: { id } })
+      .then(() => ({
+        message: `Child with id ${id} deleted successfully.`,
+      }))
+      .catch(() => {
+        throw new Error(`Child with id ${id} not found`);
+      });
   }
 
-  async addEmergencyContact(
+  addEmergencyContact(
     childId: string,
     contact: { firstName: string; lastName: string; phoneNumber: string },
-  ): Promise<EmergencyContact> {
-    // Typage explicite pour éviter unsafe call / unsafe member access
-    return await this.prisma.emergencyContact.create({
+  ) {
+    return this.prisma.emergencyContact.create({
       data: {
         childId,
         firstName: contact.firstName,
@@ -86,26 +108,36 @@ export class ChildService {
     });
   }
 
-  async addAllergy(childId: string, allergy: string): Promise<Allergy> {
-    allergy = allergy.toLowerCase().trim();
-
-    await this.prisma.child.findUniqueOrThrow({
-      where: { id: childId },
-    });
-
-    return await this.prisma.allergy.create({
+  addAllergy(childId: string, allergy: string) {
+    return this.prisma.allergy.create({
       data: {
         childId,
-        allergy,
+        allergy: allergy.toLowerCase().trim(),
       },
     });
   }
 
-  async addChildToFamily(childId: string, familyId: string): Promise<Child> {
-    return this.prisma.child.update({
-      where: { id: childId },
-      data: { families: { connect: { id: familyId } } },
-      include: { families: true },
+  async deleteEmergencyContact(childId: string, contactId: string) {
+    await this.prisma.emergencyContact.delete({
+      where: {
+        id: contactId,
+      },
     });
+
+    return {
+      message: `Emergency contact ${contactId} deleted for child ${childId}`,
+    };
+  }
+
+  async deleteAllergy(childId: string, allergyId: string) {
+    await this.prisma.allergy.delete({
+      where: {
+        id: allergyId,
+      },
+    });
+
+    return {
+      message: `Allergy ${allergyId} deleted for child ${childId}`,
+    };
   }
 }
