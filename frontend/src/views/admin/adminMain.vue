@@ -114,6 +114,7 @@ import router from '@/router'
 import { role } from '@/services/authServices'
 import { getChildren } from '@/services/childServices'
 import { getActivities } from '@/services/activityServices'
+import { getManager } from '@/services/adminServices'
 import { computed, onMounted, ref, shallowRef } from 'vue'
 
 
@@ -135,6 +136,9 @@ const allChildren = ref([])
 // List de toutes les activités
 const allActivities = ref([])
 
+// List de tous les managers
+const allManager = ref([])
+
 
 // ---------------
 // --- --- --- ---
@@ -155,8 +159,8 @@ onMounted(async () => {
 
   // --- GET ACTIVITES ---
   try {
-    const actrivitiesResponse = await getActivities()
-    allActivities.value = actrivitiesResponse.data
+    const activitiesResponse = await getActivities()
+    allActivities.value = activitiesResponse.data
   } catch (error) {
     console.error('Erreur lors de la récupération des activités:', error)
   }

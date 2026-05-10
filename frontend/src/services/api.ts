@@ -5,9 +5,10 @@ import axios, {
 } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
+import { config } from '@/config.ts'
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: config.apiUrl,
     withCredentials: true,
 })
 
@@ -88,7 +89,7 @@ api.interceptors.response.use(
         isRefreshing = true
         try {
             const { data } = await axios.post<{ accessToken: string }>(
-                `${import.meta.env.VITE_API_URL}/auth/refresh`,
+                `${config.apiUrl}/auth/refresh`,
                 {},
                 { withCredentials: true },
             )

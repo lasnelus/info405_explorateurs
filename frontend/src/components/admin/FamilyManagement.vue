@@ -46,11 +46,11 @@
               <th scope="row">
                 {{ famille.id }}
               </th>
-            
+
               <td>
                 {{ famille.name }}
               </td>
-            
+
               <td
                 class="text-right"
                 v-if="roleUser.data.role == 'OWNER'"
@@ -64,7 +64,7 @@
                   </button>
                 </span>
               </td>
-            
+
               <td class="text-right" v-else>
                 N/A
               </td>
@@ -75,7 +75,7 @@
             <tr>
               <td
                 colspan="3"
-                class="text-center py-6 text-text/60 italic"
+                class="text-center py-6 text-text italic"
               >
                 Aucune famille trouvée
               </td>
@@ -109,7 +109,7 @@ onMounted(async () => {
 
 async function loadFamilies() {
   try {
-    
+
     const res = await getFamilies()
     familles.value = res.data
 

@@ -24,7 +24,6 @@
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="border-b border-default">
             <tr>
-              <th scope="col">ID_ANIMATEUR</th>
               <th scope="col">NOM</th>
               <th scope="col">PRENOM</th>
               <th scope="col">GROUPE</th>
@@ -32,8 +31,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(anim, index) in animateurs" :key="index">
-              <th scope="row">{{ anim.id_anim }}</th>
+            <tr v-for="(anim, index) in managers" :key="index">
               <td>{{ anim.nom }}</td>
               <td>{{ anim.prenom }}</td>
               <td>{{ anim.groupe }}</td>
@@ -54,21 +52,33 @@
 </template>
 
 <script setup lang="ts">
-// Test data
-const animateurs = ref([
-  { id_anim: "anim001", nom: "DUPONT", prenom: "Marie", groupe: "Les Petits", est_present_aujourd_hui: true },
-  { id_anim: "anim002", nom: "MARTIN", prenom: "Lucas", groupe: "Les Moyens", est_present_aujourd_hui: true },
-  { id_anim: "anim003", nom: "BERNARD", prenom: "Emma", groupe: "Les Grands", est_present_aujourd_hui: false },
-  { id_anim: "anim004", nom: "THOMAS", prenom: "Hugo", groupe: "Les Petits", est_present_aujourd_hui: true },
-  { id_anim: "anim005", nom: "ROBERT", prenom: "Chloé", groupe: "Les Moyens", est_present_aujourd_hui: false },
-])
-
-// ---------
-
 import { role } from '@/services/authServices'
-import { ref } from 'vue'
+// Test data
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { getManager } from '@/services/adminServices'
+
+const router = useRouter()
+
+const managers = ref<Manager[]>([])
 
 const roleUser = await role()
+
+
+onMounted(async () => {
+  await loadManagers()
+})
+
+async function loadManagers() {
+  try {
+
+    const res = await getManager()
+    managers.value = res.data
+
+  } catch (error) {
+    console.error('Erreur lors du chargement des managers :', error)
+  }
+}
 
 // TODO
 function newInstructor() {
