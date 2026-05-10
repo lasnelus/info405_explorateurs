@@ -42,6 +42,7 @@ COPY --from=installer /app/dist ./dist
 COPY --from=prunner /app/node_modules ./node_modules
 COPY --from=installer /app/start.sh ./start.sh
 COPY --from=installer /app/prisma ./prisma
+COPY --from=installer /app/prisma.config.ts ./prisma.config.ts
 
 EXPOSE 3000
 
