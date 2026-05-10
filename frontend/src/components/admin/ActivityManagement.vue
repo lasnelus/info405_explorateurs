@@ -71,6 +71,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatDate } from '@/utils/dateFormat'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -82,17 +83,6 @@ defineProps({
     default: () => [], // Si la donnée n'arrive pas, on init un tableau vide
   },
 })
-
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return '-'
-  const date = new Date(dateString)
-  if (Number.isNaN(date.getTime())) return dateString
-  return date.toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-}
 
 // NOTE : Accessible aux animateurs
 function gotoActivityEdit(activityId: string) {

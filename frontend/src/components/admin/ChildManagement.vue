@@ -39,7 +39,7 @@
                 <td>{{ enfant.lastName }}</td>
                 <td>{{ enfant.firstName }}</td>
                 <td>{{ enfant.foodConstraint == "NONE" ? "N/A" : enfant.foodConstraint }}</td>
-                <td>{{ enfant.birthDate.split('T')[0] }}</td>
+                <td>{{ formatDate(enfant.birthDate) }}</td>
                 <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                   <span>
                     <button @click="gotoChildEdit(enfant.id)" class="edit">
@@ -71,6 +71,7 @@
 <script setup lang="ts">
 import router from '@/router'
 import { role } from '@/services/authServices'
+import { formatDate } from '@/utils/dateFormat'
 
 defineProps({
   allChilds: {
