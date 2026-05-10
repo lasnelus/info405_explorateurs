@@ -24,10 +24,15 @@
                 <td>{{ enfant.firstName }}</td>
                 <td>{{ enfant.foodConstraint == 'NONE' ? 'N/A' : enfant.foodConstraint }}</td>
 
-                <!-- TODO: UPDATE SERVEUR QUAND CHECKBOX -->
                 <td class="p-0!">
                   <label class="flex justify-center items-center cursor-pointer w-1/2">
-                    <input type="checkbox" v-model="enfant.present" class="sr-only peer" />
+                    <input
+                      type="checkbox"
+                      :checked="isChildPresentToday(enfant)"
+                      @change="handleAttendance(enfant, ($event.target as HTMLInputElement).checked)"
+                      class="peer sr-only"
+                      :class="{ 'opacity-100': isChildPresentToday(enfant) }"
+                    />
                     <div
                       class="w-10 h-10 flex items-center justify-center bg-(--header-color) rounded border border-text peer-checked:bg-success"
                     >
@@ -106,6 +111,10 @@
 </template>
 
 <script setup lang="ts">
+import { role } from '@/services/authServices'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { setAttendance } from '@/services/activityServices'
 // Test data
 // const enfantsAujourdhui = ref([
 //   { id_enfant: 'enf001', nom: 'VERSTAPPEN', prenom: 'Max', regime_special: 'non', present: true },
@@ -136,15 +145,20 @@ interface Repas {
 }
 
 const repasAujourdhui = ref<Repas[]>([])
-// ---------
-
-import { role } from '@/services/authServices'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
 const roleUser = await role()
+
+interface Slot {
+  id: string
+  childId: string
+  periodeId: string
+  day: string
+  isChildPresent: boolean
+  createdAt: string
+  updatedAt: string
+}
 
 interface Enfant {
   id: string
@@ -152,11 +166,42 @@ interface Enfant {
   lastName: string
   foodConstraint: string
   present: boolean
+  slots: Slot[]
 }
 
 defineProps<{
   todayChilds: Enfant[]
 }>()
+
+async function handleAttendance(enfant: Enfant, isPresent: boolean) {
+  const slot = getTodaySlot(enfant)
+
+  if (!slot) {
+    console.error("Aucun slot trouvé pour aujourd'hui")
+    return
+  }
+
+  enfant.present = isPresent
+  await setAttendance(slot.periodeId, slot.id, isPresent)
+}
+
+function getTodaySlot(enfant: Enfant) {
+  const today = new Date()
+
+  return enfant.slots.find(slot => {
+    const slotDate = new Date(slot.day)
+    return (
+      slotDate.getFullYear() === today.getFullYear() &&
+      slotDate.getMonth() === today.getMonth() &&
+      slotDate.getDate() === today.getDate()
+    )
+  }) ?? null
+}
+
+function isChildPresentToday(enfant: Enfant): boolean {
+  const slot = getTodaySlot(enfant)
+  return slot?.isChildPresent ?? false
+}
 
 function gotoChildEdit(childID: string) {
   router.push({
