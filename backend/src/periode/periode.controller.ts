@@ -112,6 +112,8 @@ export class PeriodeController {
   @ApiForbiddenResponse({
     description: 'role OWNER required !',
   })
+  @UseGuards(accessTokenAuthGuard)
+  @ApiBearerAuth('accessToken')
   async editPeriodesById(
     @Param('periodeId') periodeId: string,
     @Body() body: PeriodeDtoOpt,
@@ -138,6 +140,8 @@ export class PeriodeController {
   @ApiForbiddenResponse({
     description: 'role OWNER required !',
   })
+  @UseGuards(accessTokenAuthGuard)
+  @ApiBearerAuth('accessToken')
   async deletPeriodesById(
     @Param('periodeId') periodeId: string,
     @Request() request: RequestWithUser,

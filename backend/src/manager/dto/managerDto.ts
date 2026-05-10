@@ -67,6 +67,7 @@ export class registerManagerCredentials {
     enum: Object.values(Role),
     example: Role.INSTRUCTOR,
   })
+  @IsString()
   role: Role;
 }
 
