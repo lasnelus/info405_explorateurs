@@ -146,7 +146,7 @@ export class PeriodeController {
     @Param('periodeId') periodeId: string,
     @Request() request: RequestWithUser,
   ) {
-    if (request.user.role != Role.GUARDIAN) throw new ForbiddenException();
+    if (request.user.role != Role.OWNER) throw new ForbiddenException();
     const periode = await this.periodeService.getPeriodesById(periodeId);
     if (!periode) throw new NotFoundException();
     await this.periodeService.deletePeriode(periodeId);
