@@ -119,7 +119,7 @@ export class PeriodeController {
     @Body() body: PeriodeDtoOpt,
     @Request() request: RequestWithUser,
   ): Promise<PeriodeInfoDto> {
-    if (request.user.role != Role.GUARDIAN) throw new ForbiddenException();
+    if (request.user.role != Role.OWNER) throw new ForbiddenException();
     const periode = await this.periodeService.getPeriodesById(periodeId);
     if (!periode) throw new NotFoundException();
     return (await this.periodeService.editPeriodesById(periodeId, body))!;
