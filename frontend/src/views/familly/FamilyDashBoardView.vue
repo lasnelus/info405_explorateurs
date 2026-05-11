@@ -64,8 +64,11 @@
             class="bg-primary/75 rounded-lg p-6 shadow-md border-l-4 border-secondary"
           >
             <div class="flex justify-between items-center">
+              <span class="font-bold text-lg text-text">
+                {{ reg.activityName }}
+              </span>
               <span class="font-semibold text-text/75">
-                {{ reg.day }}
+                {{ formatDate(reg.day) }}
               </span>
               <span
                 class="px-4 py-1 rounded-full text-sm font-semibold text-text"
@@ -174,10 +177,12 @@ const allRegistrations = computed(() =>
     id: queue.id,
     child: queue.child,
     periodeId: queue.periodeId,
-    day: queue.day,
+    activityName: activityTitles.value[queue.periodeId] || "Chargement...",
+    day: formatDate(queue.day),
+    childName: queue.childName,
     state: queue.state,
   }))
-)
+);
 
 const fetchGuardian = async () => {
   try {
@@ -234,6 +239,14 @@ const fetchFamilyAndChildren = async () => {
         })),
       ),
     )
+    const ids = [
+      ...allSlots.value.map(s => s.periodeId),
+      ...allQueues.value.map(q => q.periodeId)
+    ];
+    
+    if (ids.length > 0) {
+      await loadActivityTitles(ids);
+    }
   } catch (e) {
     error.value = "Impossible de charger les données des familles/enfants"
     console.error(e)
@@ -288,10 +301,31 @@ function formatDate(dateString: string | null | undefined): string {
   })
 }
 
+import { getActivity } from '@/services/activityServices'; // Assurez-vous de l'import
+
+const activityTitles = ref<Record<string, string>>({});
+
+async function loadActivityTitles(ids: string[]) {
+  // On filtre pour ne pas recharger un titre qu'on a déjà
+  const uniqueIds = [...new Set(ids)].filter(id => !activityTitles.value[id]);
+  
+  // On lance tous les appels en parallèle
+  await Promise.all(uniqueIds.map(async (id) => {
+    try {
+      const res = await getActivity(id);
+      activityTitles.value[id] = res.data.title; // On stocke le titre
+    } catch (e) {
+      console.error(`Erreur chargement activité ${id}`, e);
+      activityTitles.value[id] = "Activité inconnue";
+    }
+  }));
+}
+
 onMounted(async () => {
   if (auth.isLoggedIn) {
     await loadProfileIfNeeded(auth)
     if (auth.profile != null) {
+      // fetchGuardian appelle fetchFamilyAndChildren qui appelle loadActivityTitles
       await fetchGuardian()
     } else {
       router.push('/')
