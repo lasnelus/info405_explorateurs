@@ -39,6 +39,12 @@
                     <p>Editer</p>
                   </button>
                 </span>
+                -
+                <span>
+                  <button @click="gotoInstructorDelete(anim.id)" class="delete">
+                    <p>Supprimer</p>
+                  </button>
+                </span>
               </td>
               <td class="text-right" v-else>N/A</td>
             </tr>
@@ -68,30 +74,34 @@ const managers = ref<Manager[]>([])
 
 const roleUser = await role()
 
-
 onMounted(async () => {
   await loadManagers()
 })
 
 async function loadManagers() {
   try {
-
     const res = await getManager()
-    console.log("Managers loaded !", res)
     managers.value = res.data
-
   } catch (error) {
     console.error('Erreur lors du chargement des managers :', error)
   }
 }
 
-// TODO
 function newInstructor() {
   router.push('/ManagerCreate')
 }
 
-// TODO
 function gotoInstructorEdit(id_anim: string) {
-  console.log("Editing Instructor !", id_anim)
+  console.log('Editing Instructor !', id_anim)
 }
+
+function gotoInstructorDelete(id_anim: string) {
+  router.push({
+    name: 'managerDelete',
+    query: {
+      instructorId: id_anim,
+    },
+  })
+}
+
 </script>

@@ -94,14 +94,19 @@ const router = createRouter({
       component: () => import ('../views/admin/edit/FamilyEdit.vue')
     },
     {
+      path: '/FamilyDelete',
+      name: 'familyDelete',
+      component: () => import ('../views/admin/delete/FamilyDelete.vue')
+    },
+    {
       path: '/ManagerCreate',
       name: 'managerCreate',
       component: () => import ('../views/admin/create/ManagerCreate.vue')
     },
     {
-      path: '/FamilyDelete',
-      name: 'familyDelete',
-      component: () => import ('../views/admin/delete/FamilyDelete.vue')
+      path: '/ManagerDelete',
+      name: 'managerDelete',
+      component: () => import ('../views/admin/delete/ManagerDelete.vue')
     },
   ],
 })
