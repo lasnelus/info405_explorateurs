@@ -98,7 +98,6 @@
 </template>
 
 <script setup lang="ts">
-
 // ---------------
 // --- IMPORTS ---
 
@@ -151,7 +150,6 @@ const currentComponent = shallowRef<Component>(TodayInfo)
 // Liste de tout les enfants
 const allChildren = ref<Child[]>([])
 const allActivities = ref<Activity[]>([])
-
 
 // ---------------
 // --- --- --- ---
@@ -221,7 +219,7 @@ const ChildrenToday = computed(() => {
   const today = new Date().toISOString().split('T')[0] ?? ''
 
   return allChildren.value.filter((enfant) =>
-    enfant.slots.some((slot) => slot.day.startsWith(today))
+    enfant.slots.some((slot) => slot.day.startsWith(today)),
   )
 })
 
@@ -232,7 +230,7 @@ const ChildrenTomorrow = computed(() => {
   const tomorrowDate = tomorrow.toISOString().split('T')[0] ?? ''
 
   return allChildren.value.filter((enfant) =>
-    enfant.slots.some((slot) => slot.day.startsWith(tomorrowDate))
+    enfant.slots.some((slot) => slot.day.startsWith(tomorrowDate)),
   )
 })
 </script>

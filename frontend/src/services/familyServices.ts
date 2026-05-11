@@ -15,6 +15,13 @@ export const createFamily = (name: string, guardianId: string) => {
   })
 }
 
+export const patchFamily = (familyId: string, familyName: string) => {
+  return api.patch(`/family/${familyId}`, {
+    id: familyId,
+    name: familyName
+  })
+}
+
 export const addChildToFamily = (familyId: string, childId: string) => {
   return api.post(`/family/${familyId}/childs/${childId}`)
 }

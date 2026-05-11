@@ -118,12 +118,10 @@ async function loadFamilies() {
   }
 }
 
-// TODO
 function newFamilly() {
   router.push('familyCreate')
 }
 
-// TODO
 function gotoFamillyEdit(familyId: string) {
   router.push({
     name: 'familyEdit',
