@@ -21,3 +21,11 @@ export const getManagerbyId = (managerId: string) => {
 export const deleteManager = (managerId: string) => {
   return api.delete(`/manager/${managerId}`)
 }
+
+export const patchManager = (managerId: string, email: string, firstName: string, lastName: string) => {
+  return api.patch(`/manager/${managerId}`, {
+    email: email,
+    firstName: firstName,
+    lastName: lastName
+  })
+}

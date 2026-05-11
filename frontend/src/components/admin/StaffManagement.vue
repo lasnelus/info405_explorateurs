@@ -92,7 +92,12 @@ function newInstructor() {
 }
 
 function gotoInstructorEdit(id_anim: string) {
-  console.log('Editing Instructor !', id_anim)
+  router.push({
+    name: 'managerEdit',
+    query: {
+      instructorId: id_anim,
+    },
+  })
 }
 
 function gotoInstructorDelete(id_anim: string) {
