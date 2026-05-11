@@ -286,11 +286,11 @@ export class PeriodeService {
 
   private extractDateFromCompleteDate(rawDate: Date): Date {
     return new Date(
-      rawDate.getFullYear() +
-        '-' +
-        (rawDate.getMonth() + 1) +
-        '-' +
-        rawDate.getDate(),
+      Date.UTC(
+        rawDate.getUTCFullYear(),
+        rawDate.getUTCMonth(),
+        rawDate.getUTCDate(),
+      ),
     );
   }
 
