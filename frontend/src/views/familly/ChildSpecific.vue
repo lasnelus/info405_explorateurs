@@ -80,6 +80,7 @@
             <ul class="space-y-2">
               <li v-for="slot in child.slots" :key="slot.id" class="text-text/70">
                 <time :datetime="slot.day">{{ formatDate(slot.day) }}</time>
+                <p>{{ activityTitles[slot.id] || 'Chargement...' }}</p>
               </li>
             </ul>
           </div>
@@ -116,7 +117,7 @@ import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { getChild } from '@/services/childServices'
-import { acceptSlot, leaveQueue } from '@/services/activityServices';
+import { acceptSlot, leaveQueue, getActivity } from '@/services/activityServices';
 import { loadProfileIfNeeded } from '@/services/authServices';
 
 
@@ -152,9 +153,9 @@ interface Queue {
 
 interface Child {
   firstName: string
-  lastName: string
   birthDate: string
   foodConstraint?: string
+  lastName: string
   allergies: Allergy[]
   EmergencyContact: EmergencyContact[]
   families: Family[]
@@ -193,6 +194,13 @@ function acceptChild(periodeId: string, queueId: string){
   acceptSlot(periodeId, queueId)
 }
 
+const activityTitles = ref<Record<string, string>>({})
+
+async function loadTitle(slotId: string) {
+  const periode = await getActivity(slotId)
+  activityTitles.value[slotId] = periode.data.title
+}
+
 onMounted(async () =>{
   if (auth.isLoggedIn) {
     await loadProfileIfNeeded(auth)
@@ -200,6 +208,10 @@ onMounted(async () =>{
     if (auth.profile && childId.value) {
       const res = await getChild(childId.value)
       child.value = res.data
+
+      for (const slot of child.value.slots) {
+        await loadTitle(slot.id)
+      }
     } else {
       router.push('/')
     }
