@@ -138,4 +138,14 @@ function gotoFamillyEdit(familyId: string) {
     },
   })
 }
+
+function gotoFamillyDelete(familyId: string) {
+  router.push({
+    name: 'familyDelete',
+    query: {
+      familyId: familyId
+    },
+  })
+}
+
 </script>
