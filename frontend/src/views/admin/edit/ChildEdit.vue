@@ -244,6 +244,10 @@ import { role } from '@/services/authServices'
 import { getChild, addEmergencyContact, addAllergieChild } from '@/services/childServices'
 import { addChildToFamily, getFamilies } from '@/services/familyServices'
 import { formatDate } from '@/utils/dateFormat'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 type Allergy = {
   id: string
@@ -279,14 +283,23 @@ type EditedChild = {
   newContacts: { firstName: string; lastName: string; phone: string }[]
 }
 
+// ----------------
+// Const def
+
 const route = useRoute()
+
 const router = useRouter()
+
 const roleUser = await role()
 
 const childId = Array.isArray(route.query.childId) ? route.query.childId[0] : route.query.childId
+
 const child = ref<Child | null>(null)
+
 const errorMessage = ref('')
+
 const allFamilies = ref<Family[]>([])
+
 const familyToAdd = ref<string>('')
 
 const foodConstraintsOptions = [
@@ -296,11 +309,6 @@ const foodConstraintsOptions = [
   { value: 'ALLERGY_OR_INTOLERANCE', label: 'Allergie ou intolérance' },
 ]
 
-function getFoodConstraintLabel(value: string): string {
-  const option = foodConstraintsOptions.find((opt) => opt.value === value)
-  return option ? option.label : value
-}
-
 const editedChild = reactive<EditedChild>({
   familyIds: [],
   newAllergies: [],
@@ -308,12 +316,27 @@ const editedChild = reactive<EditedChild>({
 })
 
 const tempAllergy = reactive({ allergy: '' })
+
 const tempContact = reactive({ firstName: '', lastName: '', phone: '' })
 
 const availableFamilies = computed(() => {
   return allFamilies.value.filter((family) => !editedChild.familyIds.includes(family.id))
 })
 
+// ----------------
+// Fonctions
+
+/**
+ * Obtiens le label (nom lisible) d'une contrainte alimentaire
+ */
+function getFoodConstraintLabel(value: string): string {
+  const option = foodConstraintsOptions.find((opt) => opt.value === value)
+  return option ? option.label : value
+}
+
+/**
+ * Ajoute une famille au "brouillon" de l'enfant a modifier
+ */
 const addFamilyToChild = () => {
   if (familyToAdd.value && !editedChild.familyIds.includes(familyToAdd.value)) {
     editedChild.familyIds.push(familyToAdd.value)
@@ -321,6 +344,10 @@ const addFamilyToChild = () => {
   }
 }
 
+/**
+ * Enlève une famille au "brouillon" de l'enfant a modifier
+ * @param idToRemove L'id de la famille a enlever
+ */
 const removeFamilyFromChild = (idToRemove: string) => {
   const index = editedChild.familyIds.findIndex((id) => id === idToRemove)
   if (index !== -1) {
@@ -328,11 +355,18 @@ const removeFamilyFromChild = (idToRemove: string) => {
   }
 }
 
+/**
+ * Obtien le nom d'une famille
+ * @param id L'id de la famille a interoger
+ */
 const getFamilyName = (id: string): string => {
   const family = allFamilies.value.find((f) => f.id === id)
   return family ? family.name : 'Inconnue'
 }
 
+/**
+ * Ajoute une allergie au "brouillon" de l'enfant a modifier
+ */
 const pushAllergyToDraft = () => {
   if (tempAllergy.allergy.trim()) {
     editedChild.newAllergies.push(tempAllergy.allergy.trim())
@@ -340,6 +374,9 @@ const pushAllergyToDraft = () => {
   }
 }
 
+/**
+ * Ajoute un contact au "brouillon" de l'enfant a modifier
+ */
 const pushContactToDraft = () => {
   if (tempContact.firstName && tempContact.lastName && tempContact.phone) {
     editedChild.newContacts.push({ ...tempContact })
@@ -349,6 +386,9 @@ const pushContactToDraft = () => {
   }
 }
 
+/**
+ * Met a jout un enfant via l'API
+ */
 async function submitChildUpdate() {
   errorMessage.value = ''
 
@@ -372,7 +412,7 @@ async function submitChildUpdate() {
         )
       }
 
-      router.push('/admin')
+      gotoAdminDashboard()
     }
   } catch (error: unknown) {
     errorMessage.value =
@@ -381,9 +421,8 @@ async function submitChildUpdate() {
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role !== 'OWNER') {

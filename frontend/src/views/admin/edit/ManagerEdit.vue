@@ -44,7 +44,8 @@
 
           <div class="bg-success/25 rounded-lg shadow-lg shadow-success/35 p-8">
             <p class="text-xl font-bold text-success">
-              Voulez-vous sauvegarder les modifications pour {{ editedManager.firstName }} {{ editedManager.lastName }} ?
+              Voulez-vous sauvegarder les modifications pour {{ editedManager.firstName }}
+              {{ editedManager.lastName }} ?
             </p>
 
             <span class="m-3 block"></span>
@@ -81,6 +82,10 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { getManagerbyId, patchManager } from '@/services/adminServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 interface Manager {
   id: string
@@ -89,19 +94,38 @@ interface Manager {
   lastName: string
 }
 
+// ----------------
+// Const def
+
+// Route (pour query)
 const route = useRoute()
+
+// Routeur
 const router = useRouter()
+
+// Role de l'utilisateur courant
 const roleUser = await role()
 
-const managerId = Array.isArray(route.query.managerId) ? route.query.managerId[0] : route.query.managerId
+// Id du manager récup via query
+const managerId = Array.isArray(route.query.managerId)
+  ? route.query.managerId[0]
+  : route.query.managerId
+
+// Manager a modifier
 const manager = ref<Manager | null>(null)
+
+// Message d'erreur
 const errorMessage = ref('')
 
+// Brouillon du manager modifié
 const editedManager = reactive({
   email: '',
   firstName: '',
   lastName: '',
 })
+
+// ----------------
+// Fonctions
 
 async function submitManagerUpdate() {
   errorMessage.value = ''
@@ -113,20 +137,19 @@ async function submitManagerUpdate() {
       managerId as string,
       editedManager.email,
       editedManager.firstName,
-      editedManager.lastName
+      editedManager.lastName,
     )
 
-    router.push('/admin')
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
       (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-      "Une erreur est survenue lors de la modification du manager"
+      'Une erreur est survenue lors de la modification du manager'
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role !== 'OWNER') {
@@ -144,7 +167,7 @@ onMounted(async () => {
     editedManager.firstName = res.data.firstName
     editedManager.lastName = res.data.lastName
   } catch (error) {
-    console.error("Erreur lors de la récupération du manager :", error)
+    console.error('Erreur lors de la récupération du manager :', error)
   }
 })
 </script>

@@ -9,7 +9,6 @@
 
       <div v-if="family">
         <form @submit.prevent="submitFamilyUpdate" class="pt-8">
-
           <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8 mb-8">
             <h2 class="text-2xl font-bold mb-6 text-primary">Informations de la famille</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -29,7 +28,10 @@
             <h2 class="text-2xl font-bold mb-6 text-primary">Représentants légaux</h2>
 
             <div>
-              <ul v-if="editedFamily.guardianIds.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3 space-y-2">
+              <ul
+                v-if="editedFamily.guardianIds.length > 0"
+                class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3 space-y-2"
+              >
                 <li
                   v-for="id in editedFamily.guardianIds"
                   :key="id"
@@ -54,7 +56,11 @@
               class="w-full rounded-lg border border-primary/20 bg-primary-background/50 px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-primary/30 mt-4"
             >
               <option disabled value="">-- Ajouter un responsable légal --</option>
-              <option v-for="guardian in availableGuardians" :key="guardian.id" :value="guardian.id">
+              <option
+                v-for="guardian in availableGuardians"
+                :key="guardian.id"
+                :value="guardian.id"
+              >
                 {{ guardian.firstName }} {{ guardian.lastName }}
               </option>
             </select>
@@ -62,7 +68,8 @@
 
           <div class="bg-warn/25 rounded-lg shadow-lg shadow-warn/35 p-8">
             <p class="text-xl font-bold text-warn">
-              Voulez-vous vraiment sauvegarder les modifications pour la famille {{ editedFamily.name }} ?
+              Voulez-vous vraiment sauvegarder les modifications pour la famille
+              {{ editedFamily.name }} ?
             </p>
 
             <span class="m-3 block"></span>
@@ -95,7 +102,16 @@ import { onMounted, reactive, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { getGuardian } from '@/services/guardianService'
-import { addGuardianToFamily, getFamily, patchFamily, removeGuardianFromFamily } from '@/services/familyServices'
+import {
+  addGuardianToFamily,
+  getFamily,
+  patchFamily,
+  removeGuardianFromFamily,
+} from '@/services/familyServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 type Guardian = {
   id: string
@@ -114,26 +130,52 @@ type EditedFamily = {
   guardianIds: string[]
 }
 
+// ----------------
+// Const def
+
+// Route (pour query)
 const route = useRoute()
+
+// Routeur
 const router = useRouter()
+
+// Role de l'utilisateur
 const roleUser = await role()
 
-const familyId = Array.isArray(route.query.familyId) ? route.query.familyId[0] : route.query.familyId
+// Id de la famille via la route
+const familyId = Array.isArray(route.query.familyId)
+  ? route.query.familyId[0]
+  : route.query.familyId
+
+// Famille
 const family = ref<Family | null>(null)
+
+// Message d'erreur
 const errorMessage = ref('')
 
+// Liste de tout les gardiens
 const allGuardians = ref<Guardian[]>([])
+
+// gardien a ajouter a la famille
 const guardianToAdd = ref<string>('')
 
+// Brouillon de la famille modifiée
 const editedFamily = reactive<EditedFamily>({
   name: '',
   guardianIds: [],
 })
 
+// Liste des gardiens disponibles pour être ajoutés a la famille
 const availableGuardians = computed(() => {
   return allGuardians.value.filter((guardian) => !editedFamily.guardianIds.includes(guardian.id))
 })
 
+// ----------------
+// Fonctions
+
+/**
+ * Ajoute un gardien au "brouillon" de la famille modifiée
+ */
 const addGuardianToFamilyDraft = () => {
   if (guardianToAdd.value && !editedFamily.guardianIds.includes(guardianToAdd.value)) {
     editedFamily.guardianIds.push(guardianToAdd.value)
@@ -141,6 +183,10 @@ const addGuardianToFamilyDraft = () => {
   }
 }
 
+/**
+ * Retire un gardien du "brouillon" de la famille modifiée
+ * @param idToRemove Id du gardien
+ */
 const removeGuardianFromFamilyDraft = (idToRemove: string) => {
   const index = editedFamily.guardianIds.findIndex((id) => id === idToRemove)
   if (index !== -1) {
@@ -148,11 +194,18 @@ const removeGuardianFromFamilyDraft = (idToRemove: string) => {
   }
 }
 
+/**
+ * Obtiens le nom d'un guardian a partir de son ID
+ * @param id Id du guardian a interroger
+ */
 const getGuardianName = (id: string): string => {
   const guardian = allGuardians.value.find((g) => g.id === id)
   return guardian ? `${guardian.firstName} ${guardian.lastName}` : 'Inconnu'
 }
 
+/**
+ * Met a jout une famille via l'API
+ */
 async function submitFamilyUpdate() {
   errorMessage.value = ''
 
@@ -161,9 +214,9 @@ async function submitFamilyUpdate() {
 
     await patchFamily(familyId as string, editedFamily.name)
 
-    const existingGuardianIds = family.value.guardians.map(g => String(g.id))
+    const existingGuardianIds = family.value.guardians.map((g) => String(g.id))
 
-    const newGuardianIds = editedFamily.guardianIds.map(id => String(id))
+    const newGuardianIds = editedFamily.guardianIds.map((id) => String(id))
 
     // Ajout des guardians qui ont été ajoutés
     for (const guardianId of newGuardianIds) {
@@ -179,16 +232,16 @@ async function submitFamilyUpdate() {
       }
     }
 
-    gotoAdminDashboard();
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
-      (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Une erreur est survenue lors de la modification de la famille"
+      (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+      'Une erreur est survenue lors de la modification de la famille'
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role !== 'OWNER') {
@@ -212,7 +265,7 @@ onMounted(async () => {
     editedFamily.name = res.data.name
     editedFamily.guardianIds = res.data.guardians?.map((g: Guardian) => g.id) || []
   } catch (error) {
-    console.error("Erreur lors de la récupération de la famille :", error)
+    console.error('Erreur lors de la récupération de la famille :', error)
   }
 })
 </script>

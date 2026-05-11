@@ -2,20 +2,12 @@
   <div class="min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-12">
       <div class="bg-warn/25 rounded-lg shadow-lg shadow-warn/35 p-8">
-        <h1 class="text-3xl font-bold text-warn text-center">
-          Modification d'une activité
-        </h1>
+        <h1 class="text-3xl font-bold text-warn text-center">Modification d'une activité</h1>
       </div>
 
-      <form
-        v-if="activity"
-        @submit.prevent="updateActivity"
-        class="pt-8"
-      >
+      <form v-if="activity" @submit.prevent="updateActivity" class="pt-8">
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8 mb-8">
-          <h2 class="text-2xl font-bold mb-6 text-primary">
-            Informations de l'activité
-          </h2>
+          <h2 class="text-2xl font-bold mb-6 text-primary">Informations de l'activité</h2>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
@@ -95,8 +87,7 @@
 
         <div class="bg-warn/25 rounded-lg shadow-lg shadow-warn/35 p-8">
           <p class="text-xl font-bold text-warn">
-            Voulez-vous vraiment modifier l'activité
-            "{{ activity.title }}" ?
+            Voulez-vous vraiment modifier l'activité "{{ activity.title }}" ?
           </p>
 
           <span class="m-3"></span>
@@ -135,6 +126,10 @@ import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter, type LocationQueryValue } from 'vue-router'
 import { getActivity, patchActivity } from '@/services/activityServices'
 import { role } from '@/services/authServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 interface Activity {
   title: string
@@ -146,8 +141,18 @@ interface Activity {
   lastDay: string
 }
 
+// ----------------
+// Const def
+
 const route = useRoute()
+
 const router = useRouter()
+
+const activity = ref<Activity | null>(null)
+
+const errorMessage = ref('')
+
+const roleUser = (await role()) as { data: { role: string } }
 
 const activityId = computed<string | null>(() => {
   const id = route.query.activityId as LocationQueryValue | LocationQueryValue[] | undefined
@@ -158,16 +163,20 @@ const activityId = computed<string | null>(() => {
   return id
 })
 
-const activity = ref<Activity | null>(null)
-const errorMessage = ref('')
+// ----------------
+// Fonctions
 
-// ✅ typage du rôle
-const roleUser = await role() as { data: { role: string } }
-
+/**
+ * Formate une date sous forme YYYY-MM-DD
+ * @param date Date a formatter
+ */
 function formatDateForInput(date: string) {
   return new Date(date).toISOString().split('T')[0]
 }
 
+/**
+ * Met une activité a jour via l'API
+ */
 async function updateActivity() {
   errorMessage.value = ''
 
@@ -188,10 +197,10 @@ async function updateActivity() {
       payload.ageMax,
       payload.capacity,
       payload.firstDay,
-      payload.lastDay
+      payload.lastDay,
     )
 
-    router.push('/admin')
+    gotoAdminDashboard()
   } catch (e: unknown) {
     errorMessage.value =
       (e as { response?: { data?: { message?: string } } })?.response?.data?.message ||
@@ -199,9 +208,8 @@ async function updateActivity() {
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role !== 'OWNER') {
@@ -223,8 +231,7 @@ onMounted(async () => {
       lastDay: formatDateForInput(res.data.lastDay),
     }
   } catch {
-    errorMessage.value =
-      "Impossible de charger les informations de l'activité."
+    errorMessage.value = "Impossible de charger les informations de l'activité."
   }
 })
 </script>
