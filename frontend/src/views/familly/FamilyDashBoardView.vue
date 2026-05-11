@@ -33,7 +33,7 @@
             :style="{ borderColor: 'var(--color-primary)' }"
           >
             <h3 class="font-semibold color-primary">
-              {{ activity.title }} — {{ activity.childName }}
+              {{ formatDate(activity.day) }} — {{ activity.childName }}
             </h3>
             <span
               class="px-4 py-1 rounded-full text-sm font-semibold  inline-block mt-1"
@@ -164,7 +164,7 @@ const error = ref<string | null>(null)
 const allUpcomingActivities = computed(() =>
   allSlots.value.map((slot) => ({
     id: slot.id,
-    title:  formatDate(slot.day),
+    day: slot.day,
     childName: slot.childName,
     statusLabel: "CONFIRMED",
     isConfirmed: slot.isChildPresent,
