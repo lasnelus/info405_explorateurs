@@ -31,7 +31,8 @@
 
         <div class="bg-error/25 rounded-lg shadow-lg shadow-error/35 p-8">
           <p class="text-xl font-bold text-error">
-            Voulez-vous vraiment supprimer l'animateur "{{ instructor.firstName }} {{ instructor.lastName }}" ?
+            Voulez-vous vraiment supprimer l'animateur "{{ instructor.firstName }}
+            {{ instructor.lastName }}" ?
           </p>
 
           <span class="m-3 block"></span>
@@ -72,6 +73,10 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { getManagerbyId, deleteManager } from '@/services/adminServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 interface Instructor {
   id: string
@@ -80,13 +85,14 @@ interface Instructor {
   lastName: string
 }
 
+// ----------------
+// Const def
+
 const route = useRoute()
+
 const router = useRouter()
 
-const instructorId =
-  typeof route.query.instructorId === 'string'
-    ? route.query.instructorId
-    : ''
+const instructorId = typeof route.query.instructorId === 'string' ? route.query.instructorId : ''
 
 const instructor = ref<Instructor | null>(null)
 
@@ -94,12 +100,18 @@ const errorMessage = ref<string>('')
 
 const roleUser = await role()
 
+// ----------------
+// Fonctions
+
+/**
+ * Suprime un manager via l'API
+ */
 async function instructorDelete() {
   errorMessage.value = ''
 
   try {
     await deleteManager(instructorId)
-    router.push('/admin')
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
       (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
@@ -107,9 +119,8 @@ async function instructorDelete() {
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role !== 'OWNER') {
@@ -123,10 +134,7 @@ onMounted(async () => {
     const res = await getManagerbyId(instructorId)
     instructor.value = res.data as Instructor
   } catch (error) {
-    console.error(
-      "Erreur lors de la récupération de l'animateur :",
-      error,
-    )
+    console.error("Erreur lors de la récupération de l'animateur :", error)
   }
 })
 </script>

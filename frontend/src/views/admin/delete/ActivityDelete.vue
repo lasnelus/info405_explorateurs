@@ -93,6 +93,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { deleteActivity, getActivity } from '@/services/activityServices'
 import { formatDate } from '@/utils/dateFormat'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 interface Activity {
   id: string
@@ -105,27 +109,40 @@ interface Activity {
   lastDay: string
 }
 
-const route = useRoute()
+// ----------------
+// Const def
+
+// Router
 const router = useRouter()
 
-const activityId =
-  typeof route.query.activityId === 'string'
-    ? route.query.activityId
-    : ''
-
-const activity = ref<Activity | null>(null)
-
-const errorMessage = ref<string>('')
-
+// Role de l'utilisateur courant
 const roleUser = await role()
 
+// Route (pour récuperer la query)
+const route = useRoute()
+
+// Id de l'activité
+const activityId = typeof route.query.activityId === 'string' ? route.query.activityId : ''
+
+// Activité suprimée
+const activity = ref<Activity | null>(null)
+
+// Message d'erreur
+const errorMessage = ref<string>('')
+
+// ----------------
+// Fonctions
+
+/**
+ * Supprime l'activitée via l'API
+ */
 async function activityDelete() {
   errorMessage.value = ''
 
   try {
-  await deleteActivity(activityId)
+    await deleteActivity(activityId)
 
-  router.push('/admin')
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
       (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
@@ -133,9 +150,8 @@ async function activityDelete() {
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role !== 'OWNER') {
@@ -146,10 +162,7 @@ onMounted(async () => {
     const res = await getActivity(activityId)
     activity.value = res.data as Activity
   } catch (error) {
-    console.error(
-      "Erreur lors de la récupération de l'activité :",
-      error,
-    )
+    console.error("Erreur lors de la récupération de l'activité :", error)
   }
 })
 </script>

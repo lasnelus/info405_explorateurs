@@ -108,6 +108,10 @@ import { getChild } from '@/services/childServices'
 import { role } from '@/services/authServices'
 import { deleteChild } from '@/services/childServices'
 import { formatDate } from '@/utils/dateFormat'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 interface Allergy {
   id: number
@@ -136,26 +140,34 @@ interface Child {
   families: Family[]
 }
 
+// ----------------
+// Const def
+
 const route = useRoute()
+
 const router = useRouter()
 
-const childId =
-  typeof route.query.childId === 'string'
-    ? route.query.childId
-    : ''
+const childId = typeof route.query.childId === 'string' ? route.query.childId : ''
 
 const child = ref<Child | null>(null)
+
 const errorMessage = ref<string>('')
 
 const roleUser = await role()
 
+// ----------------
+// Fonctions
+
+/**
+ * Supprime un enfant via l'API
+ */
 async function childDelete() {
   errorMessage.value = ''
 
   try {
     await deleteChild(childId)
 
-    router.push('/admin')
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
       (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
@@ -163,9 +175,8 @@ async function childDelete() {
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role != 'OWNER') {

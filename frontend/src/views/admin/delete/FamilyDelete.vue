@@ -76,6 +76,10 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { removeFamily, getFamily } from '@/services/familyServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 interface Guardian {
   id: string
@@ -89,13 +93,14 @@ interface Family {
   guardians: Guardian[]
 }
 
+// ----------------
+// Const def
+
 const route = useRoute()
+
 const router = useRouter()
 
-const familyId =
-  typeof route.query.familyId === 'string'
-    ? route.query.familyId
-    : ''
+const familyId = typeof route.query.familyId === 'string' ? route.query.familyId : ''
 
 const family = ref<Family | null>(null)
 
@@ -103,22 +108,27 @@ const errorMessage = ref<string>('')
 
 const roleUser = await role()
 
+// ----------------
+// Fonctions
+
+/**
+ * Supprime une famille via l'API
+ */
 async function familyDelete() {
   errorMessage.value = ''
 
   try {
     await removeFamily(familyId)
-    router.push('/admin')
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
       (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-      "Une erreur est survenue lors de la suppression de la famille."
+      'Une erreur est survenue lors de la suppression de la famille.'
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role !== 'OWNER') {
@@ -132,10 +142,7 @@ onMounted(async () => {
     const res = await getFamily(familyId)
     family.value = res.data as Family
   } catch (error) {
-    console.error(
-      "Erreur lors de la récupération de la famille :",
-      error,
-    )
+    console.error('Erreur lors de la récupération de la famille :', error)
   }
 })
 </script>
