@@ -2,7 +2,7 @@
   <div class="min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-12">
       <div class="bg-success/25 rounded-lg shadow-lg shadow-success/35 p-8">
-        <h1 class="text-3xl font-bold text-success text-center">Creation d'un enfant</h1>
+        <h1 class="text-3xl font-bold text-success text-center">Creation d'un manager</h1>
       </div>
 
       <form @submit.prevent="createNewManager" class="pt-8">
