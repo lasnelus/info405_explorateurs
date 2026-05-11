@@ -85,13 +85,21 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { createManager } from '@/services/adminServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
 
+// ----------------
+// Const def
+
+// Routeur
 const router = useRouter()
 
+// Role de l'utilisateur courant
 const roleUser = await role()
 
+// Message d'erreur
 const errorMessage = ref('')
 
+// Nouveau manager
 const newManager = reactive({
   email: '',
   password: '',
@@ -100,6 +108,12 @@ const newManager = reactive({
   role: 'MANAGER',
 })
 
+// ----------------
+// Fonctions
+
+/**
+ * Crée un nouveau manager via l'API
+ */
 async function createNewManager() {
   errorMessage.value = ''
 
@@ -113,19 +127,19 @@ async function createNewManager() {
       payload.password,
       payload.firstName,
       payload.lastName,
-      "INSTRUCTOR"
+      'INSTRUCTOR',
     )
 
-    router.push('/admin')
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
-      (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Une erreur est survenue lors de la creation de l'enfant"
+      (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+      "Une erreur est survenue lors de la creation de l'enfant"
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role != 'OWNER') {

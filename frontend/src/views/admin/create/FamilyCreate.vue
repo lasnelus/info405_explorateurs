@@ -2,17 +2,13 @@
   <div class="min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-12">
       <div class="bg-success/25 rounded-lg shadow-lg shadow-success/35 p-8">
-        <h1 class="text-3xl font-bold text-success text-center">
-          Création d'une famille
-        </h1>
+        <h1 class="text-3xl font-bold text-success text-center">Création d'une famille</h1>
       </div>
 
       <form @submit.prevent="createNewFamily" class="pt-8">
         <!-- Informations famille -->
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8 mb-8">
-          <h2 class="text-2xl font-bold mb-6 text-primary">
-            Informations de la famille
-          </h2>
+          <h2 class="text-2xl font-bold mb-6 text-primary">Informations de la famille</h2>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Nom -->
@@ -29,9 +25,7 @@
 
             <!-- Guardian -->
             <div>
-              <h3 class="font-semibold mb-2 text-primary">
-                Responsable légal
-              </h3>
+              <h3 class="font-semibold mb-2 text-primary">Responsable légal</h3>
 
               <select
                 v-model="newFamily.guardianId"
@@ -40,11 +34,7 @@
               >
                 <option disabled value="">Sélectionner un guardian</option>
 
-                <option
-                  v-for="guardian in guardians"
-                  :key="guardian.id"
-                  :value="guardian.id"
-                >
+                <option v-for="guardian in guardians" :key="guardian.id" :value="guardian.id">
                   {{ guardian.firstName }} {{ guardian.lastName }}
                 </option>
               </select>
@@ -90,6 +80,10 @@ import { useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { getGuardian } from '@/services/guardianService'
 import { createFamily } from '@/services/familyServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 interface Guardian {
   id: string
@@ -102,39 +96,43 @@ interface NewFamily {
   guardianId: string
 }
 
+// ----------------
+// Const def
+
+// Routeur
 const router = useRouter()
 
-const guardians = ref<Guardian[]>([])
-
+// Role de l'utilisateur courant
 const roleUser = await role()
 
+// Liste des guardians de la famille
+const guardians = ref<Guardian[]>([])
+
+// Nouvelle famille crée
 const newFamily = reactive<NewFamily>({
   name: '',
   guardianId: '',
 })
 
+// ----------------
+// Fonctions
+
+/**
+ * Crée une nouvelle famille et l'ajoute via l'API
+ */
 async function createNewFamily() {
   try {
-    await createFamily(
-      newFamily.name,
-      newFamily.guardianId,
-    )
-    router.push('/admin')
+    await createFamily(newFamily.name, newFamily.guardianId)
+    gotoAdminDashboard()
   } catch (error: unknown) {
-    console.error(
-      'Erreur lors de la création de la famille :',
-      error,
-    )
+    console.error('Erreur lors de la création de la famille :', error)
   }
 }
 
-
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
-
   if (roleUser.data.role !== 'OWNER') {
     router.push('/login')
     return
@@ -144,10 +142,7 @@ onMounted(async () => {
     const response = await getGuardian()
     guardians.value = response.data as Guardian[]
   } catch (error: unknown) {
-    console.error(
-      'Erreur lors du chargement des guardians :',
-      error,
-    )
+    console.error('Erreur lors du chargement des guardians :', error)
   }
 })
 </script>

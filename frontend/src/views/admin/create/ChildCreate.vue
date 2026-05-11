@@ -128,6 +128,10 @@ import { useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { addNewChild } from '@/services/childServices'
 import { getFamilies } from '@/services/familyServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Type definitions
 
 interface Family {
   id: string
@@ -142,12 +146,19 @@ interface NewChild {
   familyIds: string[]
 }
 
+// ----------------
+// Const def
+
+// Router pour redirect
 const router = useRouter()
 
+// Role de l'utilisateur courant
 const roleUser = await role()
 
+// Message d'erreur
 const errorMessage = ref('')
 
+// Nouvel enfant
 const newChild = reactive<NewChild>({
   firstName: '',
   lastName: '',
@@ -156,15 +167,33 @@ const newChild = reactive<NewChild>({
   familyIds: [],
 })
 
+// Famille à ajouter a l'enfant
+const familyToAdd = ref<string>('')
+
+// Toutes les familles
+const allFamilies = ref<Family[]>([])
+
+// Contraintes alimentaires
+const foodConstraintsOptions = [
+  { value: 'NONE', label: 'Aucune restriction' },
+  { value: 'NO_PORK', label: 'Sans porc' },
+  { value: 'NO_MEAT', label: 'Sans viande (Végétarien)' },
+  { value: 'ALLERGY_OR_INTOLERANCE', label: 'Allergie ou intolérance' },
+]
+
 // ---------------------------
 // Gestion d'ajout de familles
 
-const familyToAdd = ref<string>('')
-
+/**
+ * Trouve les familles disponibles
+ */
 const availableFamilies = computed(() => {
   return allFamilies.value.filter((family) => !newChild.familyIds.includes(family.id))
 })
 
+/**
+ * Ajoute une famille a l'enfant
+ */
 const addFamilyToChild = () => {
   if (familyToAdd.value && !newChild.familyIds.includes(familyToAdd.value)) {
     newChild.familyIds.push(familyToAdd.value)
@@ -172,24 +201,33 @@ const addFamilyToChild = () => {
   }
 }
 
+/**
+ * Disoscie une famille d'un enfant
+ * @param idToRemove L'id de la famille a enlever de l'enfant
+ */
 const removeFamilyFromChild = (idToRemove: string) => {
   const index = newChild.familyIds.findIndex((id) => id === idToRemove)
-
   if (index !== -1) {
     newChild.familyIds.splice(index, 1)
   }
 }
 
+/**
+ * Obtien le nom de la famille dont l'id est donnée en paramètre
+ * @param id L'id de la famille interogée
+ */
 const getFamilyName = (id: string): string => {
   const family = allFamilies.value.find((f) => f.id === id)
 
   return family ? family.name : 'Inconnue'
 }
 
-// --- --- --- --- --- --- ---
+// ----------------
+// Fonctions
 
-const allFamilies = ref<Family[]>([])
-
+/**
+ * Crée un nouvel enfant dans et l'envoie a l'API pour ajout dans la BDD
+ */
 async function createNewChild() {
   errorMessage.value = ''
 
@@ -207,7 +245,7 @@ async function createNewChild() {
       payload.familyIds,
     )
 
-    router.push('/admin')
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
       (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
@@ -215,17 +253,8 @@ async function createNewChild() {
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
-
-// Food constraints
-const foodConstraintsOptions = [
-  { value: 'NONE', label: 'Aucune restriction' },
-  { value: 'NO_PORK', label: 'Sans porc' },
-  { value: 'NO_MEAT', label: 'Sans viande (Végétarien)' },
-  { value: 'ALLERGY_OR_INTOLERANCE', label: 'Allergie ou intolérance' },
-]
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role !== 'OWNER') {

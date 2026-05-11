@@ -2,16 +2,12 @@
   <div class="min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-12">
       <div class="bg-success/25 rounded-lg shadow-lg shadow-success/35 p-8">
-        <h1 class="text-3xl font-bold text-success text-center">
-          Création d'une activité
-        </h1>
+        <h1 class="text-3xl font-bold text-success text-center">Création d'une activité</h1>
       </div>
 
       <form @submit.prevent="createNewActivity" class="pt-8">
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8 mb-8">
-          <h2 class="text-2xl font-bold mb-6 text-primary">
-            Informations de l'activité
-          </h2>
+          <h2 class="text-2xl font-bold mb-6 text-primary">Informations de l'activité</h2>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
@@ -96,13 +92,15 @@
 
         <div class="bg-success/25 rounded-lg shadow-lg shadow-success/35 p-8">
           <p class="text-xl font-bold text-success">
-            Voulez-vous vraiment ajouter l'activité
-            "{{ newActivity.title }}" ?
+            Voulez-vous vraiment ajouter l'activité "{{ newActivity.title }}" ?
           </p>
 
           <span class="m-3"></span>
 
-          <div v-if="errorMessage" class="mb-4 rounded-lg bg-danger/20 border border-danger/30 p-4 text-danger font-semibold">
+          <div
+            v-if="errorMessage"
+            class="mb-4 rounded-lg bg-danger/20 border border-danger/30 p-4 text-danger font-semibold"
+          >
             {{ errorMessage }}
           </div>
 
@@ -133,6 +131,10 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
 import { postActivity } from '@/services/activityServices'
+import { gotoAdminDashboard } from '@/utils/redirections'
+
+// ----------------
+// Const def
 
 const router = useRouter()
 
@@ -150,29 +152,42 @@ const newActivity = reactive({
   lastDay: '',
 })
 
+// ----------------
+// Fonctions
+
+/**
+ * Crée une nouvelle activité et l'envoie a la base de donnée via l'API
+ */
 async function createNewActivity() {
   errorMessage.value = ''
 
   try {
-  const payload = {
-    ...newActivity,
-    firstDay: new Date(newActivity.firstDay).toISOString(),
-    lastDay: new Date(newActivity.lastDay).toISOString(),
-  }
+    const payload = {
+      ...newActivity,
+      firstDay: new Date(newActivity.firstDay).toISOString(),
+      lastDay: new Date(newActivity.lastDay).toISOString(),
+    }
 
-  await postActivity(payload.title, payload.description, payload.ageMin, payload.ageMax, payload.capacity, payload.firstDay, payload.lastDay)
+    await postActivity(
+      payload.title,
+      payload.description,
+      payload.ageMin,
+      payload.ageMax,
+      payload.capacity,
+      payload.firstDay,
+      payload.lastDay,
+    )
 
-  router.push('/admin')
+    gotoAdminDashboard()
   } catch (error: unknown) {
     errorMessage.value =
-    (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-    "Une erreur est survenue lors de la création de l'activité."
+      (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+      "Une erreur est survenue lors de la création de l'activité."
   }
 }
 
-function gotoAdminDashboard() {
-  router.push('/admin')
-}
+// ----------------
+// On load
 
 onMounted(async () => {
   if (roleUser.data.role != 'OWNER') {
