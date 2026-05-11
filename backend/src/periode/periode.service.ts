@@ -28,7 +28,6 @@ export class PeriodeService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   async updateQueue() {
-    console.log('UPDATE QUEUE');
     const nowPlusOneDay = new Date(Date.now());
     nowPlusOneDay.setDate(nowPlusOneDay.getDate() - 1);
 
@@ -63,17 +62,10 @@ export class PeriodeService {
   }
 
   async updateDayInPeriode(periodeId: string, day: Date) {
-    if (periodeId != 'cmp0e5jyc00008njmh3960b9i') return;
     const capacity = (await this.getPeriodesById(periodeId))!.capacity;
-    console.log('day', day);
     const slots = await this.countSlots(periodeId, day);
     const queueAccepted = await this.countQueuesAccepted(periodeId, day);
     const toUpdate: number = Math.max(0, capacity - slots - queueAccepted);
-    console.log(`id: ${periodeId}`);
-    console.log('coucou');
-    console.log(
-      `capacity : ${capacity}, slots: ${slots}, accepted: ${queueAccepted}  toUpdate: ${toUpdate}`,
-    );
     // d'abord on récup toute les queues avec leurs familles pour voir si d'autre membre de leur familles sont inscrits se jour la
     const pendingQueues = await this.prisma.queue.findMany({
       where: {
