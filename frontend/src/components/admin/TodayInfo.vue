@@ -52,7 +52,7 @@
                 <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                   <span>
                     <button @click="gotoChildEdit(enfant.id)" class="edit">
-                      <p>Editer un enfant</p>
+                      <p>Editer</p>
                     </button>
                   </span>
                 </td>
@@ -99,7 +99,7 @@
             <template v-else>
               <tr>
                 <td colspan="6" class="p-8 text-center text-text font-medium italic">
-                  Aucun repas n'est présent pour cette date.
+                  Aucun repas n'est prévu pour cette date.
                 </td>
               </tr>
             </template>

@@ -27,13 +27,6 @@
                     <button @click="gotoChildEdit(enfant.id)" class="edit">
                       <p>Editer</p>
                     </button>
-                    -
-                    <button
-                      @click="gotoChildRemovalFromSlot(enfant.id, enfant.slots)"
-                      class="delete"
-                    >
-                      <p>Retirer du slot</p>
-                    </button>
                   </span>
                 </td>
                 <td class="text-right" v-else>N/A</td>
@@ -79,7 +72,7 @@
             <template v-else>
               <tr>
                 <td colspan="6" class="p-8 text-center text-text font-medium italic">
-                  Aucun repas n'est présent pour cette date.
+                  Aucun repas n'est prévu pour cette date.
                 </td>
               </tr>
             </template>

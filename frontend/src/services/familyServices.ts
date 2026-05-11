@@ -14,3 +14,19 @@ export const createFamily = (name: string, guardianId: string) => {
     guardianId,
   })
 }
+
+export const addChildToFamily = (familyId: string, childId: string) => {
+  return api.post(`/family/${familyId}/childs/${childId}`)
+}
+
+export const removeChildFromFamily = (familyId: string, childId: string) => {
+  return api.delete(`/family/${familyId}/childs/${childId}`)
+}
+
+export const addGuardianToFamily = (familyId: string, guardianId: string) => {
+  return api.post(`/family/${familyId}/guardians/${guardianId}`)
+}
+
+export const removeGuardianFromFamily = (familyId: string, guardianId: string) => {
+  return api.delete(`/family/${familyId}/guardians/${guardianId}`)
+}

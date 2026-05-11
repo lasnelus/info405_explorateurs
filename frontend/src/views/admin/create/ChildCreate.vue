@@ -162,26 +162,18 @@ const newChild = reactive<NewChild>({
 const familyToAdd = ref<string>('')
 
 const availableFamilies = computed(() => {
-  return allFamilies.value.filter(
-    (family) => !newChild.familyIds.includes(family.id),
-  )
+  return allFamilies.value.filter((family) => !newChild.familyIds.includes(family.id))
 })
 
-
 const addFamilyToChild = () => {
-  if (
-    familyToAdd.value &&
-    !newChild.familyIds.includes(familyToAdd.value)
-  ) {
+  if (familyToAdd.value && !newChild.familyIds.includes(familyToAdd.value)) {
     newChild.familyIds.push(familyToAdd.value)
     familyToAdd.value = ''
   }
 }
 
 const removeFamilyFromChild = (idToRemove: string) => {
-  const index = newChild.familyIds.findIndex(
-    (id) => id === idToRemove,
-  )
+  const index = newChild.familyIds.findIndex((id) => id === idToRemove)
 
   if (index !== -1) {
     newChild.familyIds.splice(index, 1)
@@ -218,7 +210,8 @@ async function createNewChild() {
     router.push('/admin')
   } catch (error: unknown) {
     errorMessage.value =
-      (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Une erreur est survenue lors de la creation de l'enfant"
+      (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+      "Une erreur est survenue lors de la creation de l'enfant"
   }
 }
 
@@ -247,10 +240,7 @@ onMounted(async () => {
 
     console.log(allFamilies.value)
   } catch (error) {
-    console.error(
-      'Erreur lors de la récupération des familles:',
-      error,
-    )
+    console.error('Erreur lors de la récupération des familles:', error)
   }
 })
 </script>
