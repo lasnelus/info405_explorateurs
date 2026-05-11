@@ -1,64 +1,44 @@
 <template>
   <div class="min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-12">
-      <div v-if="activity" class="space-y-8">
+      <div v-if="family" class="space-y-8">
         <div class="bg-error/25 rounded-lg shadow-lg shadow-error/35 p-8">
           <h1 class="text-3xl font-bold text-error text-center">
-            Confirmation de supression de la famille
+            Confirmation de suppression de la famille
           </h1>
         </div>
 
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8 mb-8">
-          <h2 class="text-2xl font-bold mb-6 text-primary">Informations de l'activité</h2>
+          <h2 class="text-2xl font-bold mb-6 text-primary">Informations de la famille</h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 gap-6">
             <div>
-              <h3 class="font-semibold mb-2 text-primary">Titre</h3>
-              <p class="text-text/70">{{ activity.title }}</p>
+              <h3 class="font-semibold mb-2 text-primary">Nom de la famille</h3>
+              <p class="text-text/70 text-lg font-bold">{{ family.name }}</p>
             </div>
 
             <div>
-              <h3 class="font-semibold mb-2 text-primary">Description</h3>
-              <p class="text-text/70">{{ activity.description }}</p>
-            </div>
-
-            <div>
-              <h3 class="font-semibold mb-2 text-primary">Âge minimum</h3>
-              <p class="text-text/70">{{ activity.ageMin }}</p>
-            </div>
-
-            <div>
-              <h3 class="font-semibold mb-2 text-primary">Âge maximum</h3>
-              <p class="text-text/70">{{ activity.ageMax }}</p>
-            </div>
-
-            <div>
-              <h3 class="font-semibold mb-2 text-primary">Capacité</h3>
-              <p class="text-text/70">{{ activity.capacity }}</p>
-            </div>
-          </div>
-
-          <span class="h-6 block"></span>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 class="font-semibold mb-2 text-primary">Date de début</h3>
-              <p class="text-text/70">{{ formatDate(activity.firstDay) }}</p>
-            </div>
-
-            <div>
-              <h3 class="font-semibold mb-2 text-primary">Date de fin</h3>
-              <p class="text-text/70">{{ formatDate(activity.lastDay) }}</p>
+              <h3 class="font-semibold mb-2 text-primary">Responsables légaux</h3>
+              <ul v-if="family.guardians && family.guardians.length > 0" class="space-y-2">
+                <li
+                  v-for="guardian in family.guardians"
+                  :key="guardian.id"
+                  class="text-text/70 bg-primary/10 px-3 py-2 rounded-lg inline-block mr-2"
+                >
+                  {{ guardian.firstName }} {{ guardian.lastName }}
+                </li>
+              </ul>
+              <p v-else class="text-text/70 italic">Aucun responsable légal assigné.</p>
             </div>
           </div>
         </div>
 
         <div class="bg-error/25 rounded-lg shadow-lg shadow-error/35 p-8">
           <p class="text-xl font-bold text-error">
-            Voulez-vous vraiment supprimer l'activité "{{ activity.title }}" ?
+            Voulez-vous vraiment supprimer la famille "{{ family.name }}" ?
           </p>
 
-          <span class="m-3"></span>
+          <span class="m-3 block"></span>
 
           <div
             v-if="errorMessage"
@@ -69,7 +49,7 @@
 
           <p>
             <button
-              @click="activityDelete()"
+              @click="familyDelete()"
               class="cursor-pointer bg-error p-2 rounded-full text-primary-light font-bold mr-3"
             >
               Supprimer
@@ -83,6 +63,10 @@
           </p>
         </div>
       </div>
+
+      <div v-else class="text-center text-primary text-xl font-bold mt-20">
+        Chargement des données...
+      </div>
     </div>
   </div>
 </template>
@@ -91,45 +75,44 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { role } from '@/services/authServices'
-import { deleteActivity, getActivity } from '@/services/activityServices'
-import { formatDate } from '@/utils/dateFormat'
+import { removeFamily, getFamily } from '@/services/familyServices'
 
-interface Activity {
+interface Guardian {
   id: string
-  title: string
-  description: string
-  ageMin: number
-  ageMax: number
-  capacity: number
-  firstDay: string
-  lastDay: string
+  firstName: string
+  lastName: string
+}
+
+interface Family {
+  id: string
+  name: string
+  guardians: Guardian[]
 }
 
 const route = useRoute()
 const router = useRouter()
 
-const activityId =
-  typeof route.query.activityId === 'string'
-    ? route.query.activityId
+const familyId =
+  typeof route.query.familyId === 'string'
+    ? route.query.familyId
     : ''
 
-const activity = ref<Activity | null>(null)
+const family = ref<Family | null>(null)
 
 const errorMessage = ref<string>('')
 
 const roleUser = await role()
 
-async function activityDelete() {
+async function familyDelete() {
   errorMessage.value = ''
 
   try {
-  await deleteActivity(activityId)
-
-  router.push('/admin')
+    await removeFamily(familyId)
+    router.push('/admin')
   } catch (error: unknown) {
     errorMessage.value =
       (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-      "Une erreur est survenue lors de la création de l'activité."
+      "Une erreur est survenue lors de la suppression de la famille."
   }
 }
 
@@ -142,12 +125,15 @@ onMounted(async () => {
     router.push('/login')
     return
   }
+
+  if (!familyId) return
+
   try {
-    const res = await getActivity(activityId)
-    activity.value = res.data as Activity
+    const res = await getFamily(familyId)
+    family.value = res.data as Family
   } catch (error) {
     console.error(
-      "Erreur lors de la récupération de l'activité :",
+      "Erreur lors de la récupération de la famille :",
       error,
     )
   }

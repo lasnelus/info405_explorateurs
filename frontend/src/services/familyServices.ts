@@ -37,3 +37,7 @@ export const addGuardianToFamily = (familyId: string, guardianId: string) => {
 export const removeGuardianFromFamily = (familyId: string, guardianId: string) => {
   return api.delete(`/family/${familyId}/guardians/${guardianId}`)
 }
+
+export const removeFamily = (familyId: string) => {
+  return api.delete(`/family/${familyId}`)
+}
