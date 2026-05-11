@@ -196,7 +196,7 @@ export class FamilyController {
     const role = user.role;
     if (role == 'GUARDIAN') throw new ForbiddenException();
     const family = await this.familyService.getFamilyById(familyId);
-    const guardian = await this.familyService.getChild(guardianId);
+    const guardian = await this.familyService.getGuardian(guardianId);
     if (!family || !guardian) throw new NotFoundException();
     await this.familyService.connectGuardian(familyId, guardianId);
   }
@@ -220,7 +220,7 @@ export class FamilyController {
     const role = user.role;
     if (role == 'GUARDIAN') throw new ForbiddenException();
     const family = await this.familyService.getFamilyById(familyId);
-    const guardian = await this.familyService.getChild(guardianId);
+    const guardian = await this.familyService.getGuardian(guardianId);
     if (!family || !guardian) throw new NotFoundException();
     await this.familyService.disconnectGuardian(familyId, guardianId);
   }
