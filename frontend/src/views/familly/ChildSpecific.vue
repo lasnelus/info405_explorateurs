@@ -96,7 +96,7 @@
             <ul class="space-y-2">
               <li v-for="queue in child.queues" :key="queue.id" class="text-text/70">
                 <span class="font-bold">{{ activityTitles[queue.periodeId] || 'Chargement...' }}</span> - 
-                <time :datetime="queue.date">{{ formatDate(queue.day) }}</time>
+                <time :datetime="queue.date">{{ formatDate(queue.date) }}</time>
               </li>
             </ul>
           </div>
