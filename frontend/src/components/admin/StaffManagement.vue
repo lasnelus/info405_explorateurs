@@ -118,9 +118,9 @@ function newInstructor() {
  */
 function gotoInstructorEdit(id_anim: string) {
   router.push({
-    name: '/ManagerEdit',
+    name: 'managerEdit',
     query: {
-      instructorId: id_anim,
+      managerId: id_anim,
     },
   })
 }
@@ -131,9 +131,9 @@ function gotoInstructorEdit(id_anim: string) {
  */
 function gotoInstructorDelete(id_anim: string) {
   router.push({
-    name: '/ManagerDelete',
+    name: 'managerDelete',
     query: {
-      instructorId: id_anim,
+      managerId: id_anim,
     },
   })
 }
