@@ -98,6 +98,11 @@ const router = createRouter({
       name: 'managerCreate',
       component: () => import ('../views/admin/create/ManagerCreate.vue')
     },
+    {
+      path: '/FamilyDelete',
+      name: 'familyDelete',
+      component: () => import ('../views/admin/delete/FamilyDelete.vue')
+    },
   ],
 })
 
