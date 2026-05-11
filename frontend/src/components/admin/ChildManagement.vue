@@ -38,7 +38,7 @@
               <tr v-for="(enfant, index) in allChilds" :key="index">
                 <td>{{ enfant.lastName }}</td>
                 <td>{{ enfant.firstName }}</td>
-                <td>{{ enfant.foodConstraint == "NONE" ? "N/A" : enfant.foodConstraint }}</td>
+                <td>{{ enfant.foodConstraint == 'NONE' ? 'N/A' : enfant.foodConstraint }}</td>
                 <td>{{ formatDate(enfant.birthDate) }}</td>
                 <td class="text-right" v-if="roleUser.data.role == 'OWNER'">
                   <span>
@@ -73,7 +73,11 @@ import router from '@/router'
 import { role } from '@/services/authServices'
 import { formatDate } from '@/utils/dateFormat'
 
-interface Child {
+
+// ----------------
+// Type definitions
+
+type Child = {
   id: string
   firstName: string
   lastName: string
@@ -81,17 +85,32 @@ interface Child {
   foodConstraint: string
 }
 
+// ----------------
+// Const def
+
+const roleUser = await role()
+
+// ----------------
+// Props (provenance: src/view/adminMain.vue)
+
 defineProps<{
   allChilds: Child[]
 }>()
 
-const roleUser = await role()
+// ---------------------------------------
+// CRUD
 
-// TODO
+/**
+ * Renvoie sur la page de creation d'un enfant
+ */
 function newChild() {
   router.push('childCreate')
 }
 
+/**
+ * Renvoie sur la page d'edition d'un enfant
+ * @param childID L'id de l'enfant
+ */
 function gotoChildEdit(childID: string) {
   router.push({
     name: 'childEdit',
@@ -101,6 +120,10 @@ function gotoChildEdit(childID: string) {
   })
 }
 
+/**
+ * Renvoie sur la page de supression d'un enfant
+ * @param childID L'id de l'enfant
+ */
 function gotoChildDelete(childID: string) {
   router.push({
     name: 'childDelete',

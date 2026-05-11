@@ -57,27 +57,42 @@
 
 <script setup lang="ts">
 import { role } from '@/services/authServices'
-// Test data
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getManager } from '@/services/adminServices'
 
-const router = useRouter()
 
-interface Manager {
+// ----------------
+// Type definitions
+
+type Manager = {
   id: string
   firstName: string
   lastName: string
 }
 
+// ----------------
+// Const def
+
+const router = useRouter()
+
 const managers = ref<Manager[]>([])
 
 const roleUser = await role()
+
+// ----------------
+// Props (provenance: src/view/admin/adminMain.vue)
 
 onMounted(async () => {
   await loadManagers()
 })
 
+// ----------------
+// Fonctions
+
+/**
+ * Récupère les managers (animateurs)
+ */
 async function loadManagers() {
   try {
     const res = await getManager()
@@ -87,26 +102,39 @@ async function loadManagers() {
   }
 }
 
+// ---------------------------------------
+// CRUD
+
+/**
+ * Renvoie sur la page de creation d'un animateur
+ */
 function newInstructor() {
   router.push('/ManagerCreate')
 }
 
+/**
+ * Renvoie sur la page d'edition d'un animateur
+ * @param id_anim L'id de l'animateur
+ */
 function gotoInstructorEdit(id_anim: string) {
   router.push({
-    name: 'managerEdit',
+    name: '/ManagerEdit',
     query: {
       instructorId: id_anim,
     },
   })
 }
 
+/**
+ * Renvoie sur la page de supression d'un animateur
+ * @param id_anim L'id de l'animateur
+ */
 function gotoInstructorDelete(id_anim: string) {
   router.push({
-    name: 'managerDelete',
+    name: '/ManagerDelete',
     query: {
       instructorId: id_anim,
     },
   })
 }
-
 </script>

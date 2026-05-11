@@ -74,7 +74,10 @@
 import { formatDate } from '@/utils/dateFormat'
 import { useRouter } from 'vue-router'
 
-interface Activity {
+// ----------------
+// Type definitions
+
+type Activity = {
   id: string
   title: string
   description: string
@@ -85,13 +88,33 @@ interface Activity {
   capacity: number
 }
 
+// ----------------
+// Const def
+
 const router = useRouter()
+
+// ----------------
+// Props (provenance: src/view/adminMain.vue)
 
 defineProps<{
   allActivities: Activity[]
 }>()
 
-// NOTE : Accessible aux animateurs
+// ---------------------------------------
+// CRUD
+// NOTE : Pages accessibles aux animateurs
+
+/**
+ * Renvoie sur la page de creation d'une activité
+ */
+function newActivity() {
+  router.push('/activityCreate')
+}
+
+/**
+ * Renvoie sur la page d'edition d'une activité
+ * @param activityId L'id de l'activité
+ */
 function gotoActivityEdit(activityId: string) {
   router.push({
     name: 'activityEdit',
@@ -101,7 +124,10 @@ function gotoActivityEdit(activityId: string) {
   })
 }
 
-// NOTE : Accessible aux animateurs
+/**
+ * Renvoie sur la page de supression d'une activité
+ * @param activityId L'id de l'activité
+ */
 function gotoActivityDelete(activityId: string) {
   router.push({
     name: 'activityDelete',
@@ -109,10 +135,5 @@ function gotoActivityDelete(activityId: string) {
       activityId,
     },
   })
-}
-
-// NOTE : Accessible aux animateurs
-function newActivity() {
-  router.push('/activityCreate')
 }
 </script>

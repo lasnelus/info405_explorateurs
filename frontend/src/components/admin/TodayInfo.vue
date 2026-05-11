@@ -29,7 +29,9 @@
                     <input
                       type="checkbox"
                       :checked="isChildPresentToday(enfant)"
-                      @change="handleAttendance(enfant, ($event.target as HTMLInputElement).checked)"
+                      @change="
+                        handleAttendance(enfant, ($event.target as HTMLInputElement).checked)
+                      "
                       class="peer sr-only"
                       :class="{ 'opacity-100': isChildPresentToday(enfant) }"
                     />
@@ -115,42 +117,18 @@ import { role } from '@/services/authServices'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { setAttendance } from '@/services/activityServices'
-// Test data
-// const enfantsAujourdhui = ref([
-//   { id_enfant: 'enf001', nom: 'VERSTAPPEN', prenom: 'Max', regime_special: 'non', present: true },
-//   { id_enfant: 'enf002', nom: 'HAMILTON', prenom: 'Lewis', regime_special: 'non', present: true },
-//   { id_enfant: 'enf003', nom: 'LECLERC', prenom: 'Charles', regime_special: 'non', present: false },
-//   {
-//     id_enfant: 'enf004',
-//     nom: 'NORRIS',
-//     prenom: 'Lando',
-//     regime_special: 'vegetarien',
-//     present: true,
-//   },
-//   {
-//     id_enfant: 'enf005',
-//     nom: 'RUSSELL',
-//     prenom: 'George',
-//     regime_special: 'sans_gluten',
-//     present: true,
-//   },
-//   { id_enfant: 'enf006', nom: 'ALONSO', prenom: 'Fernando', regime_special: 'non', present: false },
-// ])
 
-interface Repas {
+// ----------------
+// Type definitions
+
+type Repas = {
   id_repas: string
   type: string
   nb_unit: number
   regime_special: string
 }
 
-const repasAujourdhui = ref<Repas[]>([])
-
-const router = useRouter()
-
-const roleUser = await role()
-
-interface Slot {
+type Slot = {
   id: string
   childId: string
   periodeId: string
@@ -160,7 +138,7 @@ interface Slot {
   updatedAt: string
 }
 
-interface Enfant {
+type Enfant = {
   id: string
   firstName: string
   lastName: string
@@ -169,10 +147,30 @@ interface Enfant {
   slots: Slot[]
 }
 
+// ----------------
+// Const def
+
+const repasAujourdhui = ref<Repas[]>([])
+
+const router = useRouter()
+
+const roleUser = await role()
+
+// ----------------
+// Props (provenance: src/view/admin/adminMain.vue)
+
 defineProps<{
   todayChilds: Enfant[]
 }>()
 
+// ----------------
+// Fonctions
+
+/**
+ * Gère la présence d'un enfant
+ * @param enfant L'enfant a modifier
+ * @param isPresent Le status de présence de l'enfant
+ */
 async function handleAttendance(enfant: Enfant, isPresent: boolean) {
   const slot = getTodaySlot(enfant)
 
@@ -185,24 +183,41 @@ async function handleAttendance(enfant: Enfant, isPresent: boolean) {
   await setAttendance(slot.periodeId, slot.id, isPresent)
 }
 
+/**
+ * Cherche si un enfant as un slot correspondant à aujourd'hui
+ * @param enfant L'enfant interrogé
+ */
 function getTodaySlot(enfant: Enfant) {
   const today = new Date()
 
-  return enfant.slots.find(slot => {
-    const slotDate = new Date(slot.day)
-    return (
-      slotDate.getFullYear() === today.getFullYear() &&
-      slotDate.getMonth() === today.getMonth() &&
-      slotDate.getDate() === today.getDate()
-    )
-  }) ?? null
+  return (
+    enfant.slots.find((slot) => {
+      const slotDate = new Date(slot.day)
+      return (
+        slotDate.getFullYear() === today.getFullYear() &&
+        slotDate.getMonth() === today.getMonth() &&
+        slotDate.getDate() === today.getDate()
+      )
+    }) ?? null
+  )
 }
 
+/**
+ * Trouve si l'enfant est présent ce jour, faux en cas de problème
+ * @param enfant L'enfant interrogé
+ */
 function isChildPresentToday(enfant: Enfant): boolean {
   const slot = getTodaySlot(enfant)
   return slot?.isChildPresent ?? false
 }
 
+// ---------------------------------------
+// CRUD
+// NOTE: Pas de la gestion d'enfants, alors inutile de mettre bien plus d'informations
+
+/**
+ * Renvoie sur la page d'edition d'un enfant
+ */
 function gotoChildEdit(childID: string) {
   router.push({
     name: 'childEdit',

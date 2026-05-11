@@ -89,16 +89,16 @@ import router from '@/router'
 import { role } from '@/services/authServices'
 import { ref } from 'vue'
 
-interface Repas {
+
+// ----------------
+// Type definitions
+
+type Repas = {
   id_repas: string
   type: string
   nb_unit: number
   regime_special: string
 }
-
-const repasDemain = ref<Repas[]>([])
-
-const roleUser = await role()
 
 interface slots {
   id: string
@@ -113,11 +113,26 @@ interface Child {
   foodConstraint: string
   slots: slots[]
 }
+// ----------------
+// Const def
+
+const repasDemain = ref<Repas[]>([])
+
+const roleUser = await role()
+
+// ----------------
+// Props (provenance: src/view/admin/adminMain.vue)
 defineProps<{
   tomorrowChilds: Child[]
 }>()
 
-// TODO
+// ---------------------------------------
+// CRUD
+// NOTE: Pas de la gestion d'enfants, alors inutile de mettre bien plus d'informations
+
+/**
+ * Renvoie sur la page d'edition d'un enfant
+ */
 function gotoChildEdit(childID: string) {
   router.push({
     name: 'childEdit',
@@ -125,10 +140,5 @@ function gotoChildEdit(childID: string) {
       childId: childID,
     },
   })
-}
-
-// TODO
-function gotoChildRemovalFromSlot(childID: string, childSlots: slots[]) {
-  console.log(childID, childSlots)
 }
 </script>
