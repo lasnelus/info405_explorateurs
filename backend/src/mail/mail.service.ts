@@ -31,43 +31,29 @@ L'équipe des petits explorateurs`;
   Vous disposez de <strong>24 heures</strong> pour confirmer votre réponse.
 </p>
 
-<p>Cordialement,<br>L'équipe des petits explorateurs</p>
+<p>Cordialement,<br>L'équipe des ptits explorateurs</p>
 `;
-    const child = await this.prisma.child.findUnique({
-      where: { id: childId },
-      include: {
+    const guardians = await this.prisma.guardian.findMany({
+      where: {
         families: {
-          include: {
-            guardians: true,
+          some: {
+            childs: {
+              some: {
+                id: childId,
+              },
+            },
           },
         },
       },
     });
-
-    if (child) {
-      const guardianIds: string[] = [];
-      const seen: string[] = [];
-
-      for (let i = 0; i < child.families.length; i++) {
-        const family = child.families[i];
-
-        for (let j = 0; j < family.guardians.length; j++) {
-          const id = family.guardians[j].id;
-
-          if (!seen.includes(id)) {
-            seen.push(id);
-            guardianIds.push(id);
-          }
-        }
-      }
-      for (const id of guardianIds) {
-        await this.mailerService.sendMail({
-          to: id,
-          subject: 'Place en file libérée',
-          text,
-          html,
-        });
-      }
+    for (const guardian of guardians) {
+      const email = guardian.email;
+      await this.mailerService.sendMail({
+        to: email,
+        subject: 'Place en file libérée',
+        text,
+        html,
+      });
     }
   }
 }

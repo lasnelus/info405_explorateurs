@@ -37,10 +37,16 @@
             </h3>
             <span
               class="px-4 py-1 rounded-full text-sm font-semibold  inline-block mt-1"
-              :class="activity.statusLabel === 'CONFIRMED' ? 'bg-success' : 'bg-warn'"
+              :class="activity.statusLabel === 'CONFIRMED' ? 'bg-success/60' : 'bg-warn/60'"
             >
               {{ activity.statusLabel }}
             </span>
+            <button
+              @click.stop="unsubscribeActivity(activity.periodeId, activity.id)"
+              class="px-4 py-1 rounded-full text-sm font-semibold  inline-block mt-1 bg-red-500/60 hover:bg-red-600/60 text-white transition"
+            >
+              Se désinscrire
+            </button>
           </div>
         </div>
 
@@ -58,15 +64,31 @@
             class="bg-primary/75 rounded-lg p-6 shadow-md border-l-4 border-secondary"
           >
             <div class="flex justify-between items-center">
+              <span class="font-bold text-lg text-text">
+                {{ reg.activityName }}
+              </span>
               <span class="font-semibold text-text/75">
-                {{ reg.childName }} — {{ reg.activityTitle }}
+                {{ formatDate(reg.day) }}
               </span>
               <span
                 class="px-4 py-1 rounded-full text-sm font-semibold text-text"
-                :class="reg.status === 'CONFIRMED' ? 'bg-secondary' : 'bg-gray-400'"
+                :class="reg.state === 'CONFIRMED' ? 'bg-secondary' : 'bg-gray-400'"
               >
-                {{ reg.statusLabel }}
+                {{ reg.state }}
               </span>
+              <button
+                v-if="reg.state == 'ACCEPTED'"
+                @click.stop="acceptQueue(reg.periodeId, reg.id)"
+                class="bg-green-500/60 hover:bg-green-600/60 text-white px-4 py-2 rounded-lg transition"
+              >
+                Accepter
+              </button>
+              <button
+                @click.stop="unsubscribeQueue(reg.periodeId, reg.id)"
+                class="bg-red-500/60 hover:bg-red-600/60 text-white px-4 py-2 rounded-lg transition"
+              >
+                annuler
+              </button>
             </div>
           </div>
         </div>
@@ -80,11 +102,12 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue"
 import { getProfile, type Guardian, type Family } from "@/services/guardianService"
+import { loadProfileIfNeeded } from "@/services/authServices"
 import { useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
-import { loadProfileIfNeeded } from "@/services/authServices"
 import { getFamily } from "@/services/familyServices"
 import { getChild } from "@/services/childServices"
+import { acceptSlot, leaveActivity, leaveQueue } from "@/services/activityServices"
 
 export interface Slot {
   id: string
@@ -96,7 +119,11 @@ export interface Slot {
 
 export interface Queue {
   id: string
-  date?: string | null
+  child: Child
+  periodeId: string
+  day: string
+  state: string
+  acceptedAt: string
 }
 
 export interface Child {
@@ -129,29 +156,33 @@ const router = useRouter()
 
 const guardian = ref<Guardian | null>(null)
 const families = ref<Family[]>([])
-const familiesWithChildren = ref<FamilyWithChildren[]>([])
 const allSlots = ref<EnrichedSlot[]>([])
 const allQueues = ref<EnrichedQueue[]>([])
+const familiesWithChildren = ref<FamilyWithChildren[]>([])
 const error = ref<string | null>(null)
 
 const allUpcomingActivities = computed(() =>
   allSlots.value.map((slot) => ({
-    id: `${slot.id}-${slot.childId ?? slot.child?.id ?? 'unknown'}`,
+    id: slot.id,
     title:  formatDate(slot.day),
     childName: slot.childName,
     statusLabel: "CONFIRMED",
+    isConfirmed: slot.isChildPresent,
+    periodeId: slot.periodeId,
   }))
 )
 
 const allRegistrations = computed(() =>
   allQueues.value.map((queue) => ({
     id: queue.id,
+    child: queue.child,
+    periodeId: queue.periodeId,
+    activityName: activityTitles.value[queue.periodeId] || "Chargement...",
+    day: formatDate(queue.day),
     childName: queue.childName,
-    activityTitle: formatDate(queue.date),
-    status: "PENDING",
-    statusLabel: "EN ATTENTE",
+    state: queue.state,
   }))
-)
+);
 
 const fetchGuardian = async () => {
   try {
@@ -208,9 +239,54 @@ const fetchFamilyAndChildren = async () => {
         })),
       ),
     )
+    const ids = [
+      ...allSlots.value.map(s => s.periodeId),
+      ...allQueues.value.map(q => q.periodeId)
+    ];
+    
+    if (ids.length > 0) {
+      await loadActivityTitles(ids);
+    }
   } catch (e) {
     error.value = "Impossible de charger les données des familles/enfants"
     console.error(e)
+  }
+}
+
+const unsubscribeActivity = async (periodeId: string, slotId: string) => {
+  try {
+    await leaveActivity(periodeId, slotId)
+
+    // refresh des données
+    await fetchGuardian()
+    router.go(0)
+  } catch (e) {
+    console.error(e)
+    alert("Impossible de se désinscrire")
+  }
+}
+
+const unsubscribeQueue = async (periodeId: string, queueId: string) => {
+  try {
+    await leaveQueue(periodeId, queueId)
+
+    // refresh des données
+    await fetchGuardian()
+    router.go(0)
+  } catch (e) {
+    console.error(e)
+    alert("Impossible de se désinscrire")
+  }
+}
+
+const acceptQueue = async (periodeId: string, queueId: string) => {
+  try{
+    await acceptSlot(periodeId, queueId)
+    await fetchGuardian()
+    router.go(0)
+  } catch (e){
+    console.error(e)
+    alert("Impossible d'accepter la place")
   }
 }
 
@@ -225,10 +301,31 @@ function formatDate(dateString: string | null | undefined): string {
   })
 }
 
+import { getActivity } from '@/services/activityServices'; // Assurez-vous de l'import
+
+const activityTitles = ref<Record<string, string>>({});
+
+async function loadActivityTitles(ids: string[]) {
+  // On filtre pour ne pas recharger un titre qu'on a déjà
+  const uniqueIds = [...new Set(ids)].filter(id => !activityTitles.value[id]);
+  
+  // On lance tous les appels en parallèle
+  await Promise.all(uniqueIds.map(async (id) => {
+    try {
+      const res = await getActivity(id);
+      activityTitles.value[id] = res.data.title; // On stocke le titre
+    } catch (e) {
+      console.error(`Erreur chargement activité ${id}`, e);
+      activityTitles.value[id] = "Activité inconnue";
+    }
+  }));
+}
+
 onMounted(async () => {
   if (auth.isLoggedIn) {
     await loadProfileIfNeeded(auth)
     if (auth.profile != null) {
+      // fetchGuardian appelle fetchFamilyAndChildren qui appelle loadActivityTitles
       await fetchGuardian()
     } else {
       router.push('/')

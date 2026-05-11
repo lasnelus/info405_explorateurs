@@ -28,9 +28,8 @@ export class PeriodeService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   async updateQueue() {
-    const nowPlusOneDay = new Date();
+    const nowPlusOneDay = new Date(Date.now());
     nowPlusOneDay.setDate(nowPlusOneDay.getDate() - 1);
-
     await this.prisma.queue.updateMany({
       where: {
         acceptedAt: {
@@ -51,9 +50,11 @@ export class PeriodeService {
       },
     });
     for (const periode of periodesToUpdate) {
-      const daysOfPeriode = periode.firstDay;
-      await this.updateDayInPeriode(periode.id, daysOfPeriode);
+      const daysOfPeriode = this.extractDateFromCompleteDate(
+        new Date(periode.firstDay),
+      );
       while (daysOfPeriode <= periode.lastDay) {
+        await this.updateDayInPeriode(periode.id, daysOfPeriode);
         daysOfPeriode.setDate(daysOfPeriode.getDate() + 1);
       }
     }
@@ -61,10 +62,9 @@ export class PeriodeService {
 
   async updateDayInPeriode(periodeId: string, day: Date) {
     const capacity = (await this.getPeriodesById(periodeId))!.capacity;
-    const toUpdate: number =
-      capacity -
-      (await this.countSlots(periodeId, day)) -
-      (await this.countQueuesAccepted(periodeId, day));
+    const slots = await this.countSlots(periodeId, day);
+    const queueAccepted = await this.countQueuesAccepted(periodeId, day);
+    const toUpdate: number = Math.max(0, capacity - slots - queueAccepted);
     const queueToAccept = await this.prisma.queue.findMany({
       where: {
         periodeId,
@@ -84,6 +84,7 @@ export class PeriodeService {
         },
         data: {
           state: 'ACCEPTED',
+          acceptedAt: new Date(Date.now()),
         },
       });
 

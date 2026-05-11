@@ -62,6 +62,14 @@
                   >
                     <p>Editer</p>
                   </button>
+                </span> -
+                <span>
+                  <button
+                    @click="gotoFamillyDelete(famille.id)"
+                    class="delete"
+                  >
+                    <p>Supprimer</p>
+                  </button>
                 </span>
               </td>
 

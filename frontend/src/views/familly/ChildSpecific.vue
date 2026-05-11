@@ -79,7 +79,10 @@
           <div v-if="child.slots.length > 0">
             <ul class="space-y-2">
               <li v-for="slot in child.slots" :key="slot.id" class="text-text/70">
-                <time :datetime="slot.day">{{ formatDate(slot.day) }}</time>
+                <li v-for="slot in child.slots" :key="slot.id" class="text-text/70">
+                  <span class="font-bold">{{ activityTitles[slot.periodeId] || 'Chargement...' }}</span> - 
+                  <time :datetime="slot.day">{{ formatDate(slot.day) }}</time>
+                </li>
               </li>
             </ul>
           </div>
@@ -92,11 +95,8 @@
           <div v-if="child.queues.length > 0">
             <ul class="space-y-2">
               <li v-for="queue in child.queues" :key="queue.id" class="text-text/70">
-                <time :datetime="queue.date">{{ formatDate(queue.date) }}</time>
-                  <div v-if="queue.state == 'ACCEPT'">
-                    <button @click="acceptChild(queue.periodeId, queue.id)"> accepter place </button>
-                    <button @click="declineChild(queue.periodeId, queue.id)"> désinscrire l'enfant </button>
-                  </div>
+                <span class="font-bold">{{ activityTitles[queue.periodeId] || 'Chargement...' }}</span> - 
+                <time :datetime="queue.date">{{ formatDate(queue.day) }}</time>
               </li>
             </ul>
           </div>
@@ -116,9 +116,10 @@ import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { getChild } from '@/services/childServices'
-import { acceptSlot, leaveQueue } from '@/services/activityServices';
+import { getActivity } from '@/services/activityServices';
 import { loadProfileIfNeeded } from '@/services/authServices';
 
+const activityTitles = ref<Record<string, string>>({});
 
 interface Allergy {
   id: string
@@ -141,6 +142,7 @@ interface Family {
 interface Slot {
   id: string
   day: string
+  periodeId: string
 }
 
 interface Queue {
@@ -185,26 +187,44 @@ function formatDate(dateString: string | null | undefined): string {
   })
 }
 
-function declineChild(periodeId: string, queueId: string){
-  leaveQueue(periodeId, queueId)
+async function loadActivityTitles(ids: string[]) {
+  // On filtre pour ne pas recharger un titre qu'on a déjà
+  const uniqueIds = [...new Set(ids)].filter(id => !activityTitles.value[id]);
+  
+  // On lance tous les appels en parallèle
+  await Promise.all(uniqueIds.map(async (id) => {
+    try {
+      const res = await getActivity(id);
+      activityTitles.value[id] = res.data.title; // On stocke le titre
+    } catch (e) {
+      console.error(`Erreur chargement activité ${id}`, e);
+      activityTitles.value[id] = "Activité inconnue";
+    }
+  }));
 }
 
-function acceptChild(periodeId: string, queueId: string){
-  acceptSlot(periodeId, queueId)
-}
-
-onMounted(async () =>{
+onMounted(async () => {
   if (auth.isLoggedIn) {
-    await loadProfileIfNeeded(auth)
+    await loadProfileIfNeeded(auth);
 
     if (auth.profile && childId.value) {
-      const res = await getChild(childId.value)
-      child.value = res.data
+      const res = await getChild(childId.value);
+      child.value = res.data;
+
+      // Récupérer tous les IDs uniques des slots et des queues
+      const ids = [
+        ...(child.value?.slots.map(s => s.periodeId) || []),
+        ...(child.value?.queues.map(q => q.periodeId) || [])
+      ];
+
+      if (ids.length > 0) {
+        await loadActivityTitles(ids);
+      }
     } else {
-      router.push('/')
+      router.push('/');
     }
   } else {
-    router.push('/login')
+    router.push('/login');
   }
-})
+});
 </script>
