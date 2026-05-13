@@ -48,12 +48,12 @@
           <!-- Address -->
           <div>
             <h3 class="font-semibold mb-2 color-primary">Adresse physique</h3>
-            <p class="text-text/50">15 chemin du lac 73370 le Bourget du lac</p>
+            <p class="text-text/50">12 rue des Tilleuls 78140 Vélizy-villacoublay</p>
           </div>
 
           <!-- Hours -->
           <div>
-            <h3 class="font-semibold mb-2 color-primary">Horaires</h3>
+            <h3 class="font-semibold mb-2 color-primary">Horaires d'ouverture</h3>
             <ul class="text-text/50 space-y-1">
               <li>lundi - 8h/18h</li>
               <li>mardi - 8h/18h</li>
@@ -80,11 +80,11 @@
                 hover:decoration-primary
                 duration-300
               "
-              href="mailto:random@explorateurs-explorateurs.fr">
-                random@explorateurs-explorateurs.fr
+              href="mailto:cassandre.kant@ptits-explorateurs.fr">
+                cassandre.kant@ptits-explorateurs.fr
               </a>
             </p>
-            <p class="text-text/50">01 - 72 - 45 - 92 - 50</p> <!-- TODO "click to copy" -->
+            <p class="text-text/50">01 - 72 - 45 - 89 - 30</p> <!-- TODO "click to copy" -->
           </div>
         </div>
       </div>
