@@ -54,19 +54,15 @@
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="border-b border-default">
             <tr>
-              <th scope="col">ID_repas</th>
               <th scope="col">type</th>
               <th scope="col">nb unit</th>
-              <th scope="col">REGIME SPECIAL ?</th>
             </tr>
           </thead>
           <tbody>
             <template v-if="repasDemain.length > 0">
               <tr v-for="(repas, index) in repasDemain" :key="index">
-                <th scope="row">{{ repas.id_repas }}</th>
-                <td>{{ repas.type }}</td>
+                <td>{{ repas.label }}</td>
                 <td>{{ repas.nb_unit }}</td>
-                <td>{{ repas.regime_special }}</td>
               </tr>
             </template>
             <template v-else>
@@ -87,18 +83,12 @@
 import router from '@/router'
 
 import { role } from '@/services/authServices'
-import { ref } from 'vue'
+import { calcFoodList, filterFoodList } from '@/utils/foodCalc'
+import { computed } from 'vue'
 
 
 // ----------------
 // Type definitions
-
-type Repas = {
-  id_repas: string
-  type: string
-  nb_unit: number
-  regime_special: string
-}
 
 interface slots {
   id: string
@@ -116,15 +106,17 @@ interface Child {
 // ----------------
 // Const def
 
-const repasDemain = ref<Repas[]>([])
-
 const roleUser = await role()
 
 // ----------------
 // Props (provenance: src/view/admin/adminMain.vue)
-defineProps<{
+const props = defineProps<{
   tomorrowChilds: Child[]
 }>()
+
+const repasDemain = computed(() => {
+  return filterFoodList(calcFoodList(props.tomorrowChilds))
+})
 
 // ---------------------------------------
 // CRUD

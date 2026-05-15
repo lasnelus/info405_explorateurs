@@ -83,19 +83,15 @@
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="border-b border-default">
             <tr>
-              <th scope="col">ID_repas</th>
               <th scope="col">type</th>
               <th scope="col">nb unit</th>
-              <th scope="col">REGIME SPECIAL ?</th>
             </tr>
           </thead>
           <tbody>
             <template v-if="repasAujourdhui.length > 0">
               <tr v-for="(repas, index) in repasAujourdhui" :key="index">
-                <th scope="row">{{ repas.id_repas }}</th>
-                <td>{{ repas.type }}</td>
+                <td>{{ repas.label }}</td>
                 <td>{{ repas.nb_unit }}</td>
-                <td>{{ repas.regime_special }}</td>
               </tr>
             </template>
             <template v-else>
@@ -114,19 +110,14 @@
 
 <script setup lang="ts">
 import { role } from '@/services/authServices'
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { setAttendance } from '@/services/activityServices'
+import { calcFoodList, filterFoodList } from '@/utils/foodCalc'
 
 // ----------------
 // Type definitions
 
-type Repas = {
-  id_repas: string
-  type: string
-  nb_unit: number
-  regime_special: string
-}
 
 type Slot = {
   id: string
@@ -150,8 +141,6 @@ type Enfant = {
 // ----------------
 // Const def
 
-const repasAujourdhui = ref<Repas[]>([])
-
 const router = useRouter()
 
 const roleUser = await role()
@@ -159,9 +148,13 @@ const roleUser = await role()
 // ----------------
 // Props (provenance: src/view/admin/adminMain.vue)
 
-defineProps<{
+const props = defineProps<{
   todayChilds: Enfant[]
 }>()
+
+const repasAujourdhui = computed(() => {
+  return filterFoodList(calcFoodList(props.todayChilds))
+})
 
 // ----------------
 // Fonctions
