@@ -2,13 +2,11 @@
   <div class="min-h-screen">
     <div class="max-w-4xl mx-auto px-6 py-12">
       <div v-if="child" class="space-y-8">
-
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h1 class="text-3xl font-bold mb-4 text-primary">
             {{ child.firstName }} {{ child.lastName }}
           </h1>
         </div>
-
 
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Informations Personnelles</h2>
@@ -32,7 +30,6 @@
           </div>
         </div>
 
-
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Allergies</h2>
           <div v-if="child.allergies.length > 0">
@@ -45,21 +42,31 @@
           <p v-else class="text-text/70">Aucune allergie connue</p>
         </div>
 
-
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Contacts d'Urgence</h2>
           <div v-if="child.EmergencyContact.length > 0">
             <div class="space-y-4">
-              <div v-for="contact in child.EmergencyContact" :key="contact.id" class="border-b border-primary/20 pb-4">
-                <h3 class="font-semibold text-primary">{{ contact.firstName }} {{ contact.lastName }}</h3>
-                <p class="text-text/70">Relation: {{ contact.relationship == undefined ? 'Inconnue' : contact.relationship}}</p>
-                <p class="text-text/70">Téléphone: {{ contact.phoneNumber.length == undefined ? 'Inconnue' : contact.phoneNumber }}</p>
+              <div
+                v-for="contact in child.EmergencyContact"
+                :key="contact.id"
+                class="border-b border-primary/20 pb-4"
+              >
+                <h3 class="font-semibold text-primary">
+                  {{ contact.firstName }} {{ contact.lastName }}
+                </h3>
+                <p class="text-text/70">
+                  Relation:
+                  {{ contact.relationship == undefined ? 'Inconnue' : contact.relationship }}
+                </p>
+                <p class="text-text/70">
+                  Téléphone:
+                  {{ contact.phoneNumber.length == undefined ? 'Inconnue' : contact.phoneNumber }}
+                </p>
               </div>
             </div>
           </div>
           <p v-else class="text-text/70">Aucun contact d'urgence enregistré</p>
         </div>
-
 
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Familles</h2>
@@ -73,28 +80,32 @@
           <p v-else class="text-text/70">Aucune famille associée</p>
         </div>
 
-
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Jours Inscrits</h2>
           <div v-if="child.slots.length > 0">
             <ul class="space-y-2">
               <li v-for="slot in child.slots" :key="slot.id" class="text-text/70">
-                  <span class="font-bold">{{ activityTitles[slot.periodeId] || 'Chargement...' }}</span> -
-                  <time :datetime="slot.day">{{ formatDate(slot.day) }}</time>
+                <span class="font-bold">{{
+                  activityTitles[slot.periodeId] || 'Chargement...'
+                }}</span>
+                -
+                <time :datetime="slot.day">{{ formatDate(slot.day) }}</time>
               </li>
             </ul>
           </div>
           <p v-else class="text-text/70">Aucun jour inscrit</p>
         </div>
 
-
         <div class="bg-primary/5 rounded-lg shadow-lg shadow-primary/15 p-8">
           <h2 class="text-2xl font-bold mb-6 text-primary">Jours en Attente</h2>
           <div v-if="child.queues.length > 0">
             <ul class="space-y-2">
               <li v-for="queue in child.queues" :key="queue.id" class="text-text/70">
-                <span class="font-bold">{{ activityTitles[queue.periodeId] || 'Chargement...' }}</span> -
-                <time :datetime="queue.date">{{ formatDate(queue.date) }}</time>
+                <span class="font-bold">{{
+                  activityTitles[queue.periodeId] || 'Chargement...'
+                }}</span>
+                -
+                <time :datetime="queue.day">{{ formatDate(queue.day) }}</time>
               </li>
             </ul>
           </div>
@@ -109,16 +120,15 @@
 </template>
 
 <script setup lang="ts">
-
-import { onMounted, ref, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
+import { onMounted, ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import { getChild } from '@/services/childServices'
-import { getActivity } from '@/services/activityServices';
-import { loadProfileIfNeeded } from '@/services/authServices';
-import { formatDate } from '@/utils/dateFormat';
+import { getActivity } from '@/services/activityServices'
+import { loadProfileIfNeeded } from '@/services/authServices'
+import { formatDate } from '@/utils/dateFormat'
 
-const activityTitles = ref<Record<string, string>>({});
+const activityTitles = ref<Record<string, string>>({})
 
 interface Allergy {
   id: string
@@ -163,7 +173,6 @@ interface Child {
   queues: Queue[]
 }
 
-
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
@@ -177,45 +186,44 @@ const child = ref<Child>()
 
 async function loadActivityTitles(ids: string[]) {
   // On filtre pour ne pas recharger un titre qu'on a déjà
-  const uniqueIds = [...new Set(ids)].filter(id => !activityTitles.value[id]);
+  const uniqueIds = [...new Set(ids)].filter((id) => !activityTitles.value[id])
 
   // On lance tous les appels en parallèle
-  await Promise.all(uniqueIds.map(async (id) => {
-    try {
-      const res = await getActivity(id);
-      activityTitles.value[id] = res.data.title; // On stocke le titre
-    } catch (e) {
-      console.error(`Erreur chargement activité ${id}`, e);
-      activityTitles.value[id] = "Activité inconnue";
-    }
-  }));
+  await Promise.all(
+    uniqueIds.map(async (id) => {
+      try {
+        const res = await getActivity(id)
+        activityTitles.value[id] = res.data.title // On stocke le titre
+      } catch (e) {
+        console.error(`Erreur chargement activité ${id}`, e)
+        activityTitles.value[id] = 'Activité inconnue'
+      }
+    }),
+  )
 }
 
 onMounted(async () => {
   if (auth.isLoggedIn) {
-    await loadProfileIfNeeded(auth);
+    await loadProfileIfNeeded(auth)
 
     if (auth.profile && childId.value) {
-      const res = await getChild(childId.value);
-      child.value = res.data;
+      const res = await getChild(childId.value)
+      child.value = res.data
 
       // Récupérer tous les IDs uniques des slots et des queues
       const ids = [
-        ...(child.value?.slots.map(s => s.periodeId) || []),
-        ...(child.value?.queues.map(q => q.periodeId) || [])
-      ];
+        ...(child.value?.slots.map((s) => s.periodeId) || []),
+        ...(child.value?.queues.map((q) => q.periodeId) || []),
+      ]
 
       if (ids.length > 0) {
-        await loadActivityTitles(ids);
+        await loadActivityTitles(ids)
       }
-
-  console.log(child);
-
     } else {
-      router.push('/');
+      router.push('/')
     }
   } else {
-    router.push('/login');
+    router.push('/login')
   }
-});
+})
 </script>
