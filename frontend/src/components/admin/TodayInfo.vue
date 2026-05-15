@@ -44,7 +44,7 @@
                         stroke="currentColor"
                         stroke-width="3"
                         viewBox="0 0 24 24"
-                        :class="{ 'opacity-100': enfant.present }"
+                        :class="{ 'opacity-100': isChildPresentToday(enfant) }"
                       >
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
@@ -79,6 +79,20 @@
     <!-- REPAS DU JOUR -->
     <div>
       <h2 class="text-xl font-bold mb-1 text-text/85 uppercase">repas du jour</h2>
+
+      <button
+        @click="toggleAttendingChildrenFoodList()"
+        class="bg-info text-primary-light rounded-full p-2 mb-2 cursor-pointer"
+      >
+        <p>
+          {{
+            showAttendingChildFoodList
+              ? 'Voir pour tous les enfants'
+              : 'Filtrer par enfants présents'
+          }}
+        </p>
+      </button>
+
       <div class="relative overflow-x-auto bg-primary border-2 border-text/75 rounded-lg">
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="border-b border-default">
@@ -88,8 +102,8 @@
             </tr>
           </thead>
           <tbody>
-            <template v-if="repasAujourdhui.length > 0">
-              <tr v-for="(repas, index) in repasAujourdhui" :key="index">
+            <template v-if="displayedFoodList.length > 0">
+              <tr v-for="(repas, index) in displayedFoodList" :key="index">
                 <td>{{ repas.label }}</td>
                 <td>{{ repas.nb_unit }}</td>
               </tr>
@@ -110,14 +124,13 @@
 
 <script setup lang="ts">
 import { role } from '@/services/authServices'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { setAttendance } from '@/services/activityServices'
-import { calcFoodList, filterFoodList } from '@/utils/foodCalc'
+import { calcAttendingChildFoodList, calcFoodList } from '@/utils/foodCalc'
 
 // ----------------
 // Type definitions
-
 
 type Slot = {
   id: string
@@ -145,6 +158,8 @@ const router = useRouter()
 
 const roleUser = await role()
 
+const showAttendingChildFoodList = ref(false)
+
 // ----------------
 // Props (provenance: src/view/admin/adminMain.vue)
 
@@ -152,9 +167,36 @@ const props = defineProps<{
   todayChilds: Enfant[]
 }>()
 
+// -----------------
+// Computed
+
 const repasAujourdhui = computed(() => {
-  return filterFoodList(calcFoodList(props.todayChilds))
+  return calcFoodList(props.todayChilds)
 })
+
+const repasEnfantsPresents = computed(() => {
+  return calcAttendingChildFoodList(props.todayChilds)
+})
+
+const displayedFoodList = computed(() => {
+  if (showAttendingChildFoodList.value) {
+    return repasEnfantsPresents.value
+  }
+  return repasAujourdhui.value
+})
+
+watch(
+  () => props.todayChilds,
+  (nouveauxEnfants) => {
+    if (nouveauxEnfants) {
+      nouveauxEnfants.forEach((enfant) => {
+        // On initialise enfant.present avec la valeur du slot
+        enfant.present = isChildPresentToday(enfant)
+      })
+    }
+  },
+  { immediate: true }, //force l'exécution dès le chargement de la page
+)
 
 // ----------------
 // Fonctions
@@ -172,7 +214,10 @@ async function handleAttendance(enfant: Enfant, isPresent: boolean) {
     return
   }
 
+  // MàJ présence enfant
   enfant.present = isPresent
+  slot.isChildPresent = isPresent
+
   await setAttendance(slot.periodeId, slot.id, isPresent)
 }
 
@@ -202,6 +247,10 @@ function getTodaySlot(enfant: Enfant) {
 function isChildPresentToday(enfant: Enfant): boolean {
   const slot = getTodaySlot(enfant)
   return slot?.isChildPresent ?? false
+}
+
+function toggleAttendingChildrenFoodList() {
+  showAttendingChildFoodList.value = !showAttendingChildFoodList.value
 }
 
 // ---------------------------------------

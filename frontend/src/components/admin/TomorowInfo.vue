@@ -83,7 +83,7 @@
 import router from '@/router'
 
 import { role } from '@/services/authServices'
-import { calcFoodList, filterFoodList } from '@/utils/foodCalc'
+import { calcFoodList } from '@/utils/foodCalc'
 import { computed } from 'vue'
 
 
@@ -115,7 +115,7 @@ const props = defineProps<{
 }>()
 
 const repasDemain = computed(() => {
-  return filterFoodList(calcFoodList(props.tomorrowChilds))
+  return calcFoodList(props.tomorrowChilds)
 })
 
 // ---------------------------------------
