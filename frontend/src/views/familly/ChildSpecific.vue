@@ -52,8 +52,8 @@
             <div class="space-y-4">
               <div v-for="contact in child.EmergencyContact" :key="contact.id" class="border-b border-primary/20 pb-4">
                 <h3 class="font-semibold text-primary">{{ contact.firstName }} {{ contact.lastName }}</h3>
-                <p class="text-text/70">Relation: {{ contact.relationship }}</p>
-                <p class="text-text/70">Téléphone: {{ contact.phone }}</p>
+                <p class="text-text/70">Relation: {{ contact.relationship == undefined ? 'Inconnue' : contact.relationship}}</p>
+                <p class="text-text/70">Téléphone: {{ contact.phoneNumber.length == undefined ? 'Inconnue' : contact.phoneNumber }}</p>
               </div>
             </div>
           </div>
@@ -79,10 +79,8 @@
           <div v-if="child.slots.length > 0">
             <ul class="space-y-2">
               <li v-for="slot in child.slots" :key="slot.id" class="text-text/70">
-                <li v-for="slot in child.slots" :key="slot.id" class="text-text/70">
-                  <span class="font-bold">{{ activityTitles[slot.periodeId] || 'Chargement...' }}</span> - 
+                  <span class="font-bold">{{ activityTitles[slot.periodeId] || 'Chargement...' }}</span> -
                   <time :datetime="slot.day">{{ formatDate(slot.day) }}</time>
-                </li>
               </li>
             </ul>
           </div>
@@ -95,7 +93,7 @@
           <div v-if="child.queues.length > 0">
             <ul class="space-y-2">
               <li v-for="queue in child.queues" :key="queue.id" class="text-text/70">
-                <span class="font-bold">{{ activityTitles[queue.periodeId] || 'Chargement...' }}</span> - 
+                <span class="font-bold">{{ activityTitles[queue.periodeId] || 'Chargement...' }}</span> -
                 <time :datetime="queue.date">{{ formatDate(queue.date) }}</time>
               </li>
             </ul>
@@ -118,6 +116,7 @@ import { useAuthStore } from '@/stores/auth';
 import { getChild } from '@/services/childServices'
 import { getActivity } from '@/services/activityServices';
 import { loadProfileIfNeeded } from '@/services/authServices';
+import { formatDate } from '@/utils/dateFormat';
 
 const activityTitles = ref<Record<string, string>>({});
 
@@ -131,7 +130,7 @@ interface EmergencyContact {
   firstName: string
   lastName: string
   relationship: string
-  phone: string
+  phoneNumber: string
 }
 
 interface Family {
@@ -176,21 +175,10 @@ const childId = computed(() => {
 
 const child = ref<Child>()
 
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return '-'
-  const date = new Date(dateString)
-  if (Number.isNaN(date.getTime())) return dateString
-  return date.toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-}
-
 async function loadActivityTitles(ids: string[]) {
   // On filtre pour ne pas recharger un titre qu'on a déjà
   const uniqueIds = [...new Set(ids)].filter(id => !activityTitles.value[id]);
-  
+
   // On lance tous les appels en parallèle
   await Promise.all(uniqueIds.map(async (id) => {
     try {
@@ -220,6 +208,9 @@ onMounted(async () => {
       if (ids.length > 0) {
         await loadActivityTitles(ids);
       }
+
+  console.log(child);
+
     } else {
       router.push('/');
     }
