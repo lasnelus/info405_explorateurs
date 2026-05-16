@@ -10,6 +10,7 @@ services:
     container_name: mariadb
     volumes:
       - ./db_data:/var/lib/mysql
+    command: --wait_timeout=28800
   backend:
       build:
         context: ./backend
