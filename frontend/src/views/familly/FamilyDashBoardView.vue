@@ -41,7 +41,7 @@
               <h3 class="font-semibold color-primary">
                   <span class="inline-block w-auto">
                     {{ formatDate(activity.day) }}
-                    </span> - 
+                    </span> -
                   <span class="right">
                     {{ activityTitles[activity.periodeId] || "Chargement..." }}
                   </span>
@@ -62,10 +62,10 @@
       </section>
 
       <!-- État des inscriptions Section -->
-      <section>
+      <section v-if="allRegistrations.length > 0">
         <h2 class="text-2xl font-bold mb-6 color-primary">État des inscriptions</h2>
 
-        <div v-if="allRegistrations.length" class="space-y-3">
+        <div class="space-y-3">
           <div
             v-for="reg in allRegistrations"
             :key="reg.id"
@@ -87,13 +87,13 @@
               <button
                 v-if="reg.state == 'ACCEPTED'"
                 @click.stop="acceptQueue(reg.periodeId, reg.id)"
-                class="bg-success/80 hover:bg-success text-primary-light px-4 py-1 rounded-full transition cursor-pointer"
+                class="bg-success text-primary-light px-4 py-1 rounded-full transition cursor-pointer"
               >
                 Accepter
               </button>
               <button
                 @click.stop="unsubscribeQueue(reg.periodeId, reg.id)"
-                class="bg-error/80 hover:bg-error text-primary-light px-4 py-1 rounded-full transition cursor-pointer"
+                class="bg-error text-primary-light px-4 py-1 rounded-full transition cursor-pointer"
               >
                 annuler
               </button>
@@ -101,7 +101,7 @@
           </div>
         </div>
 
-        <p v-else class="text-text/75">Aucune inscription.</p>
+        <p class="text-text/75">Aucune inscription.</p>
       </section>
     </div>
   </div>
