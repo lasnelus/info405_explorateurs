@@ -6,12 +6,9 @@
         <h2 class="text-2xl font-bold mb-6 color-primary">Mes familles</h2>
 
         <div v-if="families.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div
-            v-for="family in families"
-            :key="family.id"
+          <div v-for="family in families" :key="family.id"
             class="bg-primary/75 rounded-lg p-6 border-2 min-h-36 flex items-center justify-center cursor-pointer hover:shadow-lg transition-all border-primary"
-            @click="goToFamily(family.id)"
-          >
+            @click="goToFamily(family.id)">
             <span class="text-center">
               {{ family.name || `Famille ${family.id}` }}
             </span>
@@ -28,29 +25,29 @@
         <div v-if="allUpcomingActivities.length > 0" class="space-y-3">
           <template v-for="(activity, index) in allUpcomingActivities" :key="activity.id">
 
-            <div
-              v-if="index === 0 || activity.childId !== allUpcomingActivities[index - 1].childId"
-              class="mt-8 mb-2"
-            >
+            <div v-if="index === 0 || activity.childId !== allUpcomingActivities[index - 1]?.childId" class="mt-8 mb-2">
               <h4 class="text-xl font-bold text-primary border-b-2 border-primary/20 pb-2">
                 {{ activity.childName }}
               </h4>
             </div>
 
-            <div class="bg-primary/75 rounded-lg p-6 shadow-md hover:shadow-lg transition-all border-l-4" :style="{ borderColor: 'var(--color-primary)' }">
+            <div class="bg-primary/75 rounded-lg p-6 shadow-md hover:shadow-lg transition-all border-l-4"
+              :style="{ borderColor: 'var(--color-primary)' }">
               <h3 class="font-semibold color-primary">
-                  <span class="inline-block w-auto">
-                    {{ formatDate(activity.day) }}
-                    </span> -
-                  <span class="right">
-                    {{ activityTitles[activity.periodeId] || "Chargement..." }}
-                  </span>
+                <span class="inline-block w-auto">
+                  {{ formatDate(activity.day) }}
+                </span> -
+                <span class="right">
+                  {{ activityTitles[activity.periodeId] || "Chargement..." }}
+                </span>
               </h3>
               <div class="flex justify-between">
-                <span class="px-4 py-1 rounded-full text-sm font-semibold inline-block mt-1 text-primary-light mr-2" :class="activity.statusLabel === 'CONFIRMED' ? 'bg-success/80' : 'bg-warn/80'">
+                <span class="px-4 py-1 rounded-full text-sm font-semibold inline-block mt-1 text-primary-light mr-2"
+                  :class="activity.statusLabel === 'CONFIRMED' ? 'bg-success/80' : 'bg-warn/80'">
                   {{ activity.statusLabel }}
                 </span>
-                <button @click.stop="unsubscribeActivity(activity.periodeId, activity.id)" class="px-4 py-1 rounded-full text-sm font-semibold inline-block mt-1 bg-error text-primary-light transition cursor-pointer">
+                <button @click.stop="unsubscribeActivity(activity.periodeId, activity.id)"
+                  class="px-4 py-1 rounded-full text-sm font-semibold inline-block mt-1 bg-error text-primary-light transition cursor-pointer">
                   Se désinscrire
                 </button>
               </div>
@@ -66,42 +63,38 @@
         <h2 class="text-2xl font-bold mb-6 color-primary">État des inscriptions</h2>
 
         <div class="space-y-3">
-          <div
-            v-for="reg in allRegistrations"
-            :key="reg.id"
-            class="bg-primary/75 rounded-lg p-6 shadow-md border-l-4 border-secondary"
-          >
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-lg text-text">
-                {{ reg.activityName }}
-              </span>
-              <span class="font-semibold text-text/75">
-                {{ formatDate(reg.day) }}
-              </span>
-              <span
-                class="px-4 py-1 rounded-full text-sm font-semibold text-text"
-                :class="reg.state === 'CONFIRMED' ? 'bg-success' : 'bg-warn'"
-              >
-                {{ reg.state }}
-              </span>
-              <button
-                v-if="reg.state == 'ACCEPTED'"
-                @click.stop="acceptQueue(reg.periodeId, reg.id)"
-                class="bg-success text-primary-light px-4 py-1 rounded-full transition cursor-pointer"
-              >
-                Accepter
-              </button>
-              <button
-                @click.stop="unsubscribeQueue(reg.periodeId, reg.id)"
-                class="bg-error text-primary-light px-4 py-1 rounded-full transition cursor-pointer"
-              >
-                annuler
-              </button>
-            </div>
-          </div>
-        </div>
+          <template v-for="(reg, index) in allRegistrations" :key="reg.id">
 
-        <p class="text-text/75">Aucune inscription.</p>
+            <div v-if="index === 0 || reg.childId !== allRegistrations[index - 1]?.childId" class="mt-8 mb-2">
+              <h4 class="text-xl font-bold text-primary border-b-2 border-primary/20 pb-2">
+                {{ reg.childName }}
+              </h4>
+            </div>
+
+            <div class="bg-primary/75 rounded-lg p-6 shadow-md border-l-4 border-secondary">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-lg text-text">
+                  {{ reg.activityName }}
+                </span>
+                <span class="font-semibold text-text/75">
+                  {{ formatDate(reg.day) }}
+                </span>
+                <span class="px-4 py-1 rounded-full text-sm font-semibold text-text"
+                  :class="reg.state === 'CONFIRMED' ? 'bg-success' : 'bg-warn'">
+                  {{ reg.state }}
+                </span>
+                <button v-if="reg.state == 'ACCEPTED'" @click.stop="acceptQueue(reg.periodeId, reg.id)"
+                  class="bg-success text-primary-light px-4 py-1 rounded-full transition cursor-pointer">
+                  Accepter
+                </button>
+                <button @click.stop="unsubscribeQueue(reg.periodeId, reg.id)"
+                  class="bg-error text-primary-light px-4 py-1 rounded-full transition cursor-pointer">
+                  annuler
+                </button>
+              </div>
+            </div>
+          </template>
+        </div>
       </section>
     </div>
   </div>
@@ -290,11 +283,11 @@ const unsubscribeQueue = async (periodeId: string, queueId: string) => {
 }
 
 const acceptQueue = async (periodeId: string, queueId: string) => {
-  try{
+  try {
     await acceptSlot(periodeId, queueId)
     await fetchGuardian()
     router.go(0)
-  } catch (e){
+  } catch (e) {
     console.error(e)
     alert("Impossible d'accepter la place")
   }
@@ -345,5 +338,4 @@ function goToFamily(familyId: string) {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
