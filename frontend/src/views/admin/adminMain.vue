@@ -317,8 +317,8 @@ th[scope='row'] {
 }
 
 td {
-  padding-inline: calc(var(--spacing) * 6) /* 1.5rem = 24px */;
-  padding-block: calc(var(--spacing) * 4) /* 1rem = 16px */;
+  padding-inline: calc(var(--spacing) * 3) /* 1.5rem = 24px */;
+  padding-block: calc(var(--spacing) * 3) /* 1rem = 16px */;
 }
 
 tr {

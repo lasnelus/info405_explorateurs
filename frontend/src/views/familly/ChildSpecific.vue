@@ -156,7 +156,7 @@ interface Slot {
 
 interface Queue {
   id: string
-  date: string
+  day: string
   periodeId: string
   state: 'ACCEPT' | 'PENDING' | 'DECLINED' | string
 }
