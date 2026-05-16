@@ -41,6 +41,6 @@ services:
       container_name: frontend
       restart: unless-stopped
       ports:
-        - "3000:80"
+        - "${PORT_GATEWAY}:80"
       depends_on:
         - backend
