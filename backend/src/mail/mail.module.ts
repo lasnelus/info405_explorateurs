@@ -22,6 +22,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           tls: {
             rejectUnauthorized: true,
           },
+          // 👇 AJOUTEZ CES DEUX LIGNES
+          debug: true,  // Affiche le trafic de la transaction SMTP
+          logger: true, // Affiche les logs de nodemailer dans la console
         },
         defaults: {
           from: config.get('SMTP_FROM'),
