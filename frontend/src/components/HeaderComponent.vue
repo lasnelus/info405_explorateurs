@@ -33,6 +33,9 @@
   >
     <div class="p-6 flex flex-col justify-between gap-6 h-full">
       <nav v-if="auth.isLoggedIn && auth.profile" class="flex flex-col gap-4 font-semibold text-lg">
+        <span>
+          <p>{{ auth.profile.firstName }} {{ auth.profile.lastName }}</p>
+        </span>
         <router-link
           to="/family-dashboard"
           @click="closeMenu"
@@ -55,7 +58,7 @@
         <div class="mt-auto">
           <button
             @click="HandleLogout"
-            class="block w-full text-center bg-red-500 text-white py-3 rounded-full font-semibold cursor-pointer duration-300 shadow-md shadow-primary-background transition-all hover:scale-105 hover:shadow-lg hover:shadow-red-500/50"
+            class="block w-full text-center bg-error text-primary-light py-3 rounded-full font-semibold cursor-pointer duration-300 shadow-md shadow-primary-background transition-all hover:scale-105 hover:shadow-lg hover:shadow-error/50"
           >
             Déconnexion
           </button>
@@ -64,6 +67,12 @@
 
       <!-- Admin -->
       <nav v-else-if="auth.isLoggedIn" class="flex flex-col gap-4 font-semibold text-lg">
+        <span v-if="roleUser.data.role === 'OWNER'">
+          <p>ADMINISTRATEUR</p>
+        </span>
+        <span v-else>
+          <p>ANIMATEUR</p>
+        </span>
         <router-link
           to="/admin"
           @click="closeMenu"
@@ -74,7 +83,7 @@
         <div class="mt-auto">
           <button
             @click="HandleLogout"
-            class="block w-full text-center bg-red-500 text-white py-3 rounded-full font-semibold cursor-pointer duration-300 shadow-md shadow-primary-background transition-all hover:scale-105 hover:shadow-lg hover:shadow-red-500/50"
+            class="block w-full text-center bg-error text-primary-light py-3 rounded-full font-semibold cursor-pointer duration-300 shadow-md shadow-primary-background transition-all hover:scale-105 hover:shadow-lg hover:shadow-error/50"
           >
             Déconnexion
           </button>
@@ -103,9 +112,20 @@ import { ref } from 'vue'
 import { logout } from '@/services/authServices'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { role } from '@/services/authServices'
 
 const router = useRouter()
 const auth = useAuthStore()
+
+interface RoleResponse {
+  data: {
+    role: 'OWNER' | 'INSTRUCTOR' | 'GUARDIAN' | string
+  }
+}
+
+const roleUser = await(role ()) as RoleResponse
+
+console.log(roleUser)
 
 const menuOpen = ref(false)
 

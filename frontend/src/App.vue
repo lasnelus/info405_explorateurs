@@ -5,7 +5,9 @@ import FooterComponent from './components/FooterComponent.vue'
 
 <template>
   <div class="flex flex-col min-h-screen">
-    <HeaderComponent />
+    <suspense>
+      <HeaderComponent />
+    </suspense>
     <main class="grow">
       <suspense>
         <router-view />
